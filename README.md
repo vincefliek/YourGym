@@ -1,6 +1,6 @@
-## Run app: `nvm use && npm i && npm start`
+### Run app: `nvm use && npm i && npm start`
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - 
+### - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 ## Getting Started with Create React App
 
