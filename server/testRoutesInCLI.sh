@@ -9,5 +9,6 @@ then
     echo "=========================="
     echo "Server doesn't respond."
     echo "Did you run the server???"
+    echo "If not, just do 'npm start'"
     echo "=========================="
 fi
