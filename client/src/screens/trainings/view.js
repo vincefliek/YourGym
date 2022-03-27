@@ -3,19 +3,19 @@ import { connect } from '../../model';
 import { controller } from './controller';
 
 class PureTrainings extends React.Component {
-    render() {
-        const { data } = this.props;
-        return (
-            <div>
-                Trainings: {data.length}
-            </div>
-        );
-    }
+  render() {
+    const { data } = this.props;
+    return (
+      <div>
+        Trainings: {data.length}
+      </div>
+    );
+  }
 }
 
 export const Trainings = connect({
-    controller,
+  controller,
 }, ctrl => ({
-    data: ctrl.getTrainings(),
-    onAddTraining: ctrl.onAddTraining,
+  data: ctrl.getTrainings(),
+  onAddTraining: ctrl.onAddTraining,
 }))(PureTrainings);
