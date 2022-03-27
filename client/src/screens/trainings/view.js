@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { connect } from '../../model';
 import { controller } from './controller';
 
