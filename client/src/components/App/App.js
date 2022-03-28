@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 
 import { createAPIs } from '../../apis';
 import { Store } from '../../model';
-import { Trainings, Home } from '../../screens';
+import { Trainings, Home, NotFound } from '../../screens';
 import { Navigator } from '../../components';
 import { ServiceLocatorContext } from '../../utils';
 import './App.css';
@@ -37,13 +37,4 @@ export class App extends React.Component {
       </ServiceLocatorContext.Provider>
     );
   }
-}
-
-// TODO REFACTOR
-function NotFound() {
-  return (
-    <div>
-      Oops! This page doesn't exist.
-    </div>
-  );
 }
