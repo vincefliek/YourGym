@@ -1,1 +1,1 @@
-export { navigationApi } from './navigationApi';
+export { createNavigationApi } from './navigationApi';

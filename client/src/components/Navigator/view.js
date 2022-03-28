@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-import { connect } from '../../model';
+import { connect } from '../../utils';
 import { controller } from './controller';
 
 class PureNavigator extends React.PureComponent {

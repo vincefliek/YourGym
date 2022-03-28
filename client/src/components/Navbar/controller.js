@@ -1,6 +1,6 @@
-import { navigationApi } from '../../apis';
+export const controller = (serviceLocator, props) => {
+  const { navigationApi } = serviceLocator.getAPIs();
 
-export const controller = (getStoreData, props) => {
   return {
     onHomeClick: () => {
       navigationApi.toHome();

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { store } from './store';
+import { ServiceLocatorContext } from './context';
 
 export const connect = (params, mapToProps) => {
   if (typeof params !== 'object') {
@@ -13,8 +13,13 @@ export const connect = (params, mapToProps) => {
 
   return Wrapped => {
     class ConnectedView extends React.Component {
-      constructor(props) {
+      static contextType = ServiceLocatorContext;
+
+      constructor(props, context) {
         super(props);
+
+        const store = context.serviceLocator.getStore();
+
         this.unsubscribe = store.subscribe(this.update);
       }
 
@@ -30,7 +35,7 @@ export const connect = (params, mapToProps) => {
         let stateToProps;
 
         if (typeof mapToProps === 'function') {
-          const bindedController = params.controller(store.getStoreData, this.props);
+          const bindedController = params.controller(this.context.serviceLocator, this.props);
           stateToProps = mapToProps(bindedController);
         }
 

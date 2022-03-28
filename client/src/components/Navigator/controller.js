@@ -1,6 +1,7 @@
-import { navigationApi } from '../../apis';
+export const controller = (serviceLocator, props) => {
+  const { navigationApi } = serviceLocator.getAPIs();
+  const { getStoreData } = serviceLocator.getStore();
 
-export const controller = (getStoreData, props) => {
   return {
     getRoutes: () => navigationApi.routes,
     isHome: () => getStoreData().route === navigationApi.storeRoutes.home,

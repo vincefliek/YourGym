@@ -1,4 +1,4 @@
-class Store {
+export class Store {
   constructor() {
     this.state = {
       nav: {
@@ -64,5 +64,3 @@ class Store {
     }))
   }
 }
-
-export const store = new Store();

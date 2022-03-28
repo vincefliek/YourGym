@@ -1,6 +1,8 @@
-export const controller = (getStoreData, props) => {
+export const controller = (serviceLocator, props) => {
+  const { getStoreData } = serviceLocator.getStore();
+
   return {
-    getTrainings: () => [],
+    getTrainings: () => getStoreData().trainings,
     onAddTraining: () => {},
   };
 };

@@ -1,2 +1,1 @@
-export { connect } from './connect';
-export { store } from './store';
+export { Store } from './store';

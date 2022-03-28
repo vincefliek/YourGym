@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar } from '../../components';
 
-import { connect } from '../../model';
+import { connect } from '../../utils';
 import { controller } from './controller';
 
 class PureTrainings extends React.Component {
