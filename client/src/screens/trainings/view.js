@@ -1,6 +1,6 @@
 import React from 'react';
-import { Navbar } from '../../components';
 
+import { Layout, Navbar } from '../../components';
 import { connect } from '../../utils';
 import { controller } from './controller';
 
@@ -8,10 +8,11 @@ class PureTrainings extends React.Component {
   render() {
     const { data } = this.props;
     return (
-      <div>
-        Trainings: {data.length}
-        <Navbar />
-      </div>
+      <Layout bottomBar={<Navbar />}>
+        <div>
+          Trainings: {data.length}
+        </div>
+      </Layout>
     );
   }
 }
