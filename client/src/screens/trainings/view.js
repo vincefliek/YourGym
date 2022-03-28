@@ -1,4 +1,5 @@
 import React from 'react';
+import { Navbar } from '../../components';
 
 import { connect } from '../../model';
 import { controller } from './controller';
@@ -9,6 +10,7 @@ class PureTrainings extends React.Component {
     return (
       <div>
         Trainings: {data.length}
+        <Navbar />
       </div>
     );
   }

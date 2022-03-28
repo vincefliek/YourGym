@@ -1,4 +1,5 @@
 import React from 'react';
+import { Navbar } from '../../components';
 
 import { connect } from '../../model';
 import { controller } from './controller';
@@ -13,6 +14,7 @@ class PureHome extends React.Component {
         <button onClick={onClick}>
           Go to Trainings
         </button>
+        <Navbar />
       </div>
     );
   }
