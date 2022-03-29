@@ -9,10 +9,10 @@ class PureNavbar extends React.Component {
     const { onHomeClick, onTrainingsClick, isHomeActive, isTrainingsActive } = this.props;
     return (
       <div className={style.navbar}>
-        <button onClick={onHomeClick} className={isHomeActive && style.navbarActive}>
+        <button onClick={onHomeClick} className={`${style.button} ${isHomeActive && style.navbarActive}`}>
           Home
         </button>
-        <button onClick={onTrainingsClick} className={isTrainingsActive && style.navbarActive}>
+        <button onClick={onTrainingsClick} className={`${style.button} ${isTrainingsActive && style.navbarActive}`} >
           Trainings
         </button>
       </div>
