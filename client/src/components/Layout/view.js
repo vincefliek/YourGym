@@ -1,16 +1,16 @@
-import './style.css';
+import style from './style.module.scss';
 
 export const Layout = (props) => {
   const { topBar, bottomBar, children } = props;
   return (
-    <div className="layout">
-      {topBar && <div className="layout-top">{topBar}</div>}
-      <div className="layout-center">
-        <div className="layout-content">
+    <div className={style.layout}>
+      {topBar && <div className={style.layoutTop}>{topBar}</div>}
+      <div className={style.layoutCenter}>
+        <div className={style.layoutContent}>
           {children}
         </div>
       </div>
-      {bottomBar && <div className="layout-bottom">{bottomBar}</div>}
+      {bottomBar && <div className={style.layoutBottom}>{bottomBar}</div>}
     </div>
   );
 }

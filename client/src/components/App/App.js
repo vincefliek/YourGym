@@ -6,7 +6,7 @@ import { Store } from '../../model';
 import { Trainings, Home, NotFound } from '../../screens';
 import { Navigator } from '../../components';
 import { ServiceLocatorContext } from '../../utils';
-import './App.css';
+import style from './style.module.scss';
 
 export class App extends React.Component {
   constructor(props) {
@@ -26,7 +26,7 @@ export class App extends React.Component {
   render() {
     return (
       <ServiceLocatorContext.Provider value={this.SLContext}>
-        <div className="App">
+        <div className={style.app}>
           <Navigator />
           <Routes>
             <Route path={this.apis.navigationApi.routes.home} element={<Home />} />
