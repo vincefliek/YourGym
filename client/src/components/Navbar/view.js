@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { connect } from '../../utils';
+import { Hamburger } from '../icons';
 import { controller } from './controller';
 import style from './style.module.scss';
 
@@ -15,6 +16,7 @@ class PureNavbar extends React.Component {
         <button onClick={onTrainingsClick} className={`${style.button} ${isTrainingsActive && style.navbarActive}`} >
           Trainings
         </button>
+        <Hamburger />
       </div>
     );
   }
