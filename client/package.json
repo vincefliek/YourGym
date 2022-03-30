@@ -14,11 +14,13 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "git add .husky/pre-commit && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint:fix": "eslint --fix --ext .js,.jsx ."
+    "lint:fix": "eslint --fix --ext .js,.jsx .",
+    "pre-commit-hook": "npm run lint:fix",
+    "husky-prepare": "cd .. && husky install client/.husky"
   },
   "eslintConfig": {
     "extends": [
@@ -45,14 +47,20 @@
           "tabWidth": 2
         }
       ],
-      "comma-dangle": ["warn", {
-        "arrays": "always-multiline",
-        "objects": "always-multiline",
-        "imports": "always-multiline",
-        "exports": "always-multiline",
-        "functions": "always-multiline"
-      }],
-      "semi": ["warn", "always"]
+      "comma-dangle": [
+        "warn",
+        {
+          "arrays": "always-multiline",
+          "objects": "always-multiline",
+          "imports": "always-multiline",
+          "exports": "always-multiline",
+          "functions": "always-multiline"
+        }
+      ],
+      "semi": [
+        "warn",
+        "always"
+      ]
     }
   },
   "browserslist": {
@@ -66,5 +74,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "husky": "^7.0.4"
   }
 }
