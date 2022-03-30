@@ -37,7 +37,22 @@
       "quotes": [
         "warn",
         "single"
-      ]
+      ],
+      "max-len": [
+        "warn",
+        {
+          "code": 80,
+          "tabWidth": 2
+        }
+      ],
+      "comma-dangle": ["warn", {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "always-multiline"
+      }],
+      "semi": ["warn", "always"]
     }
   },
   "browserslist": {

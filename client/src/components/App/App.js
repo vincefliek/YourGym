@@ -29,8 +29,14 @@ export class App extends React.Component {
         <div className={style.app}>
           <Navigator />
           <Routes>
-            <Route path={this.apis.navigationApi.routes.home} element={<Home />} />
-            <Route path={this.apis.navigationApi.routes.trainings} element={<Trainings />} />
+            <Route
+              path={this.apis.navigationApi.routes.home}
+              element={<Home />}
+            />
+            <Route
+              path={this.apis.navigationApi.routes.trainings}
+              element={<Trainings />}
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

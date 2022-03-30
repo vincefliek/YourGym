@@ -13,4 +13,4 @@ export const Layout = (props) => {
       {bottomBar && <div className={style.layoutBottom}>{bottomBar}</div>}
     </div>
   );
-}
+};

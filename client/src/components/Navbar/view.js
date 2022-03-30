@@ -7,13 +7,24 @@ import style from './style.module.scss';
 
 class PureNavbar extends React.Component {
   render() {
-    const { onHomeClick, onTrainingsClick, isHomeActive, isTrainingsActive } = this.props;
+    const {
+      onHomeClick,
+      onTrainingsClick,
+      isHomeActive,
+      isTrainingsActive,
+    } = this.props;
     return (
       <div className={style.navbar}>
-        <button onClick={onHomeClick} className={`${style.button} ${isHomeActive && style.active}`}>
+        <button
+          onClick={onHomeClick}
+          className={`${style.button} ${isHomeActive && style.active}`}
+        >
           Home
         </button>
-        <button onClick={onTrainingsClick} className={`${style.button} ${isTrainingsActive && style.active}`} >
+        <button
+          onClick={onTrainingsClick}
+          className={`${style.button} ${isTrainingsActive && style.active}`}
+        >
           Trainings
         </button>
         <Burger />

@@ -37,4 +37,4 @@ export const createNavigationApi = (store) => {
       return matchPath(routes.trainings, getLocation().pathname);
     },
   };
-}
+};
