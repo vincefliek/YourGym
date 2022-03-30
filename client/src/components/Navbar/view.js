@@ -16,7 +16,9 @@ class PureNavbar extends React.Component {
         <button onClick={onTrainingsClick} className={`${style.button} ${isTrainingsActive && style.navbarActive}`} >
           Trainings
         </button>
-        <Hamburger />
+        <div className={style.hamburger}>
+          <Hamburger />
+        </div>
       </div>
     );
   }
