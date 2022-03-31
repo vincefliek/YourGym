@@ -1,0 +1,82 @@
+@use "../common/_colors";
+@use "../common/_fonts";
+
+.button {
+  box-sizing: border-box;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+}
+
+/* font - start */
+
+.nunito {
+  font-family: fonts.$nunito;
+}
+
+.indieFlower {
+  font-family: fonts.$indieFlower;
+}
+
+/* font - start */
+
+/* skins - start */
+
+.zeroStyle {
+  color: colors.$regular;
+}
+
+.primary {
+  padding: 10px 15px;
+  color: colors.$primary;
+  border: 1px solid colors.$primary;
+  border-radius: 4px;
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+.icon {
+  padding: 10px;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.text {
+  color: colors.$regular;
+  line-height: 1.4;
+}
+
+/* skins - end */
+
+/* size - start */
+
+.text.small {
+  font-size: 12px;
+}
+
+.text.medium {
+  font-size: 16px;
+}
+
+.text.large {
+  font-size: 20px;
+}
+
+.text.xLarge {
+  font-size: 24px;
+}
+
+.icon.medium {
+  width: 40px;
+  height: 40px;
+}
+
+.icon.large {
+  width: 50px;
+  height: 50px;
+}
+
+/* size - end */

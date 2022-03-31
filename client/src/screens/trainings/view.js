@@ -1,16 +1,23 @@
 import React from 'react';
 
-import { Layout, Navbar } from '../../components';
+import { Button, Layout, Navbar } from '../../components';
 import { connect } from '../../utils';
 import { controller } from './controller';
 
+import style from './style.module.scss';
+
 class PureTrainings extends React.Component {
   render() {
-    const { data } = this.props;
     return (
       <Layout bottomBar={<Navbar />}>
-        <div>
-          Trainings: {data.length}
+        <div className={style.screen}>
+          <Button
+            skin="primary"
+            font="nunito"
+            className={style.button}
+          >
+            Add your 1st training
+          </Button>
         </div>
       </Layout>
     );
