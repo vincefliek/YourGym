@@ -27,7 +27,11 @@ class PureNavbar extends React.Component {
         >
           Trainings
         </button>
-        <Burger />
+        <button 
+          className={`${style.burger} ${style.button}`}
+        >
+          <Burger />
+        </button>
       </div>
     );
   }
