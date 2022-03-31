@@ -11,7 +11,13 @@ export const createNavigationApi = (store) => {
     trainings: '/trainings',
   };
 
-  const getPathName = () => window.location.hash.slice(1);
+  /**
+   * Handles URL with and without hash like:
+   * - `/#/`
+   * - `#/`
+   * - `/`
+   */
+  const getPathName = () => window.location.hash.slice(1) || routes.home;
 
   return {
     routes,
