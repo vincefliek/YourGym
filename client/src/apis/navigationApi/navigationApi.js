@@ -5,13 +5,13 @@ export const createNavigationApi = (store) => {
     home: '/',
     trainings: 'trainings',
   };
-      
+
   const storeRoutes = {
     home: '/',
     trainings: '/trainings',
   };
-      
-  const getLocation = () => window.location;
+
+  const getPathName = () => window.location.hash.slice(1);
 
   return {
     routes,
@@ -31,10 +31,10 @@ export const createNavigationApi = (store) => {
       store.route = storeRoutes.trainings;
     },
     isHomeUrl: () => {
-      return matchPath(routes.home, getLocation().pathname);
+      return matchPath(routes.home, getPathName());
     },
     isTrainingsUrl: () => {
-      return matchPath(routes.trainings, getLocation().pathname);
+      return matchPath(routes.trainings, getPathName());
     },
   };
 };
