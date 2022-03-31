@@ -8,7 +8,9 @@ export const connect = (params, mapToProps) => {
   }
 
   if (typeof params.controller !== 'function') {
-    throw new Error('`controller` property in 1st argument in `connect` function is mandatory');
+    throw new Error(
+      '`params.controller` property in `connect` function is mandatory',
+    );
   }
 
   return Wrapped => {
@@ -25,17 +27,20 @@ export const connect = (params, mapToProps) => {
 
       componentWillUnmount = () => {
         this.unsubscribe();
-      }
+      };
 
       update = () => {
         this.forceUpdate();
-      }
+      };
 
       render() {
         let stateToProps;
 
         if (typeof mapToProps === 'function') {
-          const bindedController = params.controller(this.context.serviceLocator, this.props);
+          const bindedController = params.controller(
+            this.context.serviceLocator,
+            this.props,
+          );
           stateToProps = mapToProps(bindedController);
         }
 
@@ -49,5 +54,5 @@ export const connect = (params, mapToProps) => {
     }
 
     return ConnectedView;
-  }
-}
+  };
+};

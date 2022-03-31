@@ -36,12 +36,14 @@ export class Store {
 
   subscribe = (subscriber) => {
     if (typeof subscriber !== 'function') {
-      throw new Error(`Subscriber can't be of type ${typeof subscriber}. Provide function.`)
+      throw new Error(
+        `Subscriber can't be of type ${typeof subscriber}. Provide function.`,
+      );
     }
     this._subscribe(subscriber);
     return () => {
       this._delete(subscriber);
-    }
+    };
   };
 
   getStoreData = () => ({
@@ -55,12 +57,12 @@ export class Store {
         ...state.nav,
         route: data,
       },
-    }))
+    }));
   }
 
   set trainings(data) {
     this._updateStoreData(() => ({
       trainings: data,
-    }))
+    }));
   }
 }

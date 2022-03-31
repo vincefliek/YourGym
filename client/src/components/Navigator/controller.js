@@ -5,9 +5,10 @@ export const controller = (serviceLocator, props) => {
   return {
     getRoutes: () => navigationApi.routes,
     isHome: () => getStoreData().route === navigationApi.storeRoutes.home,
-    isTrainings: () => getStoreData().route === navigationApi.storeRoutes.trainings,
+    isTrainings: () =>
+      getStoreData().route === navigationApi.storeRoutes.trainings,
     onNavigateFinish: () => {
       navigationApi.resetRoute();
-    }
+    },
   };
 };
