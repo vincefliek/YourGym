@@ -5,7 +5,7 @@ import { connect } from '../../utils';
 import { controller } from './controller';
 
 class PureNavigator extends React.PureComponent {
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     this.props.onNavigateFinish();
   }
 

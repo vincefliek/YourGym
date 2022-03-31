@@ -11,7 +11,7 @@ export class Store {
 
   _updateStoreData = (fn) => {
     const newData = fn(this.state);
-    
+
     this.state = {
       ...this.state,
       ...newData,

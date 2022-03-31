@@ -22,7 +22,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint:fix": "eslint --fix --ext .js,.jsx .",
+    "lint:fix": "eslint --fix --ext .js,.jsx ./src",
     "pre-commit-hook": "npm run lint:fix",
     "husky-prepare": "cd .. && husky install client/.husky",
     "predeploy": "npm run build",
