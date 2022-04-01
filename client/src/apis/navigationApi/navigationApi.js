@@ -4,11 +4,13 @@ export const createNavigationApi = (store) => {
   const routes = {
     home: '/',
     trainings: 'trainings',
+    burger: 'burger',
   };
 
   const storeRoutes = {
     home: '/',
     trainings: '/trainings',
+    burger: '/burger',
   };
 
   /**
@@ -36,11 +38,17 @@ export const createNavigationApi = (store) => {
     toTrainings: () => {
       store.route = storeRoutes.trainings;
     },
+    toBurger: () => {
+      store.route = storeRoutes.burger;
+    },
     isHomeUrl: () => {
       return matchPath(routes.home, getPathName());
     },
     isTrainingsUrl: () => {
       return matchPath(routes.trainings, getPathName());
+    },
+    isBurgerUrl: () => {
+      return matchPath(routes.burger, getPathName());
     },
   };
 };

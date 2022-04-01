@@ -10,8 +10,10 @@ class PureNavbar extends React.Component {
     const {
       onHomeClick,
       onTrainingsClick,
+      onBurgerClick,
       isHomeActive,
       isTrainingsActive,
+      isBurgerActive,
     } = this.props;
     return (
       <div className={style.navbar}>
@@ -28,7 +30,8 @@ class PureNavbar extends React.Component {
           Trainings
         </button>
         <button 
-          className={`${style.burger} ${style.button}`}
+          onClick={onBurgerClick}
+          className={`${style.burger} ${style.button} ${isBurgerActive && style.activeBurger}`}
         >
           <Burger />
         </button>
@@ -42,6 +45,8 @@ export const Navbar = connect({
 }, ctrl => ({
   onHomeClick: ctrl.onHomeClick,
   onTrainingsClick: ctrl.onTrainingsClick,
+  onBurgerClick: ctrl.onBurgerClick,
   isHomeActive: ctrl.isHomeActive(),
   isTrainingsActive: ctrl.isTrainingsActive(),
+  isBurgerActive: ctrl.isBurgerActive(),
 }))(PureNavbar);

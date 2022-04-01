@@ -10,11 +10,12 @@ class PureNavigator extends React.PureComponent {
   }
 
   render() {
-    const { routes, isHome, isTrainings } = this.props;
+    const { routes, isHome, isTrainings, isBurger } = this.props;
     return (
       <>
         {isHome && <Navigate to={routes.home} />}
         {isTrainings && <Navigate to={routes.trainings} />}
+        {isBurger && <Navigate to={routes.burger} />}
       </>
     );
   }
@@ -26,5 +27,6 @@ export const Navigator = connect({
   routes: ctrl.getRoutes(),
   isHome: ctrl.isHome(),
   isTrainings: ctrl.isTrainings(),
+  isBurger: ctrl.isBurger(),
   onNavigateFinish: ctrl.onNavigateFinish,
 }))(PureNavigator);
