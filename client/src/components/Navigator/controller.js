@@ -8,8 +8,8 @@ export const controller = (serviceLocator) => {
       getStoreData().route === navigationApi.storeRoutes.home,
     isTrainings: () =>
       getStoreData().route === navigationApi.storeRoutes.trainings,
-    isBurger: () => 
-      getStoreData().route === navigationApi.storeRoutes.burger,
+    isMenu: () => 
+      getStoreData().route === navigationApi.storeRoutes.menu,
     onNavigateFinish: () => {
       navigationApi.resetRoute();
     },

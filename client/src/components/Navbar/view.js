@@ -41,10 +41,15 @@ class PureNavbar extends React.Component {
           onClick={onTrainingsClick}
         >
           Trainings
-        </button>
-        <button 
+        </Button>
+        <Button 
+          skin="icon"
+          size="large"
+          className={classnames(
+            style.burger, {
+            [style.activeBurger]: isBurgerActive,
+          })}
           onClick={onBurgerClick}
-          className={`${style.burger} ${style.button} ${isBurgerActive && style.activeBurger}`}
         >
           <Burger />
         </Button>

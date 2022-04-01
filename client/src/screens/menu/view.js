@@ -4,25 +4,20 @@ import { Layout, Navbar } from '../../components';
 import { connect } from '../../utils';
 import { controller } from './controller';
 
-class PureBurger extends React.Component {
+class PureMenu extends React.Component {
   render() {
     const { onClick } = this.props;
     return (
       <Layout bottomBar={<Navbar />}>
         <div>
-          Burger
-          <br/>
-          <button onClick={onClick}>
-            Go to Trainings
-          </button>
+          Menu
         </div>
       </Layout>
     );
   }
 }
 
-export const Burger = connect({
+export const Menu = connect({
   controller,
 }, ctrl => ({
-  onClick: ctrl.goToTraining,
-}))(PureBurger);
+}))(PureMenu);

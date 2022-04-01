@@ -9,10 +9,10 @@ export const controller = (serviceLocator) => {
       navigationApi.toTrainings();
     },
     onBurgerClick: () => {
-      navigationApi.toBurger();
+      navigationApi.toMenu();
     },
     isHomeActive: () => navigationApi.isHomeUrl(),
     isTrainingsActive: () => navigationApi.isTrainingsUrl(),
-    isBurgerActive: () => navigationApi.isBurgerUrl(),
+    isBurgerActive: () => navigationApi.isMenuUrl(),
   };
 };

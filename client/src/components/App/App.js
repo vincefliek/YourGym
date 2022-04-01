@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 
 import { createAPIs } from '../../apis';
 import { Store } from '../../model';
-import { Trainings, Home, Burger, NotFound } from '../../screens';
+import { Trainings, Home, Menu, NotFound } from '../../screens';
 import { Navigator } from '../../components';
 import { ServiceLocatorContext } from '../../utils';
 import style from './style.module.scss';
@@ -38,8 +38,8 @@ export class App extends React.Component {
               element={<Trainings />}
             />
             <Route
-              path={this.apis.navigationApi.routes.burger}
-              element={<Burger />}
+              path={this.apis.navigationApi.routes.menu}
+              element={<Menu />}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>

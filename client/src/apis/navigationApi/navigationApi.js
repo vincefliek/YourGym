@@ -4,13 +4,13 @@ export const createNavigationApi = (store) => {
   const routes = {
     home: '/',
     trainings: 'trainings',
-    burger: 'burger',
+    menu: 'menu',
   };
 
   const storeRoutes = {
     home: '/',
     trainings: '/trainings',
-    burger: '/burger',
+    menu: '/menu',
   };
 
   /**
@@ -38,8 +38,8 @@ export const createNavigationApi = (store) => {
     toTrainings: () => {
       store.route = storeRoutes.trainings;
     },
-    toBurger: () => {
-      store.route = storeRoutes.burger;
+    toMenu: () => {
+      store.route = storeRoutes.menu;
     },
     isHomeUrl: () => {
       return matchPath(routes.home, getPathName());
@@ -47,8 +47,8 @@ export const createNavigationApi = (store) => {
     isTrainingsUrl: () => {
       return matchPath(routes.trainings, getPathName());
     },
-    isBurgerUrl: () => {
-      return matchPath(routes.burger, getPathName());
+    isMenuUrl: () => {
+      return matchPath(routes.menu, getPathName());
     },
   };
 };

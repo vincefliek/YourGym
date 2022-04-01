@@ -1,4 +1,4 @@
 export { Home } from './home';
 export { Trainings } from './trainings';
-export { Burger } from './burger';
+export { Menu } from './menu';
 export { NotFound } from './notFound';
