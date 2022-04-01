@@ -1,8 +1,11 @@
 import React from 'react';
+import classnames from 'classnames';
 
 import { connect } from '../../utils';
 import { ReactComponent as Burger } from '../../assets/burger.svg';
 import { controller } from './controller';
+import { Button } from '../Button';
+
 import style from './style.module.scss';
 
 class PureNavbar extends React.Component {
@@ -17,15 +20,25 @@ class PureNavbar extends React.Component {
     } = this.props;
     return (
       <div className={style.navbar}>
-        <button
+        <Button
+          skin="text"
+          font="indieFlower"
+          size="large"
+          className={classnames({
+            [style.active]: isHomeActive,
+          })}
           onClick={onHomeClick}
-          className={`${style.button} ${isHomeActive && style.active}`}
         >
           Home
-        </button>
-        <button
+        </Button>
+        <Button
+          skin="text"
+          font="indieFlower"
+          size="large"
+          className={classnames({
+            [style.active]: isTrainingsActive,
+          })}
           onClick={onTrainingsClick}
-          className={`${style.button} ${isTrainingsActive && style.active}`}
         >
           Trainings
         </button>
@@ -34,7 +47,7 @@ class PureNavbar extends React.Component {
           className={`${style.burger} ${style.button} ${isBurgerActive && style.activeBurger}`}
         >
           <Burger />
-        </button>
+        </Button>
       </div>
     );
   }

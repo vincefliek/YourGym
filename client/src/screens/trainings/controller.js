@@ -1,4 +1,4 @@
-export const controller = (serviceLocator, props) => {
+export const controller = (serviceLocator) => {
   const { getStoreData } = serviceLocator.getStore();
 
   return {
