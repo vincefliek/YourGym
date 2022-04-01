@@ -13,6 +13,12 @@ export const connect = (params, mapToProps) => {
     );
   }
 
+  if (!Array.isArray(params.controller.storeDataAccessors)) {
+    throw new Error(
+      `Controller doesn't have mandatory static property 'storeDataAccessors'`,
+    );
+  }
+
   return Wrapped => {
     class ConnectedView extends React.Component {
       static contextType = ServiceLocatorContext;
@@ -22,14 +28,21 @@ export const connect = (params, mapToProps) => {
 
         const store = context.serviceLocator.getStore();
 
-        this.unsubscribe = store.subscribe(this.update);
+        if (params.controller.storeDataAccessors.length) {
+          this.unsubscribe = store.subscribe(
+            this._update,
+            params.controller.storeDataAccessors,
+          );
+        }
       }
 
       componentWillUnmount = () => {
-        this.unsubscribe();
+        if (this.unsubscribe) {
+          this.unsubscribe();
+        }
       };
 
-      update = () => {
+      _update = () => {
         this.forceUpdate();
       };
 

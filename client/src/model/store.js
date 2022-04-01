@@ -6,10 +6,17 @@ export class Store {
       },
       trainings: [],
     };
-    this.subscribers = [];
+    this.subscribers = {
+      route: [],
+      trainings: [],
+    };
+
+    validateDataAccessors(Object.keys(this.subscribers));
   }
 
-  _updateStoreData = (fn) => {
+  _updateStoreData = (fn, dataAccessorsToNotify) => {
+    validateDataAccessors(dataAccessorsToNotify);
+
     const newData = fn(this.state);
 
     this.state = {
@@ -17,52 +24,109 @@ export class Store {
       ...newData,
     };
 
-    this._notifyAll();
+    this._notify(dataAccessorsToNotify);
   };
 
-  _notifyAll = () => {
-    this.subscribers.forEach(subscriber => {
-      subscriber(this.state);
+  _notify = (dataAccessorsToNotify) => {
+    validateDataAccessors(dataAccessorsToNotify);
+
+    dataAccessorsToNotify.forEach(accessor => {
+      this.subscribers[accessor].forEach(subscriber => {
+        subscriber();
+      });
     });
   };
 
-  _subscribe = (subscriber) => {
-    this.subscribers.push(subscriber);
+  _subscribe = (subscriber, publicDataAccessors) => {
+    publicDataAccessors.forEach(accessor => {
+      this.subscribers[accessor].push(subscriber);
+    });
   };
 
   _delete = (subscriber) => {
-    this.subscribers = this.subscribers.filter(s => s !== subscriber);
+    Object.keys(this.subscribers).forEach(accessor => {
+      this.subscribers[accessor] =
+        this.subscribers[accessor].filter(s => s !== subscriber);
+    });
   };
 
-  subscribe = (subscriber) => {
+  subscribe = (subscriber, publicDataAccessors) => {
     if (typeof subscriber !== 'function') {
       throw new Error(
         `Subscriber can't be of type ${typeof subscriber}. Provide function.`,
       );
     }
-    this._subscribe(subscriber);
+
+    validateDataAccessors(publicDataAccessors);
+
+    this._subscribe(subscriber, publicDataAccessors);
     return () => {
       this._delete(subscriber);
     };
   };
 
-  getStoreData = () => ({
-    route: this.state.nav.route,
-    trainings: this.state.trainings,
-  });
+  getStoreData = (publicDataAccessors) => {
+    validateDataAccessors(publicDataAccessors);
+
+    const _publicDataAccessors = {
+      route: this.state.nav.route,
+      trainings: this.state.trainings,
+    };
+
+    validateDataAccessors(Object.keys(_publicDataAccessors));
+
+    const data = publicDataAccessors.reduce((acc, prop) => ({
+      ...acc,
+      [prop]: _publicDataAccessors[prop],
+    }), {});
+
+    return data;
+  };
 
   set route(data) {
-    this._updateStoreData(state => ({
+    const fn = state => ({
       nav: {
         ...state.nav,
         route: data,
       },
-    }));
+    });
+
+    this._updateStoreData(fn, ['route']);
   }
 
   set trainings(data) {
-    this._updateStoreData(() => ({
+    const fn = () => ({
       trainings: data,
-    }));
+    });
+
+    this._updateStoreData(fn, ['trainings']);
   }
+}
+
+function validateDataAccessors(publicDataAccessors) {
+  if (!doesDataAccessorsExist(publicDataAccessors)) {
+    throw new Error(
+      'Public Data Accessors were not specified!',
+    );
+  }
+
+  if (!areValidDataAccessors(publicDataAccessors)) {
+    throw new Error(
+      `Public Data Accessors are not valid!
+      Provided accessors might not exist or there is a typo.`,
+    );
+  }
+}
+
+function areValidDataAccessors(publicDataAccessors) {
+  const keys = ['route', 'trainings'];
+
+  return publicDataAccessors.every(key => keys.includes(key));
+}
+
+function doesDataAccessorsExist(publicDataAccessors) {
+  if (!Array.isArray(publicDataAccessors) || !publicDataAccessors.length) {
+    return false;
+  }
+  return true;
 }

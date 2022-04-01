@@ -12,3 +12,5 @@ export const controller = (serviceLocator) => {
     isTrainingsActive: () => navigationApi.isTrainingsUrl(),
   };
 };
+
+controller.storeDataAccessors = [];

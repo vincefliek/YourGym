@@ -7,3 +7,5 @@ export const controller = (serviceLocator) => {
     },
   };
 };
+
+controller.storeDataAccessors = [];
