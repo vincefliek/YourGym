@@ -5,19 +5,11 @@
   align-items: center;
 }
 
-.addNew {
-  flex: 0 0 auto;
-}
-
-.trainings {
-  padding: 0;
-}
-
-.training {
+.topBar {
+  padding: 20px;
   display: flex;
-  align-items: center;
 }
 
-.trainingDelete {
+.button {
   flex: 0 0 auto;
 }

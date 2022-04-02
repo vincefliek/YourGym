@@ -1,14 +1,16 @@
 import { matchPath } from 'react-router-dom';
 
-export const createNavigationApi = (store) => {
+export const createNavigationApi = ({ store }) => {
   const routes = {
     home: '/',
-    trainings: 'trainings',
+    trainings: '/trainings',
+    createTraining: '/trainings/new',
   };
 
   const storeRoutes = {
     home: '/',
     trainings: '/trainings',
+    createTraining: '/trainings/new',
   };
 
   /**
@@ -37,6 +39,9 @@ export const createNavigationApi = (store) => {
     },
     toTrainings: () => {
       store.route = storeRoutes.trainings;
+    },
+    toCreateTraining: () => {
+      store.route = storeRoutes.createTraining;
     },
     isHomeUrl: () => {
       return matchPath(routes.home, getPathName());
