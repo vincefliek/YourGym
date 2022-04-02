@@ -5,6 +5,19 @@
   align-items: center;
 }
 
-.button {
+.addNew {
+  flex: 0 0 auto;
+}
+
+.trainings {
+  padding: 0;
+}
+
+.training {
+  display: flex;
+  align-items: center;
+}
+
+.trainingDelete {
   flex: 0 0 auto;
 }

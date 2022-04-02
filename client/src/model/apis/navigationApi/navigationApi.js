@@ -1,6 +1,6 @@
 import { matchPath } from 'react-router-dom';
 
-export const createNavigationApi = (store) => {
+export const createNavigationApi = ({ store }) => {
   const routes = {
     home: '/',
     trainings: '/trainings',

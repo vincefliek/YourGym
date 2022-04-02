@@ -1,8 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-import { createAPIs } from '../../apis';
-import { Store } from '../../model';
+import { Store, createAPIs, Validator } from '../../model';
 import { Trainings, Home, NotFound, CreateTraining } from '../../screens';
 import { Navigator } from '../../components';
 import { ServiceLocatorContext } from '../../utils';
@@ -13,14 +12,26 @@ export class App extends React.Component {
     super(props);
 
     const store = new Store();
+    const validator = new Validator();
 
-    this.apis = createAPIs(store);
+    this.apis = createAPIs({
+      store,
+      validator,
+    });
     this.SLContext = {
       serviceLocator: {
         getStore: () => store,
         getAPIs: () => this.apis,
       },
     };
+
+    if (process.env.NODE_ENV === 'development') {
+      window._debugTools_ = {
+        store,
+        validator,
+        apis: this.apis,
+      };
+    }
   }
 
   render() {

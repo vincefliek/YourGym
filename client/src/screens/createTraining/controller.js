@@ -6,11 +6,13 @@ export const controller = (serviceLocator) => {
 
   return {
     getData: () => getData().newTraining,
-    onLoad: () => {
-      trainingsApi.createNew();
+    onNoData: () => {
+      navigationApi.toTrainings();
     },
     onChangeName: (name) => {
-      trainingsApi.updateNew({ name });
+      trainingsApi.updateNew({
+        name,
+      });
     },
     onAddExercise: () => {},
     onDelete: () => {
@@ -21,7 +23,6 @@ export const controller = (serviceLocator) => {
       trainingsApi.saveNew();
       navigationApi.toTrainings();
     },
-    isLoading: () => !getData().newTraining,
   };
 };
 
