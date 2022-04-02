@@ -35,6 +35,7 @@ export const createTrainingsApi = (store) => {
       store.newTraining = data;
     },
     saveNew: () => {},
+    deleteNew: () => {},
   };
 };
 

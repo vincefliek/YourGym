@@ -1,8 +1,10 @@
 import React from 'react';
 
-import { Button, Input, Layout, Navbar } from '../../components';
+import { Button, Input, Layout, NavbarContainer } from '../../components';
 import { connect } from '../../utils';
 import { controller } from './controller';
+import { ReactComponent as DoneIcon } from '../../assets/done.svg';
+import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
 
 import style from './style.module.scss';
 
@@ -12,7 +14,7 @@ class PureCreateTraining extends React.Component {
   }
 
   render() {
-    const { data, isLoading, onChangeName } = this.props;
+    const { data, isLoading, onChangeName, onDelete, onSave } = this.props;
 
     if (isLoading) {
       return (
@@ -35,7 +37,24 @@ class PureCreateTraining extends React.Component {
             />
           </div>
         }
-        bottomBar={<Navbar />}
+        bottomBar={
+          <NavbarContainer>
+            <Button
+              skin="icon"
+              size="large"
+              onClick={onDelete}
+            >
+              <DeleteIcon />
+            </Button>
+            <Button
+              skin="icon"
+              size="large"
+              onClick={onSave}
+            >
+              <DoneIcon />
+            </Button>
+          </NavbarContainer>
+        }
       >
         <div className={style.screen}>
           {!data.exercises.length && (
@@ -61,4 +80,6 @@ export const CreateTraining = connect({
   onLoad: ctrl.onLoad,
   onChangeName: ctrl.onChangeName,
   onAddExercise: ctrl.onAddExercise,
+  onDelete: ctrl.onDelete,
+  onSave: ctrl.onSave,
 }))(PureCreateTraining);
