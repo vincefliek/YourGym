@@ -8,6 +8,7 @@ import style from './style.module.scss';
 
 class PureTrainings extends React.Component {
   render() {
+    const { onAddTraining } = this.props;
     return (
       <Layout bottomBar={<Navbar />}>
         <div className={style.screen}>
@@ -15,6 +16,7 @@ class PureTrainings extends React.Component {
             skin="primary"
             font="nunito"
             className={style.button}
+            onClick={onAddTraining}
           >
             Add your 1st training
           </Button>

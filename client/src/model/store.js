@@ -5,13 +5,17 @@ export class Store {
         route: undefined,
       },
       trainings: [],
+      newTraining: null,
     };
     this.subscribers = {
       route: [],
       trainings: [],
+      newTraining: [],
     };
 
-    validateDataAccessors(Object.keys(this.subscribers));
+    const publicDataAccessors = Object.keys(this.subscribers);
+    validateDataAccessors(publicDataAccessors);
+    validateAllDataAccessorsDeclared(publicDataAccessors);
   }
 
   _updateStoreData = (fn, dataAccessorsToNotify) => {
@@ -68,16 +72,19 @@ export class Store {
   getStoreData = (publicDataAccessors) => {
     validateDataAccessors(publicDataAccessors);
 
-    const _publicDataAccessors = {
+    const publicDataAccessorsToData = {
       route: this.state.nav.route,
       trainings: this.state.trainings,
+      newTraining: this.state.newTraining,
     };
 
-    validateDataAccessors(Object.keys(_publicDataAccessors));
+    const dataAccessors = Object.keys(publicDataAccessorsToData);
+    validateDataAccessors(dataAccessors);
+    validateAllDataAccessorsDeclared(dataAccessors);
 
     const data = publicDataAccessors.reduce((acc, prop) => ({
       ...acc,
-      [prop]: _publicDataAccessors[prop],
+      [prop]: publicDataAccessorsToData[prop],
     }), {});
 
     return data;
@@ -101,7 +108,17 @@ export class Store {
 
     this._updateStoreData(fn, ['trainings']);
   }
+
+  set newTraining(data) {
+    const fn = () => ({
+      newTraining: data,
+    });
+
+    this._updateStoreData(fn, ['newTraining']);
+  }
 }
+
+const allPublicDataAccessors = ['route', 'trainings', 'newTraining'];
 
 function validateDataAccessors(publicDataAccessors) {
   if (!doesDataAccessorsExist(publicDataAccessors)) {
@@ -118,10 +135,23 @@ function validateDataAccessors(publicDataAccessors) {
   }
 }
 
-function areValidDataAccessors(publicDataAccessors) {
-  const keys = ['route', 'trainings'];
+function validateAllDataAccessorsDeclared(publicDataAccessors) {
+  if (!areAllDataAccessorsDeclared(publicDataAccessors)) {
+    throw new Error(
+      `Declare >>>ALL<<< Public Data Accessors!
+      Seems some Data Accessor were missed.
+      You added: ${publicDataAccessors.join(', ')}.
+      Must be added: ${allPublicDataAccessors.join(', ')}.`,
+    );
+  }
+}
 
-  return publicDataAccessors.every(key => keys.includes(key));
+function areAllDataAccessorsDeclared(publicDataAccessors) {
+  return allPublicDataAccessors.every(key => publicDataAccessors.includes(key));
+}
+
+function areValidDataAccessors(publicDataAccessors) {
+  return publicDataAccessors.every(key => allPublicDataAccessors.includes(key));
 }
 
 function doesDataAccessorsExist(publicDataAccessors) {

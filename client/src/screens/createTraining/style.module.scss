@@ -1,0 +1,15 @@
+.screen {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.topBar {
+  padding: 20px;
+  display: flex;
+}
+
+.button {
+  flex: 0 0 auto;
+}
