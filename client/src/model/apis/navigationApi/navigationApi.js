@@ -23,6 +23,17 @@ export const createNavigationApi = ({ store }) => {
 
   const getData = () => store.getStoreData(['route']);
 
+  const isRouteOpenedRightNow = (route) =>
+    Boolean(matchPath(route, getPathName()));
+
+  const setRoute = (route) => {
+    if (isRouteOpenedRightNow(route)) {
+      return;
+    }
+
+    store.route = route;
+  };
+
   return {
     routes,
     storeRoutes,
@@ -32,22 +43,22 @@ export const createNavigationApi = ({ store }) => {
       }
     },
     goBack: () => {
-      store.route = -1;
+      setRoute(-1);
     },
     toHome: () => {
-      store.route = storeRoutes.home;
+      setRoute(storeRoutes.home);
     },
     toTrainings: () => {
-      store.route = storeRoutes.trainings;
+      setRoute(storeRoutes.trainings);
     },
     toCreateTraining: () => {
-      store.route = storeRoutes.createTraining;
+      setRoute(storeRoutes.createTraining);
     },
     isHomeUrl: () => {
-      return matchPath(routes.home, getPathName());
+      return isRouteOpenedRightNow(routes.home);
     },
     isTrainingsUrl: () => {
-      return matchPath(routes.trainings, getPathName());
+      return isRouteOpenedRightNow(routes.trainings);
     },
   };
 };
