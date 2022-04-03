@@ -9,7 +9,14 @@ import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
 import style from './style.module.scss';
 
 function PureCreateTraining(props) {
-  const { data, onChangeName, onNoData, onDelete, onSave } = props;
+  const {
+    data,
+    onChangeName,
+    onNoData,
+    onAddExercise,
+    onDelete,
+    onSave,
+  } = props;
 
   React.useEffect(() => {
     if (!data) {
@@ -57,8 +64,9 @@ function PureCreateTraining(props) {
             skin="primary"
             font="nunito"
             className={style.button}
+            onClick={onAddExercise}
           >
-              Add exersise
+            Add exersise
           </Button>
         )}
       </div>

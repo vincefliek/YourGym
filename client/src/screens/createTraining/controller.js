@@ -14,7 +14,9 @@ export const controller = (serviceLocator) => {
         name,
       });
     },
-    onAddExercise: () => {},
+    onAddExercise: () => {
+      window.alert('You will be able to preview very soon :)');
+    },
     onDelete: () => {
       trainingsApi.deleteNew();
       navigationApi.toTrainings();
