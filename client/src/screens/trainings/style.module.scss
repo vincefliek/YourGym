@@ -4,6 +4,11 @@
   height: 100%;
   display: flex;
   justify-content: center;
+}
+
+.screenAddNew {
+  @extend .screen;
+
   align-items: center;
 }
 
@@ -38,5 +43,5 @@
 }
 
 .navbarContainer.navbarContainer {
-  justify-content: right;
+  justify-content: flex-end;
 }

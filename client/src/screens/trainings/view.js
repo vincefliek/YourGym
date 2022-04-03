@@ -77,7 +77,7 @@ class PureTrainings extends React.Component {
         <Layout
           bottomBar={<Navbar />}
         >
-          <div className={style.screen}>
+          <div className={style.screenAddNew}>
             {this.renderAddFirstTraining()}
           </div>
         </Layout>
