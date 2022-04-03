@@ -1,0 +1,1 @@
+export { createTrainingsApi } from './trainingsApi';

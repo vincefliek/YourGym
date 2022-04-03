@@ -8,7 +8,7 @@ class PureMenu extends React.Component {
   render() {
     return (
       <Layout bottomBar={<Navbar />}>
-        <div>
+        <div style={{ textAlign: 'center' }}>
           Menu
         </div>
       </Layout>

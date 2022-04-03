@@ -5,6 +5,7 @@ import { connect } from '../../utils';
 import { ReactComponent as Burger } from '../../assets/burger.svg';
 import { controller } from './controller';
 import { Button } from '../Button';
+import { NavbarContainer } from '../NavbarContainer';
 
 import style from './style.module.scss';
 
@@ -19,7 +20,7 @@ class PureNavbar extends React.Component {
       isBurgerActive,
     } = this.props;
     return (
-      <div className={style.navbar}>
+      <NavbarContainer>
         <Button
           skin="text"
           font="indieFlower"
@@ -53,7 +54,7 @@ class PureNavbar extends React.Component {
         >
           <Burger />
         </Button>
-      </div>
+      </NavbarContainer>
     );
   }
 }
