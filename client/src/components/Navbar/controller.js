@@ -16,3 +16,5 @@ export const controller = (serviceLocator) => {
     isBurgerActive: () => navigationApi.isMenuUrl(),
   };
 };
+
+controller.storeDataAccessors = [];

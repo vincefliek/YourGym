@@ -44,7 +44,10 @@
       ],
       "quotes": [
         "warn",
-        "single"
+        "single",
+        {
+          "allowTemplateLiterals": true
+        }
       ],
       "max-len": [
         "warn",

@@ -21,11 +21,13 @@ export const createNavigationApi = (store) => {
    */
   const getPathName = () => window.location.hash.slice(1) || routes.home;
 
+  const getData = () => store.getStoreData(['route']);
+
   return {
     routes,
     storeRoutes,
     resetRoute: () => {
-      if (store.getStoreData().route !== undefined) {
+      if (getData().route !== undefined) {
         store.route = undefined;
       }
     },

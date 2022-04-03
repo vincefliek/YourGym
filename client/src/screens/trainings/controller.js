@@ -1,8 +1,12 @@
 export const controller = (serviceLocator) => {
   const { getStoreData } = serviceLocator.getStore();
 
+  const getData = () => getStoreData(controller.storeDataAccessors);
+
   return {
-    getTrainings: () => getStoreData().trainings,
+    getTrainings: () => getData().trainings,
     onAddTraining: () => {},
   };
 };
+
+controller.storeDataAccessors = ['trainings'];
