@@ -5,12 +5,9 @@ export const controller = (serviceLocator) => {
   const getData = () => getStoreData(controller.storeDataAccessors);
 
   return {
-    getRoutes: () => navigationApi.routes,
-    isHome: () => getData().route === navigationApi.storeRoutes.home,
-    isTrainings: () =>
-      getData().route === navigationApi.storeRoutes.trainings,
-    isCreateTraining: () =>
-      getData().route === navigationApi.storeRoutes.createTraining,
+    getRoute: () => getData().route,
+    // TODO add `replace` mechanism
+    isReplace: () => false,
     onNavigateFinish: () => {
       navigationApi.resetRoute();
     },

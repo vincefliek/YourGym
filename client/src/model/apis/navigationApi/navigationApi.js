@@ -1,16 +1,13 @@
-import { matchPath } from 'react-router-dom';
+import { generatePath, matchPath } from 'react-router-dom';
 
 export const createNavigationApi = ({ store }) => {
   const routes = {
     home: '/',
     trainings: '/trainings',
     createTraining: '/trainings/new',
-  };
-
-  const storeRoutes = {
-    home: '/',
-    trainings: '/trainings',
-    createTraining: '/trainings/new',
+    openTraining: '/trainings/:training',
+    editTraining: '/trainings/:training/edit',
+    createExercise: '/trainings/:training/new-exercise',
   };
 
   /**
@@ -26,17 +23,16 @@ export const createNavigationApi = ({ store }) => {
   const isRouteOpenedRightNow = (route) =>
     Boolean(matchPath(route, getPathName()));
 
-  const setRoute = (route) => {
+  const setRoute = (route, params = {}) => {
     if (isRouteOpenedRightNow(route)) {
       return;
     }
 
-    store.route = route;
+    store.route = generatePath(route, params);
   };
 
   return {
     routes,
-    storeRoutes,
     resetRoute: () => {
       if (getData().route !== undefined) {
         store.route = undefined;
@@ -46,13 +42,18 @@ export const createNavigationApi = ({ store }) => {
       setRoute(-1);
     },
     toHome: () => {
-      setRoute(storeRoutes.home);
+      setRoute(routes.home);
     },
     toTrainings: () => {
-      setRoute(storeRoutes.trainings);
+      setRoute(routes.trainings);
     },
     toCreateTraining: () => {
-      setRoute(storeRoutes.createTraining);
+      setRoute(routes.createTraining);
+    },
+    toCreateExercise: (trainingId) => {
+      setRoute(routes.createExercise, {
+        training: trainingId,
+      });
     },
     isHomeUrl: () => {
       return isRouteOpenedRightNow(routes.home);

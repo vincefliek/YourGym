@@ -2,7 +2,13 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import { Store, createAPIs, Validator } from '../../model';
-import { Trainings, Home, NotFound, CreateTraining } from '../../screens';
+import {
+  Trainings,
+  Home,
+  NotFound,
+  CreateTraining,
+  // CreateExercise,
+} from '../../screens';
 import { Navigator } from '../../components';
 import { ServiceLocatorContext } from '../../utils';
 import style from './style.module.scss';
@@ -52,10 +58,19 @@ export class App extends React.Component {
               path={this.apis.navigationApi.routes.createTraining}
               element={<CreateTraining />}
             />
+            <Route
+              path={this.apis.navigationApi.routes.createExercise}
+              element={<CreateExercise />}
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
       </ServiceLocatorContext.Provider>
     );
   }
+}
+
+// TODO add screen `CreateExercise`
+function CreateExercise() {
+  return 'CreateExercise';
 }
