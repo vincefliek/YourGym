@@ -40,7 +40,7 @@ function PureCreateTraining(props) {
         </div>
       }
       bottomBar={
-        <NavbarContainer>
+        <NavbarContainer className={style.navbarContainer}>
           <Button
             skin="icon"
             size="large"

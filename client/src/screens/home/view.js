@@ -8,7 +8,7 @@ class PureHome extends React.Component {
   render() {
     return (
       <Layout bottomBar={<Navbar />}>
-        <div>
+        <div style={{ textAlign: 'center' }}>
           Home
         </div>
       </Layout>

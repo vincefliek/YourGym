@@ -26,38 +26,36 @@ class PureTrainings extends React.Component {
   renderTrainings = () => {
     const { data, onDelete, onOpen } = this.props;
     return (
-      <div>
-        <ul className={style.trainings}>
-          {data.map(training => {
-            return (
-              <li
-                key={training.id}
-                className={style.training}
+      <ul className={style.trainings}>
+        {data.map(training => {
+          return (
+            <li
+              key={training.id}
+              className={style.training}
+            >
+              <Button
+                skin="icon"
+                size="medium"
+                className={style.trainingDelete}
+                onClick={() => onDelete(training.id)}
               >
-                <Button
-                  skin="icon"
-                  size="large"
-                  className={style.trainingDelete}
-                  onClick={() => onDelete(training.id)}
-                >
-                  <DeleteIcon />
-                </Button>
-                <div onClick={onOpen}>
+                <DeleteIcon />
+              </Button>
+              <div className={style.trainingBox} onClick={onOpen}>
 
-                  {training.name}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+                {training.name}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
     );
   };
 
   renderTopBar = () => {
     const { onAdd } = this.props;
     return (
-      <NavbarContainer>
+      <NavbarContainer className={style.navbarContainer}>
         <Button
           skin="icon"
           size="large"
