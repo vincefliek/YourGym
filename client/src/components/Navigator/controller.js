@@ -6,12 +6,10 @@ export const controller = (serviceLocator) => {
 
   return {
     getRoutes: () => navigationApi.routes,
-    isHome: () => 
-      getData().route === navigationApi.storeRoutes.home,
+    isHome: () => getData().route === navigationApi.storeRoutes.home,
     isTrainings: () =>
       getData().route === navigationApi.storeRoutes.trainings,
-    isMenu: () => 
-      getData().route === navigationApi.storeRoutes.menu,
+    isMenu: () => getData().route === navigationApi.storeRoutes.menu,
     onNavigateFinish: () => {
       navigationApi.resetRoute();
     },

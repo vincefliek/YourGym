@@ -4,3 +4,5 @@ export const controller = (serviceLocator, props) => {
   return {
   };
 };
+
+controller.storeDataAccessors = [];

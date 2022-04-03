@@ -6,7 +6,6 @@ import { controller } from './controller';
 
 class PureMenu extends React.Component {
   render() {
-    const { onClick } = this.props;
     return (
       <Layout bottomBar={<Navbar />}>
         <div>
