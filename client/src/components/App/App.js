@@ -5,6 +5,7 @@ import { Store, createAPIs, Validator } from '../../model';
 import {
   Trainings,
   Home,
+  Menu,
   NotFound,
   CreateTraining,
   // CreateExercise,
@@ -53,6 +54,10 @@ export class App extends React.Component {
             <Route
               path={this.apis.navigationApi.routes.trainings}
               element={<Trainings />}
+            />
+            <Route
+              path={this.apis.navigationApi.routes.menu}
+              element={<Menu />}
             />
             <Route
               path={this.apis.navigationApi.routes.createTraining}

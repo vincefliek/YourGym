@@ -4,6 +4,7 @@ export const createNavigationApi = ({ store }) => {
   const routes = {
     home: '/',
     trainings: '/trainings',
+    menu: '/menu',
     createTraining: '/trainings/new',
     openTraining: '/trainings/:training',
     editTraining: '/trainings/:training/edit',
@@ -47,6 +48,9 @@ export const createNavigationApi = ({ store }) => {
     toTrainings: () => {
       setRoute(routes.trainings);
     },
+    toMenu: () => {
+      setRoute(routes.menu);
+    },
     toCreateTraining: () => {
       setRoute(routes.createTraining);
     },
@@ -60,6 +64,9 @@ export const createNavigationApi = ({ store }) => {
     },
     isTrainingsUrl: () => {
       return isRouteOpenedRightNow(routes.trainings);
+    },
+    isMenuUrl: () => {
+      return isRouteOpenedRightNow(routes.menu);
     },
   };
 };

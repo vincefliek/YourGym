@@ -8,8 +8,12 @@ export const controller = (serviceLocator) => {
     onTrainingsClick: () => {
       navigationApi.toTrainings();
     },
+    onBurgerClick: () => {
+      navigationApi.toMenu();
+    },
     isHomeActive: () => navigationApi.isHomeUrl(),
     isTrainingsActive: () => navigationApi.isTrainingsUrl(),
+    isBurgerActive: () => navigationApi.isMenuUrl(),
   };
 };
 
