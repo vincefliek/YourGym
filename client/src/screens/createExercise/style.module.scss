@@ -1,0 +1,47 @@
+@use "../../components/common/_colors";
+
+.screen {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbarContainer.navbarContainer {
+  justify-content: space-between;
+}
+
+.topBar {
+  padding: 20px;
+  display: flex;
+}
+
+.button {
+  flex: 0 0 auto;
+}
+
+.sets {
+  width: 100%;
+  padding: 0 20px 0 8px;
+  margin: 0;
+}
+
+.set {
+  display: flex;
+  align-items: center;
+
+  & + & {
+    margin-top: 20px;
+  }
+}
+
+.setContainer {
+  flex: 1 1 auto;
+  padding: 10px;
+  border: 1px solid colors.$regular;
+  border-radius: 4px;
+}
+
+.setDelete {
+  flex: 0 0 auto;
+}

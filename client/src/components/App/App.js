@@ -8,7 +8,7 @@ import {
   Menu,
   NotFound,
   CreateTraining,
-  // CreateExercise,
+  CreateExercise,
 } from '../../screens';
 import { Navigator } from '../../components';
 import { ServiceLocatorContext } from '../../utils';
@@ -73,9 +73,4 @@ export class App extends React.Component {
       </ServiceLocatorContext.Provider>
     );
   }
-}
-
-// TODO add screen `CreateExercise`
-function CreateExercise() {
-  return 'CreateExercise';
 }

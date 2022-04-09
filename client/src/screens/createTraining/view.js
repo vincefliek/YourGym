@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Button, Input, Layout, NavbarContainer } from '../../components';
-import { connect } from '../../utils';
+import { connect, requireData } from '../../utils';
 import { controller } from './controller';
 import { ReactComponent as DoneIcon } from '../../assets/done.svg';
 import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
@@ -12,21 +12,10 @@ function PureCreateTraining(props) {
   const {
     data,
     onChangeName,
-    onNoData,
     onAddExercise,
     onDelete,
     onSave,
   } = props;
-
-  React.useEffect(() => {
-    if (!data) {
-      onNoData();
-    }
-  }, [data, onNoData]);
-
-  if (!data) {
-    return null;
-  }
 
   return (
     <Layout
@@ -83,4 +72,11 @@ export const CreateTraining = connect({
   onAddExercise: ctrl.onAddExercise,
   onDelete: ctrl.onDelete,
   onSave: ctrl.onSave,
-}))(PureCreateTraining);
+}))(
+  requireData(props => ({
+    isData: Boolean(props.data),
+    onNoData: props.onNoData,
+  }))(
+    PureCreateTraining,
+  ),
+);

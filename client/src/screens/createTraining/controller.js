@@ -10,20 +10,21 @@ export const controller = (serviceLocator) => {
       navigationApi.toTrainings();
     },
     onChangeName: (name) => {
-      trainingsApi.updateNew({
+      trainingsApi.update.newTraining({
         name,
       });
     },
     onAddExercise: () => {
       const trainingId = getData().newTraining.id;
+      trainingsApi.create.newExercise();
       navigationApi.toCreateExercise(trainingId);
     },
     onDelete: () => {
-      trainingsApi.deleteNew();
+      trainingsApi.delete.newTraining();
       navigationApi.toTrainings();
     },
     onSave: () => {
-      trainingsApi.saveNew();
+      trainingsApi.save.newTraining();
       navigationApi.toTrainings();
     },
   };

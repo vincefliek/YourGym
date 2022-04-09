@@ -68,5 +68,9 @@ export const createNavigationApi = ({ store }) => {
     isMenuUrl: () => {
       return isRouteOpenedRightNow(routes.menu);
     },
+    getPathParams: (route) => {
+      const match = matchPath(route, getPathName());
+      return match?.params;
+    },
   };
 };

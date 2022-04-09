@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ServiceLocatorContext } from './context';
+import { ServiceLocatorContext } from '../context';
 
 export const connect = (params, mapToProps) => {
   if (typeof params !== 'object') {
