@@ -20,6 +20,9 @@
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies": {
+    "husky": "^7.0.4"
+  },
   "scripts": {
     "start": "git add .husky/pre-commit && react-scripts start",
     "build": "react-scripts build",
@@ -95,8 +98,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "husky": "^7.0.4"
   }
 }

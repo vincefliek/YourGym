@@ -22,14 +22,14 @@
   margin-top: 20px;
 }
 
-.exercises {
+.sets {
   box-sizing: border-box;
   width: 100%;
   padding: 0 20px 0 8px;
   margin: 0;
 }
 
-.exercise {
+.set {
   display: flex;
   align-items: center;
 
@@ -38,13 +38,13 @@
   }
 }
 
-.exerciseBox {
+.setContainer {
   flex: 1 1 auto;
   padding: 10px;
   border: 1px solid colors.$regular;
   border-radius: 4px;
 }
 
-.exerciseDelete {
+.setDelete {
   flex: 0 0 auto;
 }

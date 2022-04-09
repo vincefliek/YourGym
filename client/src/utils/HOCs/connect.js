@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ServiceLocatorContext } from './context';
+import { AppContext } from '../context';
 
 export const connect = (params, mapToProps) => {
   if (typeof params !== 'object') {
@@ -21,7 +21,7 @@ export const connect = (params, mapToProps) => {
 
   return Wrapped => {
     class ConnectedView extends React.Component {
-      static contextType = ServiceLocatorContext;
+      static contextType = AppContext;
 
       constructor(props, context) {
         super(props);

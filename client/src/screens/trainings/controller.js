@@ -8,7 +8,7 @@ export const controller = (serviceLocator) => {
   return {
     getTrainings: () => getData().trainings,
     onAddTraining: () => {
-      trainingsApi.createNew();
+      trainingsApi.create.newTraining();
       navigationApi.toCreateTraining();
     },
     onDeleteTraining: (id) => {
@@ -23,7 +23,7 @@ export const controller = (serviceLocator) => {
       );
 
       if (result) {
-        trainingsApi.delete(id);
+        trainingsApi.delete.training(id);
       }
     },
     onOpenTraining: () => {

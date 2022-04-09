@@ -6,11 +6,13 @@ export class Store {
       },
       trainings: [],
       newTraining: null,
+      newExercise: null,
     };
     this.subscribers = {
       route: [],
       trainings: [],
       newTraining: [],
+      newExercise: [],
     };
 
     const publicDataAccessors = Object.keys(this.subscribers);
@@ -76,6 +78,7 @@ export class Store {
       route: this.state.nav.route,
       trainings: this.state.trainings,
       newTraining: this.state.newTraining,
+      newExercise: this.state.newExercise,
     };
 
     const dataAccessors = Object.keys(publicDataAccessorsToData);
@@ -116,9 +119,22 @@ export class Store {
 
     this._updateStoreData(fn, ['newTraining']);
   }
+
+  set newExercise(data) {
+    const fn = () => ({
+      newExercise: data,
+    });
+
+    this._updateStoreData(fn, ['newExercise']);
+  }
 }
 
-const allPublicDataAccessors = ['route', 'trainings', 'newTraining'];
+const allPublicDataAccessors = [
+  'route',
+  'trainings',
+  'newTraining',
+  'newExercise',
+];
 
 function validateDataAccessors(publicDataAccessors) {
   if (!doesDataAccessorsExist(publicDataAccessors)) {
