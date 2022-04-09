@@ -1,5 +1,7 @@
 import { generatePath, matchPath } from 'react-router-dom';
 
+import { waitForCondition } from '../../../utils';
+
 export const createNavigationApi = ({ store }) => {
   const routes = {
     home: '/',
@@ -24,12 +26,14 @@ export const createNavigationApi = ({ store }) => {
   const isRouteOpenedRightNow = (route) =>
     Boolean(matchPath(route, getPathName()));
 
-  const setRoute = (route, params = {}) => {
+  const setRoute = async (route, params = {}) => {
     if (isRouteOpenedRightNow(route)) {
       return;
     }
 
     store.route = generatePath(route, params);
+
+    return waitForCondition(async () => isRouteOpenedRightNow(route));
   };
 
   return {
@@ -40,22 +44,22 @@ export const createNavigationApi = ({ store }) => {
       }
     },
     goBack: () => {
-      setRoute(-1);
+      return setRoute(-1);
     },
     toHome: () => {
-      setRoute(routes.home);
+      return setRoute(routes.home);
     },
     toTrainings: () => {
-      setRoute(routes.trainings);
+      return setRoute(routes.trainings);
     },
     toMenu: () => {
-      setRoute(routes.menu);
+      return setRoute(routes.menu);
     },
     toCreateTraining: () => {
-      setRoute(routes.createTraining);
+      return setRoute(routes.createTraining);
     },
     toCreateExercise: (trainingId) => {
-      setRoute(routes.createExercise, {
+      return setRoute(routes.createExercise, {
         training: trainingId,
       });
     },
@@ -70,7 +74,7 @@ export const createNavigationApi = ({ store }) => {
     },
     getPathParams: (route) => {
       const match = matchPath(route, getPathName());
-      return match?.params;
+      return match?.params ?? {};
     },
   };
 };

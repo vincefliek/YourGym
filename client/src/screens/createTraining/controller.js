@@ -16,16 +16,17 @@ export const controller = (serviceLocator) => {
     },
     onAddExercise: () => {
       const trainingId = getData().newTraining.id;
+
       trainingsApi.create.newExercise();
       navigationApi.toCreateExercise(trainingId);
     },
-    onDelete: () => {
+    onDelete: async () => {
+      await navigationApi.toTrainings();
       trainingsApi.delete.newTraining();
-      navigationApi.toTrainings();
     },
-    onSave: () => {
+    onSave: async () => {
+      await navigationApi.toTrainings();
       trainingsApi.save.newTraining();
-      navigationApi.toTrainings();
     },
   };
 };

@@ -7,7 +7,6 @@ export const controller = (serviceLocator) => {
   return {
     getData: () => getData().newExercise,
     onNoData: () => {
-      // TODO fix - this is invoked after `trainingsApi.delete.newExercise()`
       navigationApi.toTrainings();
     },
     onChangeName: (name) => {
@@ -23,16 +22,16 @@ export const controller = (serviceLocator) => {
       // const trainingId = getData().newTraining.id;
       // navigationApi.toCreateExercise(trainingId);
     },
-    onDelete: () => {
-      navigationApi.toCreateTraining();
+    onDelete: async () => {
+      await navigationApi.toCreateTraining();
       trainingsApi.delete.newExercise();
     },
-    onSave: () => {
+    onSave: async () => {
       const trainingId = navigationApi.getPathParams(
         navigationApi.routes.createExercise,
       ).training;
 
-      navigationApi.toCreateTraining();
+      await navigationApi.toCreateTraining();
       trainingsApi.save.newExercise(trainingId);
     },
   };
