@@ -28,6 +28,12 @@ export const controller = (serviceLocator) => {
       await navigationApi.toTrainings();
       trainingsApi.save.newTraining();
     },
+    onDeleteExercise: (exerciseId) => {
+      window.alert('You will be able to preview very soon :)');
+    },
+    onOpenExercise: (exerciseId) => {
+      window.alert('You will be able to preview very soon :)');
+    },
   };
 };
 

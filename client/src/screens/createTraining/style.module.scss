@@ -1,6 +1,9 @@
+@use "../../components/common/_colors";
+
 .screen {
   height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -15,5 +18,33 @@
 }
 
 .button {
+  flex: 0 0 auto;
+  margin-top: 20px;
+}
+
+.exercises {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 20px 0 8px;
+  margin: 0;
+}
+
+.exercise {
+  display: flex;
+  align-items: center;
+
+  & + & {
+    margin-top: 20px;
+  }
+}
+
+.exerciseBox {
+  flex: 1 1 auto;
+  padding: 10px;
+  border: 1px solid colors.$regular;
+  border-radius: 4px;
+}
+
+.exerciseDelete {
   flex: 0 0 auto;
 }
