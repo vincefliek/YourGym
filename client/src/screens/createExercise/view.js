@@ -83,6 +83,7 @@ class PureCreateExercise extends React.Component {
                   onBlur={value => onChangeRepetitions(set.id, value)}
                 />
               </div>
+              <div>X</div>
               <div className={style.setWeight}>
                 <Input
                   type="number"
