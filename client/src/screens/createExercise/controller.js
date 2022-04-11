@@ -3,6 +3,10 @@ export const controller = (serviceLocator) => {
   const { trainingsApi, navigationApi } = serviceLocator.getAPIs();
 
   const getData = () => getStoreData(controller.storeDataAccessors);
+  const getParams = () => navigationApi.getPathParams(
+    navigationApi.routes.createExercise,
+  );
+  const toNumber = (value) => Number.parseInt(value, 10);
 
   return {
     getData: () => getData().newExercise,
@@ -10,25 +14,55 @@ export const controller = (serviceLocator) => {
       navigationApi.toTrainings();
     },
     onChangeName: (name) => {
-
+      trainingsApi.update.newExercise({
+        name,
+      });
     },
-    onChangeWeight: (value) => {
+    onChangeRepetitions: (setId, value) => {
+      const { sets } = getData().newExercise;
 
+      trainingsApi.update.newExercise({
+        sets: sets.map(set => {
+          if (set.id === setId) {
+            return {
+              ...set,
+              repetitions: toNumber(value),
+            };
+          }
+          return set;
+        }),
+      });
     },
-    onChangeRepetitions: (value) => {
+    onChangeWeight: (setId, value) => {
+      const { sets } = getData().newExercise;
 
+      trainingsApi.update.newExercise({
+        sets: sets.map(set => {
+          if (set.id === setId) {
+            return {
+              ...set,
+              weight: toNumber(value),
+            };
+          }
+          return set;
+        }),
+      });
     },
     onAddSet: () => {
-      window.alert('You will be able to preview very soon :)');
+      const trainingId = getParams().training;
+      const exerciseId = getData().newExercise.id;
+
+      trainingsApi.create.set(trainingId, exerciseId);
+    },
+    onDeleteSet: (setId) => {
+      window.alert('This will appear very soon :)');
     },
     onDelete: async () => {
       await navigationApi.toCreateTraining();
       trainingsApi.delete.newExercise();
     },
     onSave: async () => {
-      const trainingId = navigationApi.getPathParams(
-        navigationApi.routes.createExercise,
-      ).training;
+      const trainingId = getParams().training;
 
       await navigationApi.toCreateTraining();
       trainingsApi.save.newExercise(trainingId);

@@ -71,6 +71,39 @@ export const createTrainingsApi = ({ store, validator }) => {
     });
   };
 
+  const addSet = (trainingId, exerciseId, data) => {
+    const newExercise = getData().newExercise;
+
+    const _addSet = (exercises) => exercises.map(ex => {
+      if (ex.id === exerciseId) {
+        return {
+          ...ex,
+          sets: ex.sets.concat(data),
+        };
+      }
+
+      return ex;
+    });
+
+    if (newExercise.id === exerciseId) {
+      _update.newExercise({
+        sets: newExercise.sets.concat(data),
+      });
+    } else {
+      const trainings = getData().trainings.map(tr => {
+        if (tr.id === trainingId) {
+          return {
+            ...tr,
+            exercises: _addSet(tr.exercises),
+          };
+        }
+        return tr;
+      });
+
+      store.trainings = trainings;
+    }
+  };
+
   const deleteTraining = (id) => {
     store.trainings = getData().trainings.filter(it => it.id !== id);
   };
@@ -98,6 +131,16 @@ export const createTrainingsApi = ({ store, validator }) => {
 
       store.newExercise = data;
     },
+    set: (trainingId, exerciseId) => {
+      const data = {
+        id: uuidv4(),
+        repetitions: 8,
+        weight: 12,
+      };
+
+      validate(data, setSchema);
+      addSet(trainingId, exerciseId, data);
+    },
   };
 
   const _update = {
@@ -110,6 +153,16 @@ export const createTrainingsApi = ({ store, validator }) => {
       validate(data, trainingSchema);
 
       store.newTraining = data;
+    },
+    newExercise: (input) => {
+      const data = {
+        ...getData().newExercise,
+        ...input,
+      };
+
+      validate(data, exerciseSchema);
+
+      store.newExercise = data;
     },
   };
 

@@ -29,8 +29,11 @@ export const Input = ({ value, onChange, onBlur, className, ...props }) => {
 };
 
 Input.propTypes = {
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
   onChange: PropTypes.func,
   onBlur: PropTypes.func,
-  className: PropTypes.func,
+  className: PropTypes.string,
 };

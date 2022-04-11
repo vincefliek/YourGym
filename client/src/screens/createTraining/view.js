@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 
 import { Button, Input, Layout, NavbarContainer } from '../../components';
 import { connect, requireData } from '../../utils';
@@ -82,7 +83,9 @@ class PureCreateTraining extends React.Component {
         topBar={this.renderTopBar()}
         bottomBar={this.renderBottomBar()}
       >
-        <div className={style.screen}>
+        <div className={classnames(style.screen, {
+          [style.screenNoData]: !areExercises,
+        })}>
           {areExercises && this.renderExercises()}
           <Button
             skin="primary"

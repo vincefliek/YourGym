@@ -1,6 +1,7 @@
 @use "../common/_colors";
 
 .input {
-  color: colors.$regular;
+  box-sizing: border-box;
   width: 100%;
+  color: colors.$regular;
 }
