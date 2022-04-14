@@ -25,29 +25,50 @@
   margin-top: 20px;
 }
 
-.exercises {
+.sets {
   box-sizing: border-box;
   width: 100%;
   padding: 0 20px 0 8px;
   margin: 0;
 }
 
-.exercise {
+.set {
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  padding: 0 10px;
 
   & + & {
     margin-top: 20px;
   }
 }
 
-.exerciseBox {
-  flex: 1 1 auto;
-  padding: 10px;
-  border: 1px solid colors.$regular;
-  border-radius: 4px;
+.setDelete {
+  flex: 0 0 auto;
 }
 
-.exerciseDelete {
+.setName {
+  flex: 0 0 auto;
+}
+
+.setRepetitions {
+  flex: 0 0 auto;
+}
+
+.setWeight {
+  flex: 0 0 auto;
+}
+
+.setRepetitions,
+.setWeight {
+  input {
+    width: 50px;
+    height: 40px;
+    font-size: 20px;
+    text-align: center;
+  }
+}
+
+.weightUnit {
   flex: 0 0 auto;
 }

@@ -8,10 +8,10 @@ import {
   Menu,
   NotFound,
   CreateTraining,
-  // CreateExercise,
+  CreateExercise,
 } from '../../screens';
 import { Navigator } from '../../components';
-import { ServiceLocatorContext } from '../../utils';
+import { AppContext } from '../../utils';
 import style from './style.module.scss';
 
 export class App extends React.Component {
@@ -25,9 +25,12 @@ export class App extends React.Component {
       store,
       validator,
     });
-    this.SLContext = {
+    this.appContext = {
       serviceLocator: {
-        getStore: () => store,
+        getStore: () => ({
+          getStoreData: store.getStoreData,
+          subscribe: store.subscribe,
+        }),
         getAPIs: () => this.apis,
       },
     };
@@ -43,7 +46,7 @@ export class App extends React.Component {
 
   render() {
     return (
-      <ServiceLocatorContext.Provider value={this.SLContext}>
+      <AppContext.Provider value={this.appContext}>
         <div className={style.app}>
           <Navigator />
           <Routes>
@@ -70,12 +73,7 @@ export class App extends React.Component {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
-      </ServiceLocatorContext.Provider>
+      </AppContext.Provider>
     );
   }
-}
-
-// TODO add screen `CreateExercise`
-function CreateExercise() {
-  return 'CreateExercise';
 }
