@@ -5,9 +5,25 @@
 }
 
 .activeBurger svg{
-  fill: colors.$primary;
+  fill: colors.$primary;  
 }
 
 .burger {
-  fill: colors.$regular;
+  fill: colors.$regular; 
+  overflow: hidden;
+  line-height: 30px; 
+}
+
+.animationBurger svg{
+  animation: .3s linear .1s moveBurger;
+  animation-fill-mode: forwards;
+}
+
+@keyframes moveBurger {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-41px);
+  }
 }
