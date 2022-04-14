@@ -3,6 +3,7 @@ import classnames from 'classnames';
 
 import { connect } from '../../utils';
 import { ReactComponent as Burger } from '../../assets/burger.svg';
+import { ReactComponent as Dumbbell } from '../../assets/dumbbell.svg';
 import { controller } from './controller';
 import { Button } from '../Button';
 import { NavbarContainer } from '../NavbarContainer';
@@ -48,10 +49,12 @@ class PureNavbar extends React.Component {
           size="large"
           className={classnames(style.burger, {
             [style.activeBurger]: isBurgerActive,
+            [style.animationBurger]: isBurgerActive,
           })}
           onClick={onBurgerClick}
         >
           <Burger />
+          <Dumbbell />
         </Button>
       </NavbarContainer>
     );
