@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-import { Store, createAPIs, Validator } from '../../model';
+import { initApp } from '../../model';
 import {
   Trainings,
   Home,
@@ -19,30 +19,10 @@ export class App extends React.Component {
   constructor(props) {
     super(props);
 
-    const store = new Store();
-    const validator = new Validator();
+    const { apis, appContext } = initApp();
 
-    this.apis = createAPIs({
-      store,
-      validator,
-    });
-    this.appContext = {
-      serviceLocator: {
-        getStore: () => ({
-          getStoreData: store.getStoreData,
-          subscribe: store.subscribe,
-        }),
-        getAPIs: () => this.apis,
-      },
-    };
-
-    if (process.env.NODE_ENV === 'development') {
-      window._debugTools_ = {
-        store,
-        validator,
-        apis: this.apis,
-      };
-    }
+    this.apis = apis;
+    this.appContext = appContext;
   }
 
   render() {
