@@ -55,7 +55,7 @@ export const controller = (serviceLocator) => {
       trainingsApi.create.set(trainingId, exerciseId);
     },
     onDeleteSet: (setId) => {
-      window.alert('This will appear very soon :)');
+      trainingsApi.delete.set(setId);
     },
     onDelete: async () => {
       await navigationApi.toCreateTraining();

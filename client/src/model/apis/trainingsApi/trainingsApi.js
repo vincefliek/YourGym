@@ -103,6 +103,14 @@ export const createTrainingsApi = ({ store, validator }) => {
       store.trainings = trainings;
     }
   };
+  
+  const deleteSet = (setId) => {
+    const data = getData().newExercise;
+    store.newExercise = {
+      ...data,
+      sets: data.sets.filter(it => it.id !== setId),
+    }
+  };
 
   const deleteTraining = (id) => {
     store.trainings = getData().trainings.filter(it => it.id !== id);
@@ -192,6 +200,9 @@ export const createTrainingsApi = ({ store, validator }) => {
     },
     newExercise: () => {
       deleteNewExercise();
+    },
+    set: (setId) => {
+      deleteSet(setId);
     },
   };
 
