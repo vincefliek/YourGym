@@ -9,6 +9,7 @@ import {
   NotFound,
   CreateTraining,
   CreateExercise,
+  Training,
 } from '../../screens';
 import { Navigator } from '../../components';
 import { AppContext } from '../../utils';
@@ -69,6 +70,10 @@ export class App extends React.Component {
             <Route
               path={this.apis.navigationApi.routes.createExercise}
               element={<CreateExercise />}
+            />
+            <Route
+              path={this.apis.navigationApi.routes.openTraining}
+              element={<Training />}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>
