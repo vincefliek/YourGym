@@ -26,8 +26,8 @@ export const controller = (serviceLocator) => {
         trainingsApi.delete.training(id);
       }
     },
-    onOpenTraining: () => {
-      window.alert('You will be able to preview very soon :)');
+    onOpenTraining: (trainingId) => {
+      navigationApi.toTraining(trainingId);
     },
   };
 };
