@@ -63,6 +63,11 @@ export const createNavigationApi = ({ store }) => {
         training: trainingId,
       });
     },
+    toTraining: (trainingId) => {
+      return setRoute(routes.openTraining, {
+        training: trainingId,
+      });
+    },
     isHomeUrl: () => {
       return isRouteOpenedRightNow(routes.home);
     },
