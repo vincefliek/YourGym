@@ -29,7 +29,7 @@ export const controller = (serviceLocator) => {
       trainingsApi.save.newTraining();
     },
     onDeleteExercise: (exerciseId) => {
-      trainingsApi.delete.newExercise(exerciseId);
+      trainingsApi.delete.exercise(exerciseId);
     },
     onOpenExercise: (exerciseId) => {
       window.alert('You will be able to preview very soon :)');
