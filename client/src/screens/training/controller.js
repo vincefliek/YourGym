@@ -14,16 +14,26 @@ export const controller = (serviceLocator) => {
       const training = trainings.find(training => training.id === params.training);
       return training;
     },
+    getSets: (exercise) => {
+      const ex = exercise;
+      let sets = '';
+      console.log('bla: ', ex);
+      ex.sets.map((set, index) => {
+        sets += `${set.repetitions}x${set.weight}kg`;
+        if (index < (ex.sets.length - 1)) sets += ' - ';
+      });
+      return sets;
+    },
     onNoData: () => {
       navigationApi.toTrainings();
     },
     onStart: () => {
       window.alert('You will be able to preview very soon :)');
     },
-    onBack:  () => {
+    onBack: () => {
       navigationApi.toTrainings();
     },
-    onEdit: async () => {
+    onEdit: () => {
       window.alert('You will be able to preview very soon :)');
     },
     onOpenExercise: (exerciseId) => {

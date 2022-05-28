@@ -41,8 +41,7 @@ class PureTraining extends React.Component {
   };
 
   renderExercises = () => {
-    const { data, onOpenExercise } = this.props;
-    let sets = '';
+    const { data, onOpenExercise, getSets } = this.props;
     return (
       <ul className={style.exercises}>
         {data.exercises.map(exercise => {
@@ -53,16 +52,11 @@ class PureTraining extends React.Component {
             >
               <div 
                 className={style.exerciseBox}
-                onClick={onOpenExercise}  
+                onClick={() => onOpenExercise(exercise.id)}  
               >
                 {exercise.name}
                 <br/>
-                {exercise.sets.map((set, index) => {
-                  sets += `${set.repetitions}x${set.weight}kg`;
-                  if (index < (exercise.sets.length - 1)) sets += ' - ';
-                })}
-                {sets}
-                {sets = ''}
+                {getSets(exercise)}
               </div>
             </li>
           );
@@ -103,6 +97,7 @@ export const Training = connect({
   controller,
 }, ctrl => ({
   data: ctrl.getTraining(),
+  getSets: ctrl.getSets,
   onNoData: ctrl.onNoData,
   onStart: ctrl.onStart,
   onBack: ctrl.onBack,

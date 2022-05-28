@@ -6,13 +6,13 @@
   overflow: auto;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 10px;
 }
 
 .buttonScreen {
   height: 12%;
   display: flex;
   justify-content: center;
+  margin-top: 10px;
 }
 
 .navbarContainer.navbarContainer {
@@ -52,14 +52,8 @@
   padding: 10px;
   border: 1.5px dashed colors.$regular;
   border-radius: 4px;
+  
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.sets {
-  width: 80%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis; 
 }
