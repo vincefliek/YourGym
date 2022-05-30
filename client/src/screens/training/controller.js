@@ -12,17 +12,19 @@ export const controller = (serviceLocator) => {
       const params = getParams();
       const trainings = getData().trainings;
       const training = trainings.find(training => training.id === params.training);
+      if (typeof(training) !== 'undefined') {
+        training.exercises.map(exercise => {
+          let sets = '';
+
+          exercise.sets.forEach((set, index) => {
+            sets += `${set.repetitions}x${set.weight}kg`;
+            if (index < (exercise.sets.length - 1)) sets += ' - ';
+          });
+
+          exercise.setsPreview = sets;
+         });
+      }
       return training;
-    },
-    getSets: (exercise) => {
-      const ex = exercise;
-      let sets = '';
-      console.log('bla: ', ex);
-      ex.sets.map((set, index) => {
-        sets += `${set.repetitions}x${set.weight}kg`;
-        if (index < (ex.sets.length - 1)) sets += ' - ';
-      });
-      return sets;
     },
     onNoData: () => {
       navigationApi.toTrainings();

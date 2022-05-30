@@ -41,7 +41,7 @@ class PureTraining extends React.Component {
   };
 
   renderExercises = () => {
-    const { data, onOpenExercise, getSets } = this.props;
+    const { data, onOpenExercise } = this.props;
     return (
       <ul className={style.exercises}>
         {data.exercises.map(exercise => {
@@ -56,7 +56,7 @@ class PureTraining extends React.Component {
               >
                 {exercise.name}
                 <br/>
-                {getSets(exercise)}
+                {exercise.setsPreview}
               </div>
             </li>
           );
@@ -97,7 +97,6 @@ export const Training = connect({
   controller,
 }, ctrl => ({
   data: ctrl.getTraining(),
-  getSets: ctrl.getSets,
   onNoData: ctrl.onNoData,
   onStart: ctrl.onStart,
   onBack: ctrl.onBack,
