@@ -6,22 +6,25 @@ export const controller = (serviceLocator) => {
   const getParams = () => navigationApi.getPathParams(
     navigationApi.routes.openTraining,
   );
+  const createSetsPreview = (sets) => {
+    let strSets = '';
+
+    sets.forEach((set, index) => {
+      strSets += `${set.repetitions}x${set.weight}kg`;
+      if (index < (sets.length - 1)) strSets += ' - ';
+    });
+    
+    return strSets;
+  };
   
   return {
     getTraining: () => {
       const params = getParams();
       const trainings = getData().trainings;
       const training = trainings.find(training => training.id === params.training);
-      if (typeof(training) !== 'undefined') {
+      if (training !== undefined) {
         training.exercises.map(exercise => {
-          let sets = '';
-
-          exercise.sets.forEach((set, index) => {
-            sets += `${set.repetitions}x${set.weight}kg`;
-            if (index < (exercise.sets.length - 1)) sets += ' - ';
-          });
-
-          exercise.setsPreview = sets;
+          exercise.setsPreview = createSetsPreview(exercise.sets);
          });
       }
       return training;
