@@ -7,14 +7,14 @@ export const controller = (serviceLocator) => {
     navigationApi.routes.openTraining,
   );
   const createSetsPreview = (sets) => {
-    let strSets = '';
+    let setsPreview = '';
 
     sets.forEach((set, index) => {
-      strSets += `${set.repetitions}x${set.weight}kg`;
-      if (index < (sets.length - 1)) strSets += ' - ';
+      setsPreview += `${set.repetitions}x${set.weight}kg`;
+      if (index < (sets.length - 1)) setsPreview += ' - ';
     });
     
-    return strSets;
+    return setsPreview;
   };
   
   return {
