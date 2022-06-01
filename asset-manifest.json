@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/YourGym/static/css/main.b14fd9e6.css",
+    "main.js": "/YourGym/static/js/main.19852bb7.js",
+    "static/media/dumbbell.svg": "/YourGym/static/media/dumbbell.4e5599a7a523d08f8194cd37162ea795.svg",
+    "static/media/edit.svg": "/YourGym/static/media/edit.7066aabedc18f7c3c9ec0b4b4c50c32f.svg",
+    "static/media/delete.svg": "/YourGym/static/media/delete.752f51d61f0c9a3806781f4615379a13.svg",
+    "index.html": "/YourGym/index.html",
+    "static/media/done.svg": "/YourGym/static/media/done.2ac2969be339e8878b257d9415ff585e.svg",
+    "static/media/add.svg": "/YourGym/static/media/add.8c2555db99605608a03564db30b9b33d.svg",
+    "static/media/burger.svg": "/YourGym/static/media/burger.b1d5ca9fb4718f26ed5c5e568187a5c2.svg",
+    "static/media/backArrow.svg": "/YourGym/static/media/backArrow.1970d4fb8e37b09088f0259488dd920b.svg",
+    "main.b14fd9e6.css.map": "/YourGym/static/css/main.b14fd9e6.css.map",
+    "main.19852bb7.js.map": "/YourGym/static/js/main.19852bb7.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b14fd9e6.css",
+    "static/js/main.19852bb7.js"
+  ]
+}

@@ -1,1 +1,0 @@
-export { CreateTraining } from './view';
