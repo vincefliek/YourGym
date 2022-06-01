@@ -15,8 +15,7 @@
 }
 
 .animationBurger svg{
-  animation: .3s linear .1s moveBurger;
-  animation-fill-mode: forwards;
+  animation: .3s linear .1s moveBurger forwards;
 }
 
 @keyframes moveBurger {

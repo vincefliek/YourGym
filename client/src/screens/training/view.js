@@ -1,52 +1,47 @@
 import React from 'react';
-import classnames from 'classnames';
 
-import { Button, Input, Layout, NavbarContainer } from '../../components';
+import { Button, Layout, NavbarContainer } from '../../components';
 import { connect, requireData } from '../../utils';
 import { controller } from './controller';
-import { ReactComponent as DoneIcon } from '../../assets/done.svg';
-import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
+import { ReactComponent as EditIcon } from '../../assets/edit.svg';
+import { ReactComponent as BackIcon } from '../../assets/backArrow.svg';
 
 import style from './style.module.scss';
 
-class PureCreateTraining extends React.Component {
+class PureTraining extends React.Component {
   renderTopBar = () => {
-    const { data, onChangeName } = this.props;
-    return (
+    const { data } = this.props;
+    return(
       <div className={style.topBar}>
-        <Input
-          type="text"
-          value={data.name}
-          onBlur={onChangeName}
-        />
+        {data.name}
       </div>
     );
   };
 
   renderBottomBar = () => {
-    const { onDelete, onSave } = this.props;
+    const { onBack, onEdit } = this.props;
     return (
       <NavbarContainer className={style.navbarContainer}>
         <Button
           skin="icon"
           size="large"
-          onClick={onDelete}
+          onClick={onBack}
         >
-          <DeleteIcon />
+          <BackIcon />
         </Button>
         <Button
           skin="icon"
           size="large"
-          onClick={onSave}
+          onClick={onEdit}
         >
-          <DoneIcon />
+          <EditIcon />
         </Button>
       </NavbarContainer>
     );
   };
 
   renderExercises = () => {
-    const { data, onDeleteExercise, onOpenExercise } = this.props;
+    const { data, onOpenExercise } = this.props;
     return (
       <ul className={style.exercises}>
         {data.exercises.map(exercise => {
@@ -55,16 +50,13 @@ class PureCreateTraining extends React.Component {
               key={exercise.id}
               className={style.exercise}
             >
-              <Button
-                skin="icon"
-                size="medium"
-                className={style.exerciseDelete}
-                onClick={() => onDeleteExercise(data.id, exercise.id)}
+              <div 
+                className={style.exerciseBox}
+                onClick={() => onOpenExercise(exercise.id)}  
               >
-                <DeleteIcon />
-              </Button>
-              <div className={style.exerciseBox} onClick={onOpenExercise}>
                 {exercise.name}
+                <br/>
+                {exercise.setsPreview}
               </div>
             </li>
           );
@@ -74,7 +66,7 @@ class PureCreateTraining extends React.Component {
   };
 
   render() {
-    const { data, onAddExercise } = this.props;
+    const { data, onStart } = this.props;
 
     const areExercises = Boolean(data.exercises.length);
 
@@ -83,17 +75,17 @@ class PureCreateTraining extends React.Component {
         topBar={this.renderTopBar()}
         bottomBar={this.renderBottomBar()}
       >
-        <div className={classnames(style.screen, {
-          [style.screenNoData]: !areExercises,
-        })}>
+        <div className={style.screen}>
           {areExercises && this.renderExercises()}
+        </div>
+        <div className={style.buttonScreen}>
           <Button
             skin="primary"
             font="nunito"
             className={style.button}
-            onClick={onAddExercise}
+            onClick={onStart}
           >
-            Add exersise
+            Start
           </Button>
         </div>
       </Layout>
@@ -101,22 +93,20 @@ class PureCreateTraining extends React.Component {
   }
 }
 
-export const CreateTraining = connect({
+export const Training = connect({
   controller,
 }, ctrl => ({
-  data: ctrl.getData(),
+  data: ctrl.getTraining(),
   onNoData: ctrl.onNoData,
-  onChangeName: ctrl.onChangeName,
-  onAddExercise: ctrl.onAddExercise,
-  onDelete: ctrl.onDelete,
-  onSave: ctrl.onSave,
-  onDeleteExercise: ctrl.onDeleteExercise,
+  onStart: ctrl.onStart,
+  onBack: ctrl.onBack,
+  onEdit: ctrl.onEdit,
   onOpenExercise: ctrl.onOpenExercise,
 }))(
   requireData(props => ({
     isData: Boolean(props.data),
     onNoData: props.onNoData,
   }))(
-    PureCreateTraining,
+    PureTraining,
   ),
 );
