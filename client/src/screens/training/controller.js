@@ -25,7 +25,7 @@ export const controller = (serviceLocator) => {
         training.id === params.training);
 
       if (training !== undefined) {
-        training.exercises.map(exercise => ({
+        training.exercises = training.exercises.map(exercise => ({
           ...exercise,
           setsPreview: createSetsPreview(exercise.sets),
         }));
