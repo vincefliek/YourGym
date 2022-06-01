@@ -42,12 +42,27 @@ export const createTrainingsApi = ({ store, validator }) => {
     store.newExercise = null;
   };
   
-  const deleteExercise = (exId) => {
-    const data =  getData().newTraining;
-    store.newTraining = {
-      ...data,
-      exercises: data.exercises.filter(it => it.id !== exId),
+  const deleteExercise = (trainingId, exerciseId) => {
+    const newTraining = getData().newTraining;
+ 
+    if (newTraining.id === trainingId) {
+      store.newTraining = {
+        ...newTraining,
+        exercises: newTraining.exercises.filter(exercise => exercise.id !== exerciseId),
+      }
+      return;
     }
+
+    store.trainings = getData().trainings.map(training => {
+      if (training.id === trainingId) {
+        return {
+          ...training,
+          exercises: training.exercises.filter(exercise => exercise.id !== exerciseId),
+        };
+      }
+
+      return training;
+    });
   };
 
   const addTraining = (training) => {
@@ -209,8 +224,8 @@ export const createTrainingsApi = ({ store, validator }) => {
     newExercise: () => {
       deleteNewExercise();
     },
-    exercise: (exId) => {
-      deleteExercise(exId);
+    exercise: (trainingId, exerciseId) => {
+      deleteExercise(trainingId, exerciseId);
     },
     set: (setId) => {
       deleteSet(setId);

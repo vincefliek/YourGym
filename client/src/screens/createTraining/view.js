@@ -59,7 +59,7 @@ class PureCreateTraining extends React.Component {
                 skin="icon"
                 size="medium"
                 className={style.exerciseDelete}
-                onClick={() => onDeleteExercise(exercise.id)}
+                onClick={() => onDeleteExercise(data.id, exercise.id)}
               >
                 <DeleteIcon />
               </Button>
