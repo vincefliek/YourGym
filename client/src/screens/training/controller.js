@@ -13,20 +13,24 @@ export const controller = (serviceLocator) => {
       setsPreview += `${set.repetitions}x${set.weight}kg`;
       if (index < (sets.length - 1)) setsPreview += ' - ';
     });
-    
+
     return setsPreview;
   };
-  
+
   return {
     getTraining: () => {
       const params = getParams();
       const trainings = getData().trainings;
-      const training = trainings.find(training => training.id === params.training);
+      const training = trainings.find(training =>
+        training.id === params.training);
+
       if (training !== undefined) {
-        training.exercises.map(exercise => {
-          exercise.setsPreview = createSetsPreview(exercise.sets);
-         });
+        training.exercises.map(exercise => ({
+          ...exercise,
+          setsPreview: createSetsPreview(exercise.sets),
+        }));
       }
+
       return training;
     },
     onNoData: () => {
@@ -41,7 +45,7 @@ export const controller = (serviceLocator) => {
     onEdit: () => {
       window.alert('You will be able to preview very soon :)');
     },
-    onOpenExercise: (exerciseId) => {
+    onOpenExercise: () => {
       window.alert('You will be able to preview very soon :)');
     },
   };

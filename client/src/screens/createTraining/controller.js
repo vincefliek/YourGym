@@ -31,7 +31,7 @@ export const controller = (serviceLocator) => {
     onDeleteExercise: (trainingId, exerciseId) => {
       trainingsApi.delete.exercise(trainingId, exerciseId);
     },
-    onOpenExercise: (exerciseId) => {
+    onOpenExercise: () => {
       window.alert('You will be able to preview very soon :)');
     },
   };

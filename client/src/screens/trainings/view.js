@@ -41,8 +41,8 @@ class PureTrainings extends React.Component {
               >
                 <DeleteIcon />
               </Button>
-              <div 
-                className={style.trainingBox} 
+              <div
+                className={style.trainingBox}
                 onClick={ () => onOpen(training.id) }
               >
                 {training.name}

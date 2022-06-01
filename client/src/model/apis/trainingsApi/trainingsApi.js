@@ -41,15 +41,16 @@ export const createTrainingsApi = ({ store, validator }) => {
   const deleteNewExercise = () => {
     store.newExercise = null;
   };
-  
+
   const deleteExercise = (trainingId, exerciseId) => {
     const newTraining = getData().newTraining;
- 
+
     if (newTraining.id === trainingId) {
       store.newTraining = {
         ...newTraining,
-        exercises: newTraining.exercises.filter(exercise => exercise.id !== exerciseId),
-      }
+        exercises: newTraining.exercises.filter(exercise =>
+          exercise.id !== exerciseId),
+      };
       return;
     }
 
@@ -57,7 +58,8 @@ export const createTrainingsApi = ({ store, validator }) => {
       if (training.id === trainingId) {
         return {
           ...training,
-          exercises: training.exercises.filter(exercise => exercise.id !== exerciseId),
+          exercises: training.exercises.filter(exercise =>
+            exercise.id !== exerciseId),
         };
       }
 
@@ -126,13 +128,13 @@ export const createTrainingsApi = ({ store, validator }) => {
       store.trainings = trainings;
     }
   };
-  
+
   const deleteSet = (setId) => {
     const data = getData().newExercise;
     store.newExercise = {
       ...data,
       sets: data.sets.filter(it => it.id !== setId),
-    }
+    };
   };
 
   const deleteTraining = (id) => {
