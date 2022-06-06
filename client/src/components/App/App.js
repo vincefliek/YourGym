@@ -10,6 +10,7 @@ import {
   CreateTraining,
   CreateExercise,
   Training,
+  EditExercise,
 } from '../../screens';
 import { Navigator } from '../../components';
 import { AppContext } from '../../utils';
@@ -50,6 +51,10 @@ export class App extends React.Component {
             <Route
               path={this.apis.navigationApi.routes.createExercise}
               element={<CreateExercise />}
+            />
+            <Route
+              path={this.apis.navigationApi.routes.editExercise}
+              element={<EditExercise />}
             />
             <Route
               path={this.apis.navigationApi.routes.openTraining}
