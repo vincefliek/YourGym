@@ -69,7 +69,7 @@ class PureCreateExercise extends React.Component {
                 skin="icon"
                 size="medium"
                 className={style.setDelete}
-                onClick={() => onDeleteSet(set.id)}
+                onClick={() => onDeleteSet(data.id, set.id)}
               >
                 <DeleteIcon />
               </Button>

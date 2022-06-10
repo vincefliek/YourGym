@@ -11,7 +11,7 @@ export const createNavigationApi = ({ store }) => {
     openTraining: '/trainings/:training',
     editTraining: '/trainings/:training/edit',
     createExercise: '/trainings/:training/new-exercise',
-    editExercise: '/trainings/:training/:exercise/edit-exercise',
+    editExercise: '/trainings/:training/:exercise',
   };
 
   /**

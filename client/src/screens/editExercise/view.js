@@ -22,7 +22,7 @@ class PureEditExercise extends React.Component {
         <Input
           type="text"
           value={data.name}
-          onBlur={onChangeName}
+          onBlur={value => onChangeName(data.id, value)}
         />
       </div>
     );
@@ -69,7 +69,7 @@ class PureEditExercise extends React.Component {
                 skin="icon"
                 size="medium"
                 className={style.setDelete}
-                onClick={() => onDeleteSet(set.id)}
+                onClick={() => onDeleteSet(data.id, set.id)}
               >
                 <DeleteIcon />
               </Button>
@@ -80,7 +80,7 @@ class PureEditExercise extends React.Component {
                 <Input
                   type="number"
                   value={set.repetitions}
-                  onBlur={value => onChangeRepetitions(set.id, value)}
+                  onBlur={value => onChangeRepetitions(data, set.id, value)}
                 />
               </div>
               <div>X</div>
@@ -88,7 +88,7 @@ class PureEditExercise extends React.Component {
                 <Input
                   type="number"
                   value={set.weight}
-                  onBlur={value => onChangeWeight(set.id, value)}
+                  onBlur={value => onChangeWeight(data, set.id, value)}
                 />
               </div>
               <div className={style.weightUnit}>
@@ -114,7 +114,7 @@ class PureEditExercise extends React.Component {
         <div className={classnames(style.screen, {
           [style.screenNoData]: !areSets,
         })}>
-          {this.renderSets()}
+          {areSets && this.renderSets()}
           <Button
             skin="primary"
             font="nunito"
