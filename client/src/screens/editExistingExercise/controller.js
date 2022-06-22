@@ -7,17 +7,6 @@ export const controller = (serviceLocator) => {
     navigationApi.routes.editExistingExercise,
   );
   const toNumber = (value) => Number.parseInt(value, 10);
-  const changeValue = (repetitions, sets, setId, value) => {
-    sets.map(set => {
-      if (set.id === setId) {
-        return {
-          ...set,
-          repetitions: toNumber(value),
-        };
-      }
-      return set;
-    })
-  };
 
   return {
     getExercise: () => { 
@@ -56,32 +45,21 @@ export const controller = (serviceLocator) => {
           if (ex.id === exercise.id) {
             return {
               ...ex,
-              sets: changeValue('repetitions', sets, setId, value),
+              sets: sets.map(set => {
+                if (set.id === setId) {
+                  return {
+                    ...set,
+                    repetitions: toNumber(value),
+                  };
+                }
+                return set;
+              }),
             };
           }
           return ex;
         }),
       });
     },
-
-    /**
-     * 
-     * sets: sets.map(set => {
-     * if (set.id === setId) {
-     *   return {
-     *     ...set,
-     *     weight: toNumber(value),
-     *   };
-     * }
-     * return set; 
-     * 
-     * this code must will moved in separate function (if its not impossible)
-     * 
-     * [trainingsApi] fix addSet 121 - 128
-     *  
-     * 
-     */
-
     onChangeWeight: (exercise, setId, value) => {
       const { exercises } = getData().newTraining;
       const { sets } = exercise;
