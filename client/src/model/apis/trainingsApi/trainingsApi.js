@@ -116,17 +116,10 @@ export const createTrainingsApi = ({ store, validator }) => {
         sets: newExercise.sets.concat(data),
       });
     } else if (newTraining?.id === trainingId) {
-      _update.newTraining({
-        exercises: newTraining.exercises.map(exercise => {
-          if (exercise.id === exerciseId) {
-            return {
-              ...exercise,
-              sets: exercise.sets.concat(data),
-            };
-          }
-          return exercise;
-        }),
-      });
+      store.newTraining = {
+        ...newTraining,
+        exercises: _addSet(newTraining.exercises),
+      };
     } else {
       const trainings = getData().trainings.map(tr => {
         if (tr.id === trainingId) {
@@ -155,7 +148,8 @@ export const createTrainingsApi = ({ store, validator }) => {
       return;
     }
 
-    _update.newTraining({
+    store.newTraining = {
+      ...newTraining,
       exercises: newTraining.exercises.map(exercise => {
         if (exercise.id === exerciseId) {
           return {
@@ -166,7 +160,7 @@ export const createTrainingsApi = ({ store, validator }) => {
         }
         return exercise;
       }),
-    });
+    };
   };
 
   const deleteTraining = (id) => {
