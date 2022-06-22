@@ -10,8 +10,9 @@ export const createNavigationApi = ({ store }) => {
     createTraining: '/trainings/new',
     openTraining: '/trainings/:training',
     editTraining: '/trainings/:training/edit',
-    createExercise: '/trainings/:training/new-exercise',
-    editExercise: '/trainings/:training/:exercise',
+    editNewExercise: '/trainings/:training/editNew',
+    editExistingExercise: '/trainings/:training/:exercise/edit',
+    openExercise: '/trainings/:training/:exercise',
   };
 
   /**
@@ -59,13 +60,13 @@ export const createNavigationApi = ({ store }) => {
     toCreateTraining: () => {
       return setRoute(routes.createTraining);
     },
-    toCreateExercise: (trainingId) => {
-      return setRoute(routes.createExercise, {
+    toEditNewExercise: (trainingId) => {
+      return setRoute(routes.editNewExercise, {
         training: trainingId,
       });
     },
-    toEditExercise: (trainingId, exerciseId) => {
-      return setRoute(routes.editExercise, {
+    toEditExistingExercise: (trainingId, exerciseId) => {
+      return setRoute(routes.editExistingExercise, {
         training: trainingId,
         exercise: exerciseId,
       });

@@ -3,6 +3,6 @@ export { Trainings } from './trainings';
 export { Menu } from './menu';
 export { NotFound } from './notFound';
 export { CreateTraining } from './createTraining';
-export { CreateExercise } from './createExercise';
+export { EditNewExercise } from './editNewExercise';
 export { Training } from './training';
-export { EditExercise } from './editExercise';
+export { EditExistingExercise } from './editExistingExercise';

@@ -1,1 +1,0 @@
-export { EditExercise } from './view';
