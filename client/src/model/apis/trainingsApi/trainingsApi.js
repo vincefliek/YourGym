@@ -1,12 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import {
+  allTrainingsSchema,
   trainingSchema,
   exerciseSchema,
   setSchema,
 } from './schemas';
 
 export const createTrainingsApi = ({ store, validator }) => {
+  validator.addSchema(allTrainingsSchema);
   validator.addSchema(trainingSchema);
   validator.addSchema(exerciseSchema);
   validator.addSchema(setSchema);
@@ -54,7 +56,7 @@ export const createTrainingsApi = ({ store, validator }) => {
       return;
     }
 
-    store.trainings = getData().trainings.map(training => {
+    const trainings = getData().trainings.map(training => {
       if (training.id === trainingId) {
         return {
           ...training,
@@ -65,13 +67,17 @@ export const createTrainingsApi = ({ store, validator }) => {
 
       return training;
     });
+
+    _update.allTrainings(trainings);
   };
 
   const addTraining = (training) => {
-    store.trainings = [
+    const trainings = [
       ...getData().trainings,
       training,
     ];
+
+    _update.allTrainings(trainings);
   };
 
   const addExercise = (trainingId, data) => {
@@ -84,7 +90,7 @@ export const createTrainingsApi = ({ store, validator }) => {
       return;
     }
 
-    store.trainings = getData().trainings.map(tr => {
+    const trainings = getData().trainings.map(tr => {
       if (tr.id === trainingId) {
         return {
           ...tr,
@@ -94,6 +100,8 @@ export const createTrainingsApi = ({ store, validator }) => {
 
       return tr;
     });
+
+    _update.allTrainings(trainings);
   };
 
   const addSet = (trainingId, exerciseId, data) => {
@@ -116,10 +124,9 @@ export const createTrainingsApi = ({ store, validator }) => {
         sets: newExercise.sets.concat(data),
       });
     } else if (newTraining?.id === trainingId) {
-      store.newTraining = {
-        ...newTraining,
+      _update.newTraining({
         exercises: _addSet(newTraining.exercises),
-      };
+      });
     } else {
       const trainings = getData().trainings.map(tr => {
         if (tr.id === trainingId) {
@@ -131,25 +138,23 @@ export const createTrainingsApi = ({ store, validator }) => {
         return tr;
       });
 
-      store.trainings = trainings;
+      _update.allTrainings(trainings);
     }
   };
 
   const deleteSet = (exerciseId, setId) => {
     const newTraining = getData().newTraining;
     const newExercise = getData().newExercise;
-    
+
     if (newExercise?.id === exerciseId) {
-      store.newExercise = {
-        ...newExercise,
+      _update.newExercise({
         sets: newExercise.sets.filter(it => it.id !== setId),
-      };
+      });
 
       return;
     }
 
-    store.newTraining = {
-      ...newTraining,
+    _update.newTraining({
       exercises: newTraining.exercises.map(exercise => {
         if (exercise.id === exerciseId) {
           return {
@@ -160,11 +165,13 @@ export const createTrainingsApi = ({ store, validator }) => {
         }
         return exercise;
       }),
-    };
+    });
   };
 
   const deleteTraining = (id) => {
-    store.trainings = getData().trainings.filter(it => it.id !== id);
+    const data = getData().trainings.filter(it => it.id !== id);
+
+    _update.allTrainings(data);
   };
 
   const _create = {
@@ -203,6 +210,13 @@ export const createTrainingsApi = ({ store, validator }) => {
   };
 
   const _update = {
+    allTrainings: (input) => {
+      const data = input;
+
+      validate(data, allTrainingsSchema);
+
+      store.trainings = data;
+    },
     newTraining: (input) => {
       const data = {
         ...getData().newTraining,
