@@ -13,10 +13,6 @@ import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
 import style from './style.module.scss';
 
 export class Exercise extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   renderTopBar = () => {
     const { data, onChangeName } = this.props;
     return (
