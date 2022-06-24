@@ -6,31 +6,38 @@ import { controller } from './controller';
 
 class PureEditExistingExercise extends React.Component {
   _onChangeName = (value) => {
-    this.props.onChangeName(this.props.data.id, value);
+    const exerciseId = this.props.data.id;
+    this.props.onChangeName(exerciseId, value);
+  };
+
+  _onDeleteSet = (setId) => {
+    const exerciseId = this.props.data.id;
+    this.props.onDeleteSet(exerciseId, setId);
   };
 
   _onChangeRepetitions = (setId, value) => {
-    this.props.onChangeRepetitions(this.props.data, setId, value);
+    const exercise = this.props.data;
+    this.props.onChangeRepetitions(exercise, setId, value);
   };
 
   _onChangeWeight = (setId, value) => {
-    this.props.onChangeWeight(this.props.data, setId, value);
+    const exercise = this.props.data;
+    this.props.onChangeWeight(exercise, setId, value);
   };
 
   render() {
     const {
       data,
-      onDeleteSet,
       onAddSet,
-      onDelete, 
+      onDelete,
       onSave,
     } = this.props;
 
     return (
-      <Exercise 
+      <Exercise
         data={data}
         onChangeName={this._onChangeName}
-        onDeleteSet={onDeleteSet}
+        onDeleteSet={this._onDeleteSet}
         onChangeRepetitions={this._onChangeRepetitions}
         onChangeWeight={this._onChangeWeight}
         onAddSet={onAddSet}

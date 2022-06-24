@@ -67,7 +67,7 @@ export class Exercise extends React.Component {
                 skin="icon"
                 size="medium"
                 className={style.setDelete}
-                onClick={() => onDeleteSet(data.id, set.id)}
+                onClick={() => onDeleteSet(set.id)}
               >
                 <DeleteIcon />
               </Button>

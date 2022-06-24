@@ -9,48 +9,82 @@ export const controller = (serviceLocator) => {
   const toNumber = (value) => Number.parseInt(value, 10);
 
   return {
-    getData: () => getData().newExercise,
+    getExercise: () => {
+      const exerciseId = getParams().exercise;
+      const exercise = getData().newTraining?.exercises.find(exercise =>
+        exercise.id === exerciseId);;
+
+      return exercise;
+    },
     onNoData: () => {
       navigationApi.toTrainings();
     },
-    onChangeName: (name) => {
-      trainingsApi.update.newExercise({
-        name,
-      });
-    },
-    onChangeRepetitions: (setId, value) => {
-      const { sets } = getData().newExercise;
+    onChangeName: (exerciseId, name) => {
+      const { exercises } = getData().newTraining;
 
-      trainingsApi.update.newExercise({
-        sets: sets.map(set => {
-          if (set.id === setId) {
+      trainingsApi.update.newTraining({
+        exercises: exercises.map(exercise => {
+          if (exercise.id === exerciseId) {
             return {
-              ...set,
-              repetitions: toNumber(value),
+              ...exercise,
+              name,
             };
           }
-          return set;
+          return exercise;
         }),
       });
     },
-    onChangeWeight: (setId, value) => {
-      const { sets } = getData().newExercise;
+    onChangeRepetitions: (exercise, setId, value) => {
+      const { exercises } = getData().newTraining;
+      const { sets } = exercise;
 
-      trainingsApi.update.newExercise({
-        sets: sets.map(set => {
-          if (set.id === setId) {
+      trainingsApi.update.newTraining({
+        exercises: exercises.map(ex => {
+          if (ex.id === exercise.id) {
             return {
-              ...set,
-              weight: toNumber(value),
+              ...ex,
+              sets: sets.map(set => {
+                if (set.id === setId) {
+                  return {
+                    ...set,
+                    repetitions: toNumber(value),
+                  };
+                }
+                return set;
+              }),
             };
           }
-          return set;
+          return ex;
+        }),
+      });
+    },
+    onChangeWeight: (exercise, setId, value) => {
+      const { exercises } = getData().newTraining;
+      const { sets } = exercise;
+
+      trainingsApi.update.newTraining({
+        exercises: exercises.map(ex => {
+          if (ex.id === exercise.id) {
+            return {
+              ...ex,
+              sets: sets.map(set => {
+                if (set.id === setId) {
+                  return {
+                    ...set,
+                    weight: toNumber(value),
+                  };
+                }
+                return set;
+              }),
+            };
+          }
+          return ex;
         }),
       });
     },
     onAddSet: () => {
       const trainingId = getParams().training;
-      const exerciseId = getData().newExercise.id;
+      const exerciseId = getParams().exercise;
 
       trainingsApi.create.set(trainingId, exerciseId);
     },
@@ -58,16 +92,16 @@ export const controller = (serviceLocator) => {
       trainingsApi.delete.set(exerciseId, setId);
     },
     onDelete: async () => {
-      await navigationApi.toCreateTraining();
-      trainingsApi.delete.newExercise();
-    },
-    onSave: async () => {
       const trainingId = getParams().training;
+      const exerciseId = getParams().exercise;
 
-      await navigationApi.toCreateTraining();
-      trainingsApi.save.newExercise(trainingId);
+      await trainingsApi.delete.exercise(trainingId, exerciseId);
+      navigationApi.toCreateTraining();
+    },
+    onSave:  () => {
+      navigationApi.toCreateTraining();
     },
   };
 };
 
-controller.storeDataAccessors = ['newExercise'];
+controller.storeDataAccessors = ['newTraining'];

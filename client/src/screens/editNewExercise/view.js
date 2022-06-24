@@ -5,25 +5,41 @@ import { connect, requireData } from '../../utils';
 import { controller } from './controller';
 
 class PureEditNewExercise extends React.Component {
+  _onChangeName = (value) => {
+    const exerciseId = this.props.data.id;
+    this.props.onChangeName(exerciseId, value);
+  };
+
+  _onDeleteSet = (setId) => {
+    const exerciseId = this.props.data.id;
+    this.props.onDeleteSet(exerciseId, setId);
+  };
+
+  _onChangeRepetitions = (setId, value) => {
+    const exercise = this.props.data;
+    this.props.onChangeRepetitions(exercise, setId, value);
+  };
+
+  _onChangeWeight = (setId, value) => {
+    const exercise = this.props.data;
+    this.props.onChangeWeight(exercise, setId, value);
+  };
+
   render() {
     const {
       data,
-      onChangeName,
-      onDeleteSet,
-      onChangeRepetitions,
-      onChangeWeight,
       onAddSet,
-      onDelete, 
+      onDelete,
       onSave,
     } = this.props;
 
     return (
-      <Exercise 
+      <Exercise
         data={data}
-        onChangeName={onChangeName}
-        onDeleteSet={onDeleteSet}
-        onChangeRepetitions={onChangeRepetitions}
-        onChangeWeight={onChangeWeight}
+        onChangeName={this._onChangeName}
+        onDeleteSet={this._onDeleteSet}
+        onChangeRepetitions={this._onChangeRepetitions}
+        onChangeWeight={this._onChangeWeight}
         onAddSet={onAddSet}
         onDelete={onDelete}
         onSave={onSave}
@@ -35,11 +51,11 @@ class PureEditNewExercise extends React.Component {
 export const EditNewExercise = connect({
   controller,
 }, ctrl => ({
-  data: ctrl.getData(),
+  data: ctrl.getExercise(),
+  onNoData: ctrl.onNoData,
   onChangeName: ctrl.onChangeName,
   onChangeWeight: ctrl.onChangeWeight,
   onChangeRepetitions: ctrl.onChangeRepetitions,
-  onNoData: ctrl.onNoData,
   onAddSet: ctrl.onAddSet,
   onDeleteSet: ctrl.onDeleteSet,
   onDelete: ctrl.onDelete,

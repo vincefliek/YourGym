@@ -18,7 +18,7 @@ export const controller = (serviceLocator) => {
       const trainingId = getData().newTraining.id;
 
       trainingsApi.create.newExercise();
-      navigationApi.toEditNewExercise(trainingId);
+      navigationApi.toCreateExercise(trainingId);
     },
     onDelete: async () => {
       await navigationApi.toTrainings();
@@ -34,7 +34,7 @@ export const controller = (serviceLocator) => {
     onOpenExercise: (exerciseId) => {
       const trainingId = getData().newTraining.id;
 
-      navigationApi.toEditExistingExercise(trainingId, exerciseId);
+      navigationApi.toEditNewExercise(trainingId, exerciseId);
     },
   };
 };
