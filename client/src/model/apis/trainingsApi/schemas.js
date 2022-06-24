@@ -1,3 +1,11 @@
+export const allTrainingsSchema = {
+  id: '/AllTrainingsSchema',
+  type: 'array',
+  items: {
+    $ref: '/TrainingSchema',
+  },
+};
+
 export const trainingSchema = {
   id: '/TrainingSchema',
   type: 'object',

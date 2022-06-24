@@ -1,12 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import {
+  allTrainingsSchema,
   trainingSchema,
   exerciseSchema,
   setSchema,
 } from './schemas';
 
 export const createTrainingsApi = ({ store, validator }) => {
+  validator.addSchema(allTrainingsSchema);
   validator.addSchema(trainingSchema);
   validator.addSchema(exerciseSchema);
   validator.addSchema(setSchema);
@@ -54,7 +56,7 @@ export const createTrainingsApi = ({ store, validator }) => {
       return;
     }
 
-    store.trainings = getData().trainings.map(training => {
+    const trainings = getData().trainings.map(training => {
       if (training.id === trainingId) {
         return {
           ...training,
@@ -65,13 +67,17 @@ export const createTrainingsApi = ({ store, validator }) => {
 
       return training;
     });
+
+    _update.allTrainings(trainings);
   };
 
   const addTraining = (training) => {
-    store.trainings = [
+    const trainings = [
       ...getData().trainings,
       training,
     ];
+
+    _update.allTrainings(trainings);
   };
 
   const addExercise = (trainingId, data) => {
@@ -84,7 +90,7 @@ export const createTrainingsApi = ({ store, validator }) => {
       return;
     }
 
-    store.trainings = getData().trainings.map(tr => {
+    const trainings = getData().trainings.map(tr => {
       if (tr.id === trainingId) {
         return {
           ...tr,
@@ -94,10 +100,13 @@ export const createTrainingsApi = ({ store, validator }) => {
 
       return tr;
     });
+
+    _update.allTrainings(trainings);
   };
 
   const addSet = (trainingId, exerciseId, data) => {
     const newExercise = getData().newExercise;
+    const newTraining = getData().newTraining;
 
     const _addSet = (exercises) => exercises.map(ex => {
       if (ex.id === exerciseId) {
@@ -110,9 +119,13 @@ export const createTrainingsApi = ({ store, validator }) => {
       return ex;
     });
 
-    if (newExercise.id === exerciseId) {
+    if (newExercise?.id === exerciseId) {
       _update.newExercise({
         sets: newExercise.sets.concat(data),
+      });
+    } else if (newTraining?.id === trainingId) {
+      _update.newTraining({
+        exercises: _addSet(newTraining.exercises),
       });
     } else {
       const trainings = getData().trainings.map(tr => {
@@ -125,20 +138,40 @@ export const createTrainingsApi = ({ store, validator }) => {
         return tr;
       });
 
-      store.trainings = trainings;
+      _update.allTrainings(trainings);
     }
   };
 
-  const deleteSet = (setId) => {
-    const data = getData().newExercise;
-    store.newExercise = {
-      ...data,
-      sets: data.sets.filter(it => it.id !== setId),
-    };
+  const deleteSet = (exerciseId, setId) => {
+    const newTraining = getData().newTraining;
+    const newExercise = getData().newExercise;
+
+    if (newExercise?.id === exerciseId) {
+      _update.newExercise({
+        sets: newExercise.sets.filter(it => it.id !== setId),
+      });
+
+      return;
+    }
+
+    _update.newTraining({
+      exercises: newTraining.exercises.map(exercise => {
+        if (exercise.id === exerciseId) {
+          return {
+            ...exercise,
+            sets: exercise.sets.filter(set =>
+              set.id !== setId),
+          };
+        }
+        return exercise;
+      }),
+    });
   };
 
   const deleteTraining = (id) => {
-    store.trainings = getData().trainings.filter(it => it.id !== id);
+    const data = getData().trainings.filter(it => it.id !== id);
+
+    _update.allTrainings(data);
   };
 
   const _create = {
@@ -177,6 +210,13 @@ export const createTrainingsApi = ({ store, validator }) => {
   };
 
   const _update = {
+    allTrainings: (input) => {
+      const data = input;
+
+      validate(data, allTrainingsSchema);
+
+      store.trainings = data;
+    },
     newTraining: (input) => {
       const data = {
         ...getData().newTraining,
@@ -229,8 +269,8 @@ export const createTrainingsApi = ({ store, validator }) => {
     exercise: (trainingId, exerciseId) => {
       deleteExercise(trainingId, exerciseId);
     },
-    set: (setId) => {
-      deleteSet(setId);
+    set: (exerciseId, setId) => {
+      deleteSet(exerciseId, setId);
     },
   };
 

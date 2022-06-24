@@ -31,8 +31,10 @@ export const controller = (serviceLocator) => {
     onDeleteExercise: (trainingId, exerciseId) => {
       trainingsApi.delete.exercise(trainingId, exerciseId);
     },
-    onOpenExercise: () => {
-      window.alert('You will be able to preview very soon :)');
+    onOpenExercise: (exerciseId) => {
+      const trainingId = getData().newTraining.id;
+
+      navigationApi.toEditNewExercise(trainingId, exerciseId);
     },
   };
 };

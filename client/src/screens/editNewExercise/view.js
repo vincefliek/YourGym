@@ -4,18 +4,30 @@ import { Exercise } from '../../components';
 import { connect, requireData } from '../../utils';
 import { controller } from './controller';
 
-class PureCreateExercise extends React.Component {
+class PureEditNewExercise extends React.Component {
+  _onChangeName = (value) => {
+    const exerciseId = this.props.data.id;
+    this.props.onChangeName(exerciseId, value);
+  };
+
   _onDeleteSet = (setId) => {
     const exerciseId = this.props.data.id;
     this.props.onDeleteSet(exerciseId, setId);
   };
 
+  _onChangeRepetitions = (setId, value) => {
+    const exercise = this.props.data;
+    this.props.onChangeRepetitions(exercise, setId, value);
+  };
+
+  _onChangeWeight = (setId, value) => {
+    const exercise = this.props.data;
+    this.props.onChangeWeight(exercise, setId, value);
+  };
+
   render() {
     const {
       data,
-      onChangeName,
-      onChangeRepetitions,
-      onChangeWeight,
       onAddSet,
       onDelete,
       onSave,
@@ -24,10 +36,10 @@ class PureCreateExercise extends React.Component {
     return (
       <Exercise
         data={data}
-        onChangeName={onChangeName}
+        onChangeName={this._onChangeName}
         onDeleteSet={this._onDeleteSet}
-        onChangeRepetitions={onChangeRepetitions}
-        onChangeWeight={onChangeWeight}
+        onChangeRepetitions={this._onChangeRepetitions}
+        onChangeWeight={this._onChangeWeight}
         onAddSet={onAddSet}
         onDelete={onDelete}
         onSave={onSave}
@@ -36,14 +48,14 @@ class PureCreateExercise extends React.Component {
   }
 }
 
-export const CreateExercise = connect({
+export const EditNewExercise = connect({
   controller,
 }, ctrl => ({
-  data: ctrl.getData(),
+  data: ctrl.getExercise(),
+  onNoData: ctrl.onNoData,
   onChangeName: ctrl.onChangeName,
   onChangeWeight: ctrl.onChangeWeight,
   onChangeRepetitions: ctrl.onChangeRepetitions,
-  onNoData: ctrl.onNoData,
   onAddSet: ctrl.onAddSet,
   onDeleteSet: ctrl.onDeleteSet,
   onDelete: ctrl.onDelete,
@@ -53,6 +65,6 @@ export const CreateExercise = connect({
     isData: Boolean(props.data),
     onNoData: props.onNoData,
   }))(
-    PureCreateExercise,
+    PureEditNewExercise,
   ),
 );

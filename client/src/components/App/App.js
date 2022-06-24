@@ -9,6 +9,8 @@ import {
   NotFound,
   CreateTraining,
   CreateExercise,
+  EditNewExercise,
+  EditExistingExercise,
   Training,
 } from '../../screens';
 import { Navigator } from '../../components';
@@ -50,6 +52,14 @@ export class App extends React.Component {
             <Route
               path={this.apis.navigationApi.routes.createExercise}
               element={<CreateExercise />}
+            />
+            <Route
+              path={this.apis.navigationApi.routes.editNewExercise}
+              element={<EditNewExercise />}
+            />
+            <Route
+              path={this.apis.navigationApi.routes.editExistingExercise}
+              element={<EditExistingExercise />}
             />
             <Route
               path={this.apis.navigationApi.routes.openTraining}
