@@ -63,11 +63,13 @@ class PureCreateTraining extends React.Component {
               >
                 <DeleteIcon />
               </Button>
-              <div 
-                className={style.exerciseBox} 
+              <div
+                className={style.exerciseBox}
                 onClick={() => onOpenExercise(exercise.id)}
               >
                 {exercise.name}
+                <br/>
+                {exercise.setsPreview}
               </div>
             </li>
           );
