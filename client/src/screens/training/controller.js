@@ -1,3 +1,5 @@
+import { createSetsPreview } from '../createTraining/controller';
+
 export const controller = (serviceLocator) => {
   const { getStoreData } = serviceLocator.getStore();
   const { navigationApi } = serviceLocator.getAPIs();
@@ -6,16 +8,6 @@ export const controller = (serviceLocator) => {
   const getParams = () => navigationApi.getPathParams(
     navigationApi.routes.openTraining,
   );
-  const createSetsPreview = (sets) => {
-    let setsPreview = '';
-
-    sets.forEach((set, index) => {
-      setsPreview += `${set.repetitions}x${set.weight}kg`;
-      if (index < (sets.length - 1)) setsPreview += ' - ';
-    });
-
-    return setsPreview;
-  };
 
   return {
     getTraining: () => {
