@@ -203,6 +203,7 @@ export const createTrainingsApi = ({ store, validator }) => {
         id: uuidv4(),
         name: 'New Exercise',
         sets: [],
+        setsHistory: [],
       };
 
       validate(data, exerciseSchema);

@@ -42,8 +42,11 @@ export const exerciseSchema = {
         $ref: '/SetSchema',
       },
     },
+    setsHistory: {
+      type: 'array',
+    },
   },
-  required: ['id', 'name', 'sets'],
+  required: ['id', 'name', 'sets', 'setsHistory'],
 };
 
 export const setSchema = {
