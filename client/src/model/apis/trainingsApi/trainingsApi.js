@@ -142,30 +142,44 @@ export const createTrainingsApi = ({ store, validator }) => {
     }
   };
 
-  const deleteSet = (exerciseId, setId) => {
+  const deleteSet = (trainingId, exerciseId, setId) => {
     const newTraining = getData().newTraining;
     const newExercise = getData().newExercise;
+
+    const _deleteSet = (exercises) => exercises.map(exercise => {
+      if (exercise.id === exerciseId) {
+        return {
+          ...exercise,
+          sets: exercise.sets.filter(set =>
+            set.id !== setId),
+        };
+      }
+
+      return exercise;
+    });
 
     if (newExercise?.id === exerciseId) {
       _update.newExercise({
         sets: newExercise.sets.filter(it => it.id !== setId),
       });
-
-      return;
-    }
-
-    _update.newTraining({
-      exercises: newTraining.exercises.map(exercise => {
-        if (exercise.id === exerciseId) {
+    } else if (newTraining?.id === trainingId) {
+      _update.newTraining({
+        exercises: _deleteSet(newTraining.exercises),
+      });
+    } else {
+      const trainings = getData().trainings.map(training => {
+        if (training.id === trainingId) {
           return {
-            ...exercise,
-            sets: exercise.sets.filter(set =>
-              set.id !== setId),
+            ...training,
+            exercises: _deleteSet(training.exercises),
           };
         }
-        return exercise;
-      }),
-    });
+
+        return training;
+      });
+
+      _update.allTrainings(trainings);
+    }
   };
 
   const deleteTraining = (id) => {
@@ -285,8 +299,8 @@ export const createTrainingsApi = ({ store, validator }) => {
     exercise: (trainingId, exerciseId) => {
       deleteExercise(trainingId, exerciseId);
     },
-    set: (exerciseId, setId) => {
-      deleteSet(exerciseId, setId);
+    set: (trainingId, exerciseId, setId) => {
+      deleteSet(trainingId, exerciseId, setId);
     },
   };
 
