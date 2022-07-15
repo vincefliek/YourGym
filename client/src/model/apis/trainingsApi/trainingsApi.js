@@ -174,6 +174,18 @@ export const createTrainingsApi = ({ store, validator }) => {
     _update.allTrainings(data);
   };
 
+  // TODO find better place for it
+  const createSetsPreview = (sets) => {
+    let setsPreview = '';
+
+    sets.forEach((set, index) => {
+      setsPreview += `${set.repetitions}x${set.weight}kg`;
+      if (index < (sets.length - 1)) setsPreview += ' - ';
+    });
+
+    return setsPreview;
+  };
+
   const _create = {
     newTraining: () => {
       const data = {
@@ -206,6 +218,9 @@ export const createTrainingsApi = ({ store, validator }) => {
 
       validate(data, setSchema);
       addSet(trainingId, exerciseId, data);
+    },
+    setsPreview: (sets) => {
+      return createSetsPreview(sets);
     },
   };
 

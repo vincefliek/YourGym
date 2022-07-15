@@ -1,14 +1,3 @@
-export const createSetsPreview = (sets) => {
-  let setsPreview = '';
-
-  sets.forEach((set, index) => {
-    setsPreview += `${set.repetitions}x${set.weight}kg`;
-    if (index < (sets.length - 1)) setsPreview += ' - ';
-  });
-
-  return setsPreview;
-};
-
 export const controller = (serviceLocator) => {
   const { getStoreData } = serviceLocator.getStore();
   const { trainingsApi, navigationApi } = serviceLocator.getAPIs();
@@ -24,7 +13,7 @@ export const controller = (serviceLocator) => {
           ...newTraining,
           exercises: newTraining.exercises.map(exercise => ({
             ...exercise,
-            setsPreview: createSetsPreview(exercise.sets),
+            setsPreview: trainingsApi.create.setsPreview(exercise.sets),
           })),
         };
       }

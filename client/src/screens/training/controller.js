@@ -1,8 +1,6 @@
-import { createSetsPreview } from '../createTraining/controller';
-
 export const controller = (serviceLocator) => {
   const { getStoreData } = serviceLocator.getStore();
-  const { navigationApi } = serviceLocator.getAPIs();
+  const { navigationApi, trainingsApi } = serviceLocator.getAPIs();
 
   const getData = () => getStoreData(controller.storeDataAccessors);
   const getParams = () => navigationApi.getPathParams(
@@ -19,7 +17,7 @@ export const controller = (serviceLocator) => {
       if (training !== undefined) {
         training.exercises = training.exercises.map(exercise => ({
           ...exercise,
-          setsPreview: createSetsPreview(exercise.sets),
+          setsPreview: trainingsApi.create.setsPreview(exercise.sets),
         }));
       }
 
