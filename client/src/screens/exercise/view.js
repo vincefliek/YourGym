@@ -26,7 +26,12 @@ class PureExercise extends React.Component {
   };
 
   renderBottomBar = () => {
-    const { training, onBack } = this.props;
+    const {
+      training,
+      onBack,
+      onExerciseNext,
+      onExercisePrev,
+    } = this.props;
     return (
       <NavbarContainer className={style.navbarContainer}>
         <Button
@@ -40,18 +45,19 @@ class PureExercise extends React.Component {
           <Button
             skin="icon"
             size="large"
-            // onClick={}
+            onClick={() => onExercisePrev(training)}
           >
             <ArrowLeft />
           </Button>
           <div>
-            1/
+            {training.exerciseIndex + 1}
+            /
             {training.exercises.length}
           </div>
           <Button
             skin="icon"
             size="large"
-            // onClick={}
+            onClick={() => onExerciseNext(training)}
           >
             <ArrowRight />
           </Button>
@@ -61,7 +67,7 @@ class PureExercise extends React.Component {
   };
 
   renderSets = () => {
-    const { training, exercise, onDoneSet } = this.props;
+    const { exercise, onDoneSet } = this.props;
     return (
       <ul className={style.sets}>
         {exercise.sets.map((set) => {
@@ -92,7 +98,7 @@ class PureExercise extends React.Component {
                 skin="icon"
                 size="large"
                 className={style.setDone}
-                onClick={() => onDoneSet(training.id, exercise.id, set)}
+                onClick={() => onDoneSet(exercise.id, set)}
               >
                 <DoneIcon />
               </Button>
@@ -144,9 +150,10 @@ class PureExercise extends React.Component {
   };
 
   render() {
-    // const { exercise, onStart } = this.props;
+    const { exercise } = this.props;
 
-    // const areExercises = Boolean(exercise.exercises.length);
+    const areSets = Boolean(exercise.sets.length);
+    const areSetsHistory = Boolean(exercise.setsHistory.length);
 
     return (
       <Layout
@@ -154,8 +161,8 @@ class PureExercise extends React.Component {
         bottomBar={this.renderBottomBar()}
       >
         <div className={style.screen}>
-          {this.renderSets()}
-          {this.renderSetsHistory()}
+          {areSets && this.renderSets()}
+          {areSetsHistory && this.renderSetsHistory()}
         </div>
       </Layout>
     );
@@ -165,9 +172,11 @@ class PureExercise extends React.Component {
 export const Exercise = connect({
   controller,
 }, ctrl => ({
-  exercise: ctrl.getExercise(),
   training: ctrl.getTraining(),
+  exercise: ctrl.getExercise(),
   onDoneSet: ctrl.onDoneSet,
+  onExerciseNext: ctrl.onExerciseNext,
+  onExercisePrev: ctrl.onExercisePrev,
   onNoData: ctrl.onNoData,
   onBack: ctrl.onBack,
 }))(

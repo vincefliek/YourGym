@@ -35,8 +35,21 @@ export const controller = (serviceLocator) => {
     onEdit: () => {
       window.alert('You will be able to preview very soon :)');
     },
-    onOpenExercise: (trainingId, exerciseId) => {
-      navigationApi.toExercise(trainingId, exerciseId);
+    onOpenExercise: (training, exercise) => {
+      const trainings = getData().trainings.map(tr => {
+        if (tr.id === training.id) {
+          return {
+            ...tr,
+            exerciseIndex: tr.exercises.indexOf(exercise),
+          };
+        }
+
+        return tr;
+      });
+
+      trainingsApi.update.allTrainings(trainings);
+
+      navigationApi.toExercise(training.id, exercise.id);
     },
   };
 };
