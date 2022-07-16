@@ -1,21 +1,11 @@
 export const controller = (serviceLocator) => {
   const { getStoreData } = serviceLocator.getStore();
-  const { navigationApi } = serviceLocator.getAPIs();
+  const { navigationApi, trainingsApi } = serviceLocator.getAPIs();
 
   const getData = () => getStoreData(controller.storeDataAccessors);
   const getParams = () => navigationApi.getPathParams(
     navigationApi.routes.openTraining,
   );
-  const createSetsPreview = (sets) => {
-    let setsPreview = '';
-
-    sets.forEach((set, index) => {
-      setsPreview += `${set.repetitions}x${set.weight}kg`;
-      if (index < (sets.length - 1)) setsPreview += ' - ';
-    });
-
-    return setsPreview;
-  };
 
   return {
     getTraining: () => {
@@ -27,7 +17,7 @@ export const controller = (serviceLocator) => {
       if (training !== undefined) {
         training.exercises = training.exercises.map(exercise => ({
           ...exercise,
-          setsPreview: createSetsPreview(exercise.sets),
+          setsPreview: trainingsApi.create.setsPreview(exercise.sets),
         }));
       }
 

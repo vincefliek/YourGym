@@ -5,7 +5,19 @@ export const controller = (serviceLocator) => {
   const getData = () => getStoreData(controller.storeDataAccessors);
 
   return {
-    getData: () => getData().newTraining,
+    getData: () => {
+      const newTraining = getData().newTraining;
+
+      if (newTraining !== null) {
+        return {
+          ...newTraining,
+          exercises: newTraining.exercises.map(exercise => ({
+            ...exercise,
+            setsPreview: trainingsApi.create.setsPreview(exercise.sets),
+          })),
+        };
+      }
+    },
     onNoData: () => {
       navigationApi.toTrainings();
     },
