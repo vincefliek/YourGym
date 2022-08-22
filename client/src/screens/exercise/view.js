@@ -67,7 +67,12 @@ class PureExercise extends React.Component {
   };
 
   renderSets = () => {
-    const { exercise, onDoneSet } = this.props;
+    const {
+      exercise,
+      onDoneSet,
+      onChangeRepetitions,
+      onChangeWeight,
+    } = this.props;
     return (
       <ul className={style.sets}>
         {exercise.sets.map((set) => {
@@ -76,32 +81,36 @@ class PureExercise extends React.Component {
               key={set.id}
               className={style.set}
             >
-              <div className={style.setRepetitions}>
-                <Input
-                  type="number"
-                  value={set.repetitions}
-                  readOnly
-                />
-              </div>
-              <div>X</div>
-              <div className={style.setWeight}>
-                <Input
-                  type="number"
-                  value={set.weight}
-                  readOnly
-                />
-              </div>
-              <div className={style.weightUnit}>
+              <div className={style.setPreview}>
+                <div className={style.setRepetitions}>
+                  <Input
+                    type="number"
+                    value={set.repetitions}
+                    onBlur={value =>
+                      onChangeRepetitions(exercise.id, set.id, value)
+                    }
+                  />
+                </div>
+                <div>X</div>
+                <div className={style.setWeight}>
+                  <Input
+                    type="number"
+                    value={set.weight}
+                    onBlur={value => onChangeWeight(exercise.id, set.id, value)}
+                  />
+                </div>
+                <div >
                 kg
+                </div>
+                <Button
+                  skin="icon"
+                  size="large"
+                  className={style.setDone}
+                  onClick={() => onDoneSet(exercise.id, set)}
+                >
+                  <DoneIcon />
+                </Button>
               </div>
-              <Button
-                skin="icon"
-                size="large"
-                className={style.setDone}
-                onClick={() => onDoneSet(exercise.id, set)}
-              >
-                <DoneIcon />
-              </Button>
             </li>
           );
         })}
@@ -116,31 +125,39 @@ class PureExercise extends React.Component {
         <div className={style.historyUnit}>
           History
         </div>
-        <ul className={style.sets}>
-          {exercise.setsHistory.map((set) => {
+        <ul className={style.setsHistoryBox}>
+          {exercise.setsHistory.map(setsByDate => {
             return (
               <li
-                key={set.id}
-                className={style.set}
+                key={setsByDate.date}
+                className={style.setsByDate}
               >
-                <div className={style.setRepetitions}>
-                  <Input
-                    type="number"
-                    value={set.repetitions}
-                    readOnly
-                  />
-                </div>
-                <div>X</div>
-                <div className={style.setWeight}>
-                  <Input
-                    type="number"
-                    value={set.weight}
-                    readOnly
-                  />
-                </div>
-                <div className={style.weightUnit}>
-                  kg
-                </div>
+                <ul className={style.sets}>
+                  <div className={style.setsDate}>
+                    <b>
+                      {setsByDate.date}
+                    </b>
+                  </div>
+
+                  {setsByDate.sets.map((set, index) => {
+                    return (
+                      <li
+                        key={set.id}
+                        className={style.set}
+                      >
+                        <div className={style.setPreview}>
+                          <div className={style.setUnit}>
+                            <b>№{setsByDate.sets.length - index}</b> {' '}
+                            {set.repetitions}x{set.weight}kg
+                          </div>
+                          <div className={style.setTime}>
+                            {set.time}
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
               </li>
             );
           })}
@@ -174,6 +191,8 @@ export const Exercise = connect({
 }, ctrl => ({
   training: ctrl.getTraining(),
   exercise: ctrl.getExercise(),
+  onChangeRepetitions: ctrl.onChangeRepetitions,
+  onChangeWeight: ctrl.onChangeWeight,
   onDoneSet: ctrl.onDoneSet,
   onExerciseNext: ctrl.onExerciseNext,
   onExercisePrev: ctrl.onExercisePrev,

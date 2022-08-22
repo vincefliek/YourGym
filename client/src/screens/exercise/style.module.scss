@@ -29,19 +29,26 @@
 .sets {
   box-sizing: border-box;
   width: 100%;
-  padding: 0 20px 0 20px;
-  margin: 0 0 20px 0;
+  padding: 0 20px;
+  margin: 0;
 }
 
 .set {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 10px;
-
   & + & {
     margin-top: 20px;
   }
+}
+
+.setPreview {
+  display: flex;
+  justify-content: space-between;
+  
+  align-items: center;
+  padding: 0 10px;
+  flex: 1 1 auto;
+  font-size: 14px;
+  font-family: fonts.$nunito;
 }
 
 .setName {
@@ -71,7 +78,8 @@
 }
 
 .setDone {
-  margin-left: 15px;
+  flex: 0 0 auto;
+  margin-left: 8%;
 }
 
 .history {
@@ -84,4 +92,32 @@
   padding: 10px;
   font-family: fonts.$nunito;
   margin: 20px;
+}
+
+.setsDate {
+  font-size: 16px;
+  font-family: fonts.$nunito;
+  margin-bottom: 10px;
+}
+
+.setsHistoryBox {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 10px;
+  margin: 10px 0;
+}
+
+.setsByDate {
+  display: flex;
+  & + & {
+    margin-top: 25px;
+  }
+}
+
+.setUnit {
+  flex: 0 0 auto;
+}
+
+.setTime {
+  flex: 0 0 auto;
 }
