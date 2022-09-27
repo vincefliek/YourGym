@@ -28,6 +28,7 @@ class PureExercise extends React.Component {
   renderBottomBar = () => {
     const {
       training,
+      exercise,
       onBack,
       onExerciseNext,
       onExercisePrev,
@@ -45,19 +46,19 @@ class PureExercise extends React.Component {
           <Button
             skin="icon"
             size="large"
-            onClick={() => onExercisePrev(training)}
+            onClick={() => onExercisePrev(training, exercise)}
           >
             <ArrowLeft />
           </Button>
           <div>
-            {training.exerciseIndex + 1}
+            {training.exercises.indexOf(exercise) + 1}
             /
             {training.exercises.length}
           </div>
           <Button
             skin="icon"
             size="large"
-            onClick={() => onExerciseNext(training)}
+            onClick={() => onExerciseNext(training, exercise)}
           >
             <ArrowRight />
           </Button>

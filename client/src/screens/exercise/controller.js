@@ -23,7 +23,6 @@ export const controller = (serviceLocator) => {
       const training = findTraining();
       const exercise = training?.exercises.find(exercise =>
         exercise.id === params.exercise);
-      console.log('🚀 ~ controller ~ exercise', exercise);
 
       return exercise;
     },
@@ -156,46 +155,26 @@ export const controller = (serviceLocator) => {
       await trainingsApi.update.allTrainings(trainings);
       trainingsApi.delete.set(trainingId, exerciseId, set.id);
     },
-    onExerciseNext: async (training) => {
-      if (training.exerciseIndex < (training.exercises.length - 1)) {
-        const trainings = getData().trainings.map(tr => {
-          if (tr.id === training.id) {
-            return {
-              ...tr,
-              exerciseIndex: tr.exerciseIndex + 1,
-            };
-          }
+    onExerciseNext: async (training, exercise) => {
+      const currentExerciseIndex = training.exercises.indexOf(exercise);
 
-          return tr;
-        });
+      if (currentExerciseIndex < training.exercises.length - 1) {
+        const nextExerciseId = training.exercises[currentExerciseIndex + 1].id;
 
-        await trainingsApi.update.allTrainings(trainings);
-
-        const exerciseId = training.exercises[training.exerciseIndex + 1].id;
-
-        await navigationApi.toTraining(training.id);
-        navigationApi.toExercise(training.id, exerciseId);
+        await navigationApi.toExercise(training.id, nextExerciseId);
+        const trainings = getData().trainings;
+        trainingsApi.update.allTrainings(trainings);
       }
     },
-    onExercisePrev: async (training) => {
-      if (training.exerciseIndex >= 1) {
-        const trainings = getData().trainings.map(tr => {
-          if (tr.id === training.id) {
-            return {
-              ...tr,
-              exerciseIndex: tr.exerciseIndex - 1,
-            };
-          }
+    onExercisePrev: async (training, exercise) => {
+      const currentExerciseIndex = training.exercises.indexOf(exercise);
 
-          return tr;
-        });
+      if (currentExerciseIndex > 0) {
+        const prevExerciseId = training.exercises[currentExerciseIndex - 1].id;
 
-        await trainingsApi.update.allTrainings(trainings);
-
-        const exerciseId = training.exercises[training.exerciseIndex - 1].id;
-
-        await navigationApi.toTraining(training.id);
-        navigationApi.toExercise(training.id, exerciseId);
+        await navigationApi.toExercise(training.id, prevExerciseId);
+        const trainings = getData().trainings;
+        trainingsApi.update.allTrainings(trainings);
       }
     },
     onNoData: () => {
