@@ -5,6 +5,7 @@ import {
   trainingSchema,
   exerciseSchema,
   setSchema,
+  setsHistorySchema,
 } from './schemas';
 
 export const createTrainingsApi = ({ store, validator }) => {
@@ -12,6 +13,7 @@ export const createTrainingsApi = ({ store, validator }) => {
   validator.addSchema(trainingSchema);
   validator.addSchema(exerciseSchema);
   validator.addSchema(setSchema);
+  validator.addSchema(setsHistorySchema);
 
   const validate = (data, schema) => {
     const validationResult = validator.validate(data, schema);
@@ -200,6 +202,83 @@ export const createTrainingsApi = ({ store, validator }) => {
     return setsPreview;
   };
 
+  const createCurrentDate = () => {
+    const date = new Date();
+
+    const currentDate =
+      date.toDateString().slice(0, 3) + ', ' +
+      date.toLocaleDateString();
+
+    return currentDate;
+  };
+
+  const createCurrentTime = () => {
+    const date = new Date();
+
+    const currentHours =
+      date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+    const currentMinutes =
+      date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+
+    const currentTime = `${currentHours}:${currentMinutes}`;
+
+    return currentTime;
+  };
+
+  const addSetToHistory = (trainingId, exerciseId, data, set) => {
+
+    const _addSetToHistory = (setsHistory) => {
+      const setsByCurrentDate = setsHistory.find(
+        setsByDate => setsByDate.date === data.date,
+      );
+
+      if (setsByCurrentDate) {
+        return setsHistory.map(setsByDate => {
+          if (setsByDate.date === data.date) {
+            return {
+              ...setsByDate,
+              sets: [{
+                ...set,
+                time: createCurrentTime(),
+              }].concat(setsByDate.sets),
+            };
+          }
+
+          return setsByDate;
+        });
+      }
+      return [{
+        ...data,
+        sets: [{
+          ...set,
+          time: createCurrentTime(),
+        }],
+      }].concat(setsHistory);
+    };
+
+    const trainings = getData().trainings.map(training => {
+      if (training.id === trainingId) {
+        return {
+          ...training,
+          exercises: training.exercises.map(exercise => {
+            if (exercise.id === exerciseId) {
+              return {
+                ...exercise,
+                setsHistory: _addSetToHistory(exercise.setsHistory),
+              };
+            }
+
+            return exercise;
+          }),
+        };
+      }
+
+      return training;
+    });
+
+    _update.allTrainings(trainings);
+  };
+
   const _create = {
     newTraining: () => {
       const data = {
@@ -233,6 +312,16 @@ export const createTrainingsApi = ({ store, validator }) => {
 
       validate(data, setSchema);
       addSet(trainingId, exerciseId, data);
+    },
+    setsHistory: (trainingId, exerciseId, set) => {
+      const data = {
+        id: uuidv4(),
+        date: createCurrentDate(),
+        sets: [],
+      };
+
+      validate(data, setsHistorySchema);
+      addSetToHistory(trainingId, exerciseId, data, set);
     },
     setsPreview: (sets) => {
       return createSetsPreview(sets);

@@ -69,6 +69,7 @@ class PureExercise extends React.Component {
 
   renderSets = () => {
     const {
+      training,
       exercise,
       onDoneSet,
       onChangeRepetitions,
@@ -107,7 +108,7 @@ class PureExercise extends React.Component {
                   skin="icon"
                   size="large"
                   className={style.setDone}
-                  onClick={() => onDoneSet(exercise.id, set)}
+                  onClick={() => onDoneSet(training.id, exercise.id, set)}
                 >
                   <DoneIcon />
                 </Button>

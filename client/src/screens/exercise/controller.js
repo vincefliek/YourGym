@@ -94,65 +94,8 @@ export const controller = (serviceLocator) => {
 
       trainingsApi.update.allTrainings(trainings);
     },
-    onDoneSet: async (exerciseId, set) => {
-      const trainingId = findTraining().id;
-      const date = new Date();
-      const currentDate =
-        date.toDateString().slice(0, 3) + ', ' +
-        date.toLocaleDateString();
-
-      const currentHours =
-        date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
-      const currentMinutes =
-        date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
-      const currentTime = `${currentHours}:${currentMinutes}`;
-
-      const addSetToHistory = (setsHistory) => {
-        const setsByCurrentDate = setsHistory.find(
-          setsByDate => setsByDate.date === currentDate,
-        );
-
-        set.time = currentTime;
-
-        if (setsByCurrentDate) {
-          return setsHistory.map(setsByDate => {
-            if (setsByDate.date === currentDate) {
-              return {
-                ...setsByDate,
-                sets: [set].concat(setsByDate.sets),
-              };
-            }
-
-            return setsByDate;
-          });
-        }
-        return [{
-          date: currentDate,
-          sets: [set],
-        }].concat(setsHistory);
-      };
-
-      const trainings = getData().trainings.map(training => {
-        if (training.id === trainingId) {
-          return {
-            ...training,
-            exercises: training.exercises.map(exercise => {
-              if (exercise.id === exerciseId) {
-                return {
-                  ...exercise,
-                  setsHistory: addSetToHistory(exercise.setsHistory),
-                };
-              }
-
-              return exercise;
-            }),
-          };
-        }
-
-        return training;
-      });
-
-      await trainingsApi.update.allTrainings(trainings);
+    onDoneSet: async (trainingId, exerciseId, set) => {
+      await trainingsApi.create.setsHistory(trainingId, exerciseId, set);
       trainingsApi.delete.set(trainingId, exerciseId, set.id);
     },
     onExerciseNext: async (training, exercise) => {
