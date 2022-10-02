@@ -26,6 +26,12 @@ export const controller = (serviceLocator) => {
 
       return exercise;
     },
+    getCurrentExerciseIntoNavbar: (training, exercise) => {
+      return training.exercises.indexOf(exercise) + 1;
+    },
+    getLengthExercisesIntoNavbar: (training) => {
+      return training.exercises.length;
+    },
     onChangeRepetitions: (exerciseId, setId, value) => {
       const trainingId = findTraining().id;
 
