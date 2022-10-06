@@ -9,6 +9,10 @@ import {
 } from '../../components';
 import { ReactComponent as DoneIcon } from '../../assets/done.svg';
 import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
+import {
+  CSSTransition,
+  TransitionGroup,
+} from 'react-transition-group';
 
 import style from './style.module.scss';
 
@@ -56,46 +60,54 @@ export class Exercise extends React.Component {
       onChangeWeight,
     } = this.props;
     return (
-      <ul className={style.sets}>
+      <TransitionGroup component={'ul'} className={style.sets}>
         {data.sets.map((set, index) => {
           return (
-            <li
+            <CSSTransition
               key={set.id}
-              className={style.set}
+              timeout={250}
+              classNames={{
+                enter: style.setEnter,
+                enterActive: style.setActiveEnter,
+                exit: style.setExit,
+                exitActive: style.setActiveExit,
+              }}
             >
-              <Button
-                skin="icon"
-                size="medium"
-                className={style.setDelete}
-                onClick={() => onDeleteSet(set.id)}
-              >
-                <DeleteIcon />
-              </Button>
-              <div className={style.setName}>
-                Set {index + 1}
-              </div>
-              <div className={style.setRepetitions}>
-                <Input
-                  type="number"
-                  value={set.repetitions}
-                  onBlur={value => onChangeRepetitions(set.id, value)}
-                />
-              </div>
-              <div>X</div>
-              <div className={style.setWeight}>
-                <Input
-                  type="number"
-                  value={set.weight}
-                  onBlur={value => onChangeWeight(set.id, value)}
-                />
-              </div>
-              <div className={style.weightUnit}>
-                kg
-              </div>
-            </li>
+              <li className={style.set}>
+                <Button
+                  skin="icon"
+                  size="medium"
+                  className={style.setDelete}
+                  onClick={() => onDeleteSet(set.id)}
+                >
+                  <DeleteIcon />
+                </Button>
+                <div className={style.setName}>
+                  Set {index + 1}
+                </div>
+                <div className={style.setRepetitions}>
+                  <Input
+                    type="number"
+                    value={set.repetitions}
+                    onBlur={value => onChangeRepetitions(set.id, value)}
+                  />
+                </div>
+                <div>X</div>
+                <div className={style.setWeight}>
+                  <Input
+                    type="number"
+                    value={set.weight}
+                    onBlur={value => onChangeWeight(set.id, value)}
+                  />
+                </div>
+                <div className={style.weightUnit}>
+                  kg
+                </div>
+              </li>
+            </CSSTransition>
           );
         })}
-      </ul>
+      </TransitionGroup>
     );
   };
 
