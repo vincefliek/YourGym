@@ -29,8 +29,8 @@ class PureExercise extends React.Component {
     const {
       training,
       exercise,
-      currentExercise,
-      lengthExercises,
+      getCurrentExercise,
+      getTotalExercises,
       onBack,
       onExerciseNext,
       onExercisePrev,
@@ -53,9 +53,9 @@ class PureExercise extends React.Component {
             <ArrowLeft />
           </Button>
           <div>
-            {currentExercise(training, exercise)}
+            {getCurrentExercise(training, exercise)}
             /
-            {lengthExercises(training)}
+            {getTotalExercises(training)}
           </div>
           <Button
             skin="icon"
@@ -195,8 +195,8 @@ export const Exercise = connect({
 }, ctrl => ({
   training: ctrl.getTraining(),
   exercise: ctrl.getExercise(),
-  currentExercise: ctrl.getCurrentExerciseIntoNavbar,
-  lengthExercises: ctrl.getLengthExercisesIntoNavbar,
+  getCurrentExercise: ctrl.getCurrentExerciseIntoNavbar,
+  getTotalExercises: ctrl.getTotalExercisesIntoNavbar,
   onChangeRepetitions: ctrl.onChangeRepetitions,
   onChangeWeight: ctrl.onChangeWeight,
   onDoneSet: ctrl.onDoneSet,
