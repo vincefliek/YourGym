@@ -30,6 +30,7 @@ export const createNavigationApi = ({ store }) => {
     Boolean(matchPath(route, getPathName()));
 
   const setRoute = async (route, params = {}) => {
+    // TODO [vlad-ozh] [it's a hack]
     if (isRouteOpenedRightNow(route) && (route !== routes.openExercise)) {
       return;
     }
