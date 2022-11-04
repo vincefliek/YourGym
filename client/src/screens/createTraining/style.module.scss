@@ -8,7 +8,12 @@
 }
 
 .screenNoData {
-  justify-content: center;
+  ul {
+    position: absolute;
+  }
+  .button {
+    margin: auto 0;
+  }
 }
 
 .navbarContainer.navbarContainer {
@@ -54,4 +59,22 @@
 
 .exerciseDelete {
   flex: 0 0 auto;
+}
+
+.setEnter {
+  transform: translateX(-390px);
+}
+
+.setActiveEnter {
+  transform: translateX(0);
+  transition: all .25s ease-in;
+}
+
+.setExit {
+  opacity: 1;
+}
+
+.setActiveExit {
+  transition: all .25s ease-in;
+  transform: translateX(-390px);
 }

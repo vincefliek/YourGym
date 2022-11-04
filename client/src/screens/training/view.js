@@ -52,7 +52,7 @@ class PureTraining extends React.Component {
             >
               <div
                 className={style.exerciseBox}
-                onClick={() => onOpenExercise(exercise.id)}
+                onClick={() => onOpenExercise(data, exercise)}
               >
                 {exercise.name}
                 <br/>

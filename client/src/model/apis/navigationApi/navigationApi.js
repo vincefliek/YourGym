@@ -30,7 +30,8 @@ export const createNavigationApi = ({ store }) => {
     Boolean(matchPath(route, getPathName()));
 
   const setRoute = async (route, params = {}) => {
-    if (isRouteOpenedRightNow(route)) {
+    // TODO [vlad-ozh] [it's a hack]
+    if (isRouteOpenedRightNow(route) && (route !== routes.openExercise)) {
       return;
     }
 
@@ -81,6 +82,12 @@ export const createNavigationApi = ({ store }) => {
     toTraining: (trainingId) => {
       return setRoute(routes.openTraining, {
         training: trainingId,
+      });
+    },
+    toExercise: (trainingId, exerciseId) => {
+      return setRoute(routes.openExercise, {
+        training: trainingId,
+        exercise: exerciseId,
       });
     },
     isHomeUrl: () => {

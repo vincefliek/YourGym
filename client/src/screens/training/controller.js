@@ -35,8 +35,8 @@ export const controller = (serviceLocator) => {
     onEdit: () => {
       window.alert('You will be able to preview very soon :)');
     },
-    onOpenExercise: () => {
-      window.alert('You will be able to preview very soon :)');
+    onOpenExercise: (training, exercise) => {
+      navigationApi.toExercise(training.id, exercise.id);
     },
   };
 };

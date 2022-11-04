@@ -6,6 +6,10 @@ import { connect, requireData } from '../../utils';
 import { controller } from './controller';
 import { ReactComponent as DoneIcon } from '../../assets/done.svg';
 import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
+import {
+  CSSTransition,
+  TransitionGroup,
+} from 'react-transition-group';
 
 import style from './style.module.scss';
 
@@ -48,33 +52,41 @@ class PureCreateTraining extends React.Component {
   renderExercises = () => {
     const { data, onDeleteExercise, onOpenExercise } = this.props;
     return (
-      <ul className={style.exercises}>
+      <TransitionGroup component={'ul'} className={style.exercises}>
         {data.exercises.map(exercise => {
           return (
-            <li
+            <CSSTransition
               key={exercise.id}
-              className={style.exercise}
+              timeout={250}
+              classNames={{
+                enter: style.setEnter,
+                enterActive: style.setActiveEnter,
+                exit: style.setExit,
+                exitActive: style.setActiveExit,
+              }}
             >
-              <Button
-                skin="icon"
-                size="medium"
-                className={style.exerciseDelete}
-                onClick={() => onDeleteExercise(data.id, exercise.id)}
-              >
-                <DeleteIcon />
-              </Button>
-              <div
-                className={style.exerciseBox}
-                onClick={() => onOpenExercise(exercise.id)}
-              >
-                {exercise.name}
-                <br/>
-                {exercise.setsPreview}
-              </div>
-            </li>
+              <li className={style.exercise}>
+                <Button
+                  skin="icon"
+                  size="medium"
+                  className={style.exerciseDelete}
+                  onClick={() => onDeleteExercise(data.id, exercise.id)}
+                >
+                  <DeleteIcon />
+                </Button>
+                <div
+                  className={style.exerciseBox}
+                  onClick={() => onOpenExercise(exercise.id)}
+                >
+                  {exercise.name}
+                  <br/>
+                  {exercise.setsPreview}
+                </div>
+              </li>
+            </CSSTransition>
           );
         })}
-      </ul>
+      </TransitionGroup>
     );
   };
 
@@ -91,7 +103,7 @@ class PureCreateTraining extends React.Component {
         <div className={classnames(style.screen, {
           [style.screenNoData]: !areExercises,
         })}>
-          {areExercises && this.renderExercises()}
+          {this.renderExercises()}
           <Button
             skin="primary"
             font="nunito"

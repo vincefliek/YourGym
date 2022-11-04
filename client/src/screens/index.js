@@ -5,5 +5,6 @@ export { NotFound } from './notFound';
 export { CreateTraining } from './createTraining';
 export { CreateExercise } from './createExercise';
 export { Training } from './training';
+export { Exercise } from './exercise';
 export { EditNewExercise } from './editNewExercise';
 export { EditExistingExercise } from './editExistingExercise';
