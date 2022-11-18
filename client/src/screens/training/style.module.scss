@@ -28,10 +28,9 @@
   font-family: fonts.$nunito;
 }
 
-.button {
-  flex: 0 0 auto;
-  margin: auto;  
-  width: 150px;
+.startButton {
+  margin: auto 15px;
+  width: 100%;
 }
 
 .exercises {
@@ -59,4 +58,19 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis; 
+}
+
+button.finishButton {
+  margin: auto 15px;
+  width: 100%;
+  color: #ff0000;
+  border-color: #ff0000;
+}
+
+.stopwatch {
+  display: none;
+}
+
+.stopwatchActive {
+  display: block;
 }
