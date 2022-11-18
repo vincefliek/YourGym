@@ -20,7 +20,9 @@ class PureExercise extends React.Component {
     const { exercise } = this.props;
     return(
       <div className={style.topBar}>
-        {exercise.name}
+        <div className={style.name}>
+          {exercise.name}
+        </div>
       </div>
     );
   };

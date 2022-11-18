@@ -28,6 +28,12 @@
   font-family: fonts.$nunito;
 }
 
+.name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .startButton {
   margin: auto 15px;
   width: 100%;

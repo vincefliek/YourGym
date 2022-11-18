@@ -14,7 +14,9 @@ class PureTraining extends React.Component {
     const { data } = this.props;
     return(
       <div className={style.topBar}>
-        {data.name}
+        <div className={style.name}>
+          {data.name}
+        </div>
       </div>
     );
   };

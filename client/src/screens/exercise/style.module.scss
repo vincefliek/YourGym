@@ -26,6 +26,12 @@
   font-family: fonts.$nunito;
 }
 
+.name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .sets {
   box-sizing: border-box;
   width: 100%;

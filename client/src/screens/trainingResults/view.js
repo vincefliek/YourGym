@@ -47,7 +47,7 @@ class PureTrainingResults extends React.Component {
           <h5>
             The name of the training:
           </h5>
-          <h3>
+          <h3 className={style.name}>
             {training.name}
           </h3>
         </div>
@@ -72,8 +72,6 @@ class PureTrainingResults extends React.Component {
   };
 
   render() {
-    // const { training } = this.props;
-
     return (
       <Layout
         topBar={this.renderTopBar()}

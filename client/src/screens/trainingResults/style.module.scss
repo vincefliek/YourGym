@@ -7,6 +7,14 @@
   border-radius: 8px;
 }
 
+h5, h3 {
+  margin: 0;
+}
+
+h5 {
+  font-weight: normal;
+}
+
 .screen {
   height: 100%;
   display: flex;
@@ -47,29 +55,17 @@
 .nameBox {
   margin: 20px;
   @extend %boxStyle;
-  
-  & h3, & h5 {
-    margin: 0;
+}
 
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  & h5 {
-    font-weight: normal;
-  }
+.name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .trainingTimeBox {
   margin: 0 20px;
   @extend %boxStyle;
-
-  & h3, & h5 {
-    margin: 0;
-  }
-  & h5 {
-    font-weight: normal;
-  }
 }
 
 .trainingInfo {
@@ -82,11 +78,4 @@
   margin: 20px;
   width: 100%;
   @extend %boxStyle;
-
-  & h3, & h5 {
-    margin: 0;
-  }
-  & h5 {
-    font-weight: normal;
-  }
 }
