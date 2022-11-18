@@ -1,0 +1,92 @@
+@use "../../components/common/_colors";
+@use "../../components/common/_fonts";
+
+%boxStyle {
+  padding: 15px;
+  box-shadow: 1px 2px 6px 2px rgba(0, 0, 0, .15);
+  border-radius: 8px;
+}
+
+.screen {
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+  align-items: center;
+}
+
+.navbarContainer.navbarContainer {
+  justify-content: space-between;
+}
+
+.topBar {
+  padding: 20px;
+  display: block;
+  text-align: center;
+  font-family: fonts.$nunito;
+}
+
+.title {
+  font-weight: normal;
+  margin: 15px 0;
+  font-size: 20px;
+  text-decoration: underline;
+}
+
+.date {
+  margin: 0;
+  font-size: 16px;
+}
+
+.trainingResults {
+  width: 100%;
+  text-align: center;
+  font-family: fonts.$nunito;
+}
+
+.nameBox {
+  margin: 20px;
+  @extend %boxStyle;
+  
+  & h3, & h5 {
+    margin: 0;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  & h5 {
+    font-weight: normal;
+  }
+}
+
+.trainingTimeBox {
+  margin: 0 20px;
+  @extend %boxStyle;
+
+  & h3, & h5 {
+    margin: 0;
+  }
+  & h5 {
+    font-weight: normal;
+  }
+}
+
+.trainingInfo {
+  display: flex;
+  justify-content: space-between;
+}
+
+.totalRepetitionsBox,
+.totalWeightBox {
+  margin: 20px;
+  width: 100%;
+  @extend %boxStyle;
+
+  & h3, & h5 {
+    margin: 0;
+  }
+  & h5 {
+    font-weight: normal;
+  }
+}
