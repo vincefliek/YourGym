@@ -27,6 +27,13 @@ export const controller = (serviceLocator) => {
       }
     },
     onOpenTraining: (trainingId) => {
+      trainingsApi.update.training(trainingId, {
+        trainingActive: false,
+        trainingTime: '00:00',
+        totalRepetitions: 0,
+        totalWeight: 0,
+      });
+
       navigationApi.toTraining(trainingId);
     },
   };

@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 
 import { Button, Layout, NavbarContainer } from '../../components';
 import { connect, requireData } from '../../utils';
@@ -13,21 +14,34 @@ class PureTraining extends React.Component {
     const { data } = this.props;
     return(
       <div className={style.topBar}>
-        {data.name}
+        <div className={style.name}>
+          {data.name}
+        </div>
       </div>
     );
   };
 
   renderBottomBar = () => {
-    const { onBack, onEdit } = this.props;
+    const { data, onBack, onStopwatch, onEdit } = this.props;
+
     return (
       <NavbarContainer className={style.navbarContainer}>
         <Button
           skin="icon"
           size="large"
-          onClick={onBack}
+          onClick={() => onBack(data)}
         >
           <BackIcon />
+        </Button>
+        <Button
+          skin="text"
+          size="large"
+          className={classnames(style.stopwatch, {
+            [style.stopwatchActive]: data.trainingActive,
+          })}
+          onClick={() => onStopwatch(data)}
+        >
+          {data.trainingTime}
         </Button>
         <Button
           skin="icon"
@@ -66,7 +80,7 @@ class PureTraining extends React.Component {
   };
 
   render() {
-    const { data, onStart } = this.props;
+    const { data, onStart, onFinish } = this.props;
 
     const areExercises = Boolean(data.exercises.length);
 
@@ -79,14 +93,25 @@ class PureTraining extends React.Component {
           {areExercises && this.renderExercises()}
         </div>
         <div className={style.buttonScreen}>
-          <Button
-            skin="primary"
-            font="nunito"
-            className={style.button}
-            onClick={onStart}
-          >
-            Start
-          </Button>
+          {!data.trainingActive ?
+            <Button
+              skin="primary"
+              font="nunito"
+              className={style.startButton}
+              onClick={() => onStart(data)}
+            >
+              Start
+            </Button>
+            :
+            <Button
+              skin="primary"
+              font="nunito"
+              className={style.finishButton}
+              onClick={() => onFinish(data)}
+            >
+              Finish
+            </Button>
+          }
         </div>
       </Layout>
     );
@@ -99,6 +124,8 @@ export const Training = connect({
   data: ctrl.getTraining(),
   onNoData: ctrl.onNoData,
   onStart: ctrl.onStart,
+  onFinish: ctrl.onFinish,
+  onStopwatch: ctrl.onStopwatch,
   onBack: ctrl.onBack,
   onEdit: ctrl.onEdit,
   onOpenExercise: ctrl.onOpenExercise,

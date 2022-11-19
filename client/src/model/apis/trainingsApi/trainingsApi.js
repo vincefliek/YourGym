@@ -279,6 +279,62 @@ export const createTrainingsApi = ({ store, validator }) => {
     _update.allTrainings(trainings);
   };
 
+  const updateTraining = (trainingId, trainingProperties) => {
+    const trainings = getData().trainings.map((training) => {
+      if (trainingId === training.id) {
+        return {
+          ...training,
+          ...trainingProperties,
+        };
+      }
+
+      return training;
+    });
+
+    _update.allTrainings(trainings);
+  };
+
+  const createStopwatch = (trainingId) => {
+    let sec = 0;
+    let min = 0;
+    let hour = 0;
+
+    let timer = setInterval(() => {
+      const thisTraining =
+          getData().trainings.find(tr => trainingId === tr.id);
+
+      if (!thisTraining.trainingActive) {
+        return clearInterval(timer);
+      }
+
+      sec++;
+
+      if (sec === 60) {
+        min++;
+        sec = 0;
+      }
+
+      if (min === 60) {
+        hour++;
+        sec = 0;
+        min = 0;
+      }
+
+      let seconds = sec < 10 ? '0'+ sec : sec;
+      let minute = min < 10 ? '0' + min : min;
+      let hours = hour < 10 ? '0' + hour : hour;
+
+      let time =
+          hours < 1 ?
+            `${minute}:${seconds}` :
+            `${hours}:${minute}:${seconds}`;
+
+      _update.training(trainingId, {
+        trainingTime: time,
+      });
+    }, 1000);
+  };
+
   const _create = {
     newTraining: () => {
       const data = {
@@ -326,6 +382,9 @@ export const createTrainingsApi = ({ store, validator }) => {
     setsPreview: (sets) => {
       return createSetsPreview(sets);
     },
+    stopwatch: (trainingId) => {
+      return createStopwatch(trainingId);
+    },
   };
 
   const _update = {
@@ -355,6 +414,9 @@ export const createTrainingsApi = ({ store, validator }) => {
       validate(data, exerciseSchema);
 
       store.newExercise = data;
+    },
+    training: (trainingId, trainingProperties) => {
+      return updateTraining(trainingId, trainingProperties);
     },
   };
 
