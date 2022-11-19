@@ -44,7 +44,7 @@ class PureTrainingResults extends React.Component {
     return (
       <div className={style.trainingResults}>
         <div className={style.nameBox}>
-          <h5>
+          <h5 className={style.headerName}>
             The name of the training:
           </h5>
           <h3 className={style.name}>
@@ -52,18 +52,22 @@ class PureTrainingResults extends React.Component {
           </h3>
         </div>
         <div className={style.trainingTimeBox}>
-          <h5>Training time:</h5>
-          <h3>{training.trainingTime}</h3>
+          <h5 className={style.headerName}>Training time:</h5>
+          <h3 className={style.headerValue}>{training.trainingTime}</h3>
         </div>
         <div className={style.trainingInfo}>
           <div className={style.totalRepetitionsBox}>
-            <h5>Reps done:</h5>
-            <h3>{`${training.totalRepetitions}`}</h3>
+            <h5 className={style.headerName}>Reps done:</h5>
+            <h3 className={style.headerValue}>
+              {`${training.totalRepetitions}`}
+            </h3>
           </div>
 
           <div className={style.totalWeightBox}>
-            <h5>Weight lifted:</h5>
-            <h3>{`${training.totalWeight}`} kg</h3>
+            <h5 className={style.headerName}>Weight lifted:</h5>
+            <h3 className={style.headerValue}>
+              {`${training.totalWeight}`} kg
+            </h3>
           </div>
         </div>
 

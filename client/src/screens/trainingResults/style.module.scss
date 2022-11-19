@@ -7,11 +7,11 @@
   border-radius: 8px;
 }
 
-h5, h3 {
+.headerName, .headerValue {
   margin: 0;
 }
 
-h5 {
+.headerName {
   font-weight: normal;
 }
 
@@ -58,6 +58,7 @@ h5 {
 }
 
 .name {
+  margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
