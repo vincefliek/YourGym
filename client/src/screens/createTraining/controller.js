@@ -5,7 +5,7 @@ export const controller = (serviceLocator) => {
   const getData = () => getStoreData(controller.storeDataAccessors);
 
   return {
-    getData: () => {
+    getTraining: () => {
       const newTraining = getData().newTraining;
 
       if (newTraining !== null) {

@@ -32,11 +32,11 @@ export const controller = (serviceLocator) => {
     onBack: () => {
       navigationApi.toTrainings();
     },
-    onEdit: () => {
-      window.alert('You will be able to preview very soon :)');
+    onEdit: (trainingId) => {
+      navigationApi.toEditTraining(trainingId);
     },
-    onOpenExercise: (training, exercise) => {
-      navigationApi.toExercise(training.id, exercise.id);
+    onOpenExercise: (trainingId, exerciseId) => {
+      navigationApi.toExercise(trainingId, exerciseId);
     },
   };
 };

@@ -19,7 +19,7 @@ class PureTraining extends React.Component {
   };
 
   renderBottomBar = () => {
-    const { onBack, onEdit } = this.props;
+    const { data, onBack, onEdit } = this.props;
     return (
       <NavbarContainer className={style.navbarContainer}>
         <Button
@@ -32,7 +32,7 @@ class PureTraining extends React.Component {
         <Button
           skin="icon"
           size="large"
-          onClick={onEdit}
+          onClick={() => onEdit(data.id)}
         >
           <EditIcon />
         </Button>
@@ -52,7 +52,7 @@ class PureTraining extends React.Component {
             >
               <div
                 className={style.exerciseBox}
-                onClick={() => onOpenExercise(data, exercise)}
+                onClick={() => onOpenExercise(data.id, exercise.id)}
               >
                 {exercise.name}
                 <br/>

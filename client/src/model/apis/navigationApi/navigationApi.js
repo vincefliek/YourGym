@@ -62,6 +62,11 @@ export const createNavigationApi = ({ store }) => {
     toCreateTraining: () => {
       return setRoute(routes.createTraining);
     },
+    toEditTraining: (trainingId) => {
+      return setRoute(routes.editTraining, {
+        training: trainingId,
+      });
+    },
     toCreateExercise: (trainingId) => {
       return setRoute(routes.createExercise, {
         training: trainingId,

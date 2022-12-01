@@ -1,40 +1,50 @@
 import React from 'react';
+
 import { connect, requireData } from '../../utils';
 import { controller } from './controller';
 
 import { Training } from '../../components';
 
-class PureCreateTraining extends React.Component {
+class PureEditTraining extends React.Component {
+  _onChangeName = (name) => {
+    const trainingId = this.props.training.id;
+    this.props.onChangeName(trainingId, name);
+  };
   _onDeleteExercise = (exerciseId) => {
     const trainingId = this.props.training.id;
     this.props.onDeleteExercise(trainingId, exerciseId);
+  };
+  _onDelete = () => {
+    const trainingId = this.props.training.id;
+    this.props.onDelete(trainingId);
+  };
+  _onSave = () => {
+    const trainingId = this.props.training.id;
+    this.props.onSave(trainingId);
   };
 
   render() {
     const {
       training,
-      onChangeName,
       onOpenExercise,
       onAddExercise,
-      onDelete,
-      onSave,
     } = this.props;
 
     return (
       <Training
         training={training}
-        onChangeName={onChangeName}
+        onChangeName={this._onChangeName}
         onOpenExercise={onOpenExercise}
         onDeleteExercise={this._onDeleteExercise}
         onAddExercise={onAddExercise}
-        onDelete={onDelete}
-        onSave={onSave}
+        onDelete={this._onDelete}
+        onSave={this._onSave}
       />
     );
   }
 }
 
-export const CreateTraining = connect({
+export const EditTraining = connect({
   controller,
 }, ctrl => ({
   training: ctrl.getTraining(),
@@ -50,6 +60,6 @@ export const CreateTraining = connect({
     isData: Boolean(props.training),
     onNoData: props.onNoData,
   }))(
-    PureCreateTraining,
+    PureEditTraining,
   ),
 );

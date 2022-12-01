@@ -49,7 +49,7 @@ export const createTrainingsApi = ({ store, validator }) => {
   const deleteExercise = (trainingId, exerciseId) => {
     const newTraining = getData().newTraining;
 
-    if (newTraining.id === trainingId) {
+    if (newTraining?.id === trainingId) {
       store.newTraining = {
         ...newTraining,
         exercises: newTraining.exercises.filter(exercise =>
@@ -85,7 +85,7 @@ export const createTrainingsApi = ({ store, validator }) => {
   const addExercise = (trainingId, data) => {
     const newTraining = getData().newTraining;
 
-    if (newTraining.id === trainingId) {
+    if (newTraining?.id === trainingId) {
       _update.newTraining({
         exercises: newTraining.exercises.concat(data),
       });
