@@ -1,0 +1,80 @@
+@use "../../components/common/_colors";
+
+.screen {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.screenNoData {
+  ul {
+    position: absolute;
+  }
+  .button {
+    margin: auto 0;
+  }
+}
+
+.navbarContainer.navbarContainer {
+  justify-content: space-between;
+}
+
+.topBar {
+  padding: 20px;
+  display: flex;
+}
+
+.button {
+  flex: 0 0 auto;
+  margin-top: 20px;
+}
+
+.exercises {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 20px 0 8px;
+  margin: 0;
+}
+
+.exercise {
+  display: flex;
+  align-items: center;
+
+  & + & {
+    margin-top: 20px;
+  }
+}
+
+.exerciseBox {
+  flex: 1 1 auto;
+  padding: 10px;
+  border: 1.5px dashed colors.$regular;
+  border-radius: 4px;
+  
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exerciseDelete {
+  flex: 0 0 auto;
+}
+
+.setEnter {
+  transform: translateX(-390px);
+}
+
+.setActiveEnter {
+  transform: translateX(0);
+  transition: all .25s ease-in;
+}
+
+.setExit {
+  opacity: 1;
+}
+
+.setActiveExit {
+  transition: all .25s ease-in;
+  transform: translateX(-390px);
+}
