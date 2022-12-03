@@ -16,13 +16,13 @@ class PureEditExistingExercise extends React.Component {
   };
 
   _onChangeRepetitions = (setId, value) => {
-    const exercise = this.props.data;
-    this.props.onChangeRepetitions(exercise, setId, value);
+    const exerciseId = this.props.data.id;
+    this.props.onChangeRepetitions(exerciseId, setId, value);
   };
 
   _onChangeWeight = (setId, value) => {
-    const exercise = this.props.data;
-    this.props.onChangeWeight(exercise, setId, value);
+    const exerciseId = this.props.data.id;
+    this.props.onChangeWeight(exerciseId, setId, value);
   };
 
   render() {

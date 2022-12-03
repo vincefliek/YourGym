@@ -12,7 +12,7 @@ export const controller = (serviceLocator) => {
     getExercise: () => {
       const exerciseId = getParams().exercise;
       const exercise = getData().newTraining?.exercises.find(exercise =>
-        exercise.id === exerciseId);;
+        exercise.id === exerciseId);
 
       return exercise;
     },
@@ -97,8 +97,8 @@ export const controller = (serviceLocator) => {
       const trainingId = getParams().training;
       const exerciseId = getParams().exercise;
 
-      await trainingsApi.delete.exercise(trainingId, exerciseId);
-      navigationApi.toCreateTraining();
+      await navigationApi.toCreateTraining();
+      trainingsApi.delete.exercise(trainingId, exerciseId);
     },
     onSave:  () => {
       navigationApi.toCreateTraining();

@@ -9,20 +9,9 @@ export const controller = (serviceLocator) => {
 
   return {
     getTraining: () => {
-      const params = getParams();
-      const trainings = getData().trainings;
-      const training = trainings.find(training =>
-        training.id === params.training);
-
-      // if (newTraining !== null) {
-      //   return {
-      //     ...newTraining,
-      //     exercises: newTraining.exercises.map(exercise => ({
-      //       ...exercise,
-      //       setsPreview: trainingsApi.create.setsPreview(exercise.sets),
-      //     })),
-      //   };
-      // }
+      const trainingId = getParams().training;
+      const training = getData().trainings.find(training =>
+        training.id === trainingId);
 
       return training;
     },
@@ -47,9 +36,9 @@ export const controller = (serviceLocator) => {
       trainingsApi.delete.exercise(trainingId, exerciseId);
     },
     onOpenExercise: (exerciseId) => {
-      // const trainingId = getData().newTraining.id;
+      const trainingId = getParams().training;
 
-      // navigationApi.toEditNewExercise(trainingId, exerciseId);
+      navigationApi.toEditExistingExercise(trainingId, exerciseId);
     },
     onAddExercise: () => {
       // const trainingId = getParams().training;
