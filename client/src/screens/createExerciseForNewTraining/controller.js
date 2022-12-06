@@ -4,7 +4,7 @@ export const controller = (serviceLocator) => {
 
   const getData = () => getStoreData(controller.storeDataAccessors);
   const getParams = () => navigationApi.getPathParams(
-    navigationApi.routes.createExercise,
+    navigationApi.routes.createExerciseForNewTraining,
   );
   const toNumber = (value) => Number.parseInt(value, 10);
 

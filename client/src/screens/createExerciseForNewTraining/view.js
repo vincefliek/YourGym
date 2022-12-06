@@ -4,7 +4,7 @@ import { Exercise } from '../../components';
 import { connect, requireData } from '../../utils';
 import { controller } from './controller';
 
-class PureCreateExercise extends React.Component {
+class PureCreateExerciseForNewTraining extends React.Component {
   _onDeleteSet = (setId) => {
     const exerciseId = this.props.data.id;
     this.props.onDeleteSet(exerciseId, setId);
@@ -36,7 +36,7 @@ class PureCreateExercise extends React.Component {
   }
 }
 
-export const CreateExercise = connect({
+export const CreateExerciseForNewTraining = connect({
   controller,
 }, ctrl => ({
   data: ctrl.getData(),
@@ -53,6 +53,6 @@ export const CreateExercise = connect({
     isData: Boolean(props.data),
     onNoData: props.onNoData,
   }))(
-    PureCreateExercise,
+    PureCreateExerciseForNewTraining,
   ),
 );
