@@ -1,0 +1,1 @@
+export { CreateExerciseForExistingTraining } from './view';

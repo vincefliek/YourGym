@@ -30,7 +30,7 @@ export const controller = (serviceLocator) => {
       const trainingId = getData().newTraining.id;
 
       trainingsApi.create.newExercise();
-      navigationApi.toCreateExercise(trainingId);
+      navigationApi.toCreateExerciseForNewTraining(trainingId);
     },
     onDelete: async () => {
       await navigationApi.toTrainings();

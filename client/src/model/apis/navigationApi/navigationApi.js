@@ -10,7 +10,9 @@ export const createNavigationApi = ({ store }) => {
     createTraining: '/trainings/new',
     openTraining: '/trainings/:training',
     editTraining: '/trainings/:training/edit',
-    createExercise: '/trainings/:training/new-exercise',
+    createExerciseForNewTraining: '/trainings/:training/new-exercise',
+    createExerciseForExistingTraining:
+      '/trainings/:training/new-exerciseForExistingTraining',
     editNewExercise: '/trainings/:training/:exercise/editNew',
     editExistingExercise: '/trainings/:training/:exercise/edit',
     openExercise: '/trainings/:training/:exercise',
@@ -67,8 +69,13 @@ export const createNavigationApi = ({ store }) => {
         training: trainingId,
       });
     },
-    toCreateExercise: (trainingId) => {
-      return setRoute(routes.createExercise, {
+    toCreateExerciseForNewTraining: (trainingId) => {
+      return setRoute(routes.createExerciseForNewTraining, {
+        training: trainingId,
+      });
+    },
+    toCreateExerciseForExistingTraining: (trainingId) => {
+      return setRoute(routes.createExerciseForExistingTraining, {
         training: trainingId,
       });
     },

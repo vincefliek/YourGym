@@ -13,6 +13,13 @@ export const controller = (serviceLocator) => {
       const training = getData().trainings.find(training =>
         training.id === trainingId);
 
+      if (training !== undefined) {
+        training.exercises = training.exercises.map(exercise => ({
+          ...exercise,
+          setsPreview: trainingsApi.create.setsPreview(exercise.sets),
+        }));
+      }
+
       return training;
     },
     onNoData: () => {
@@ -41,10 +48,10 @@ export const controller = (serviceLocator) => {
       navigationApi.toEditExistingExercise(trainingId, exerciseId);
     },
     onAddExercise: () => {
-      // const trainingId = getParams().training;
+      const trainingId = getParams().training;
 
-      // trainingsApi.create.newExercise();
-      // navigationApi.toCreateExercise(trainingId);
+      trainingsApi.create.newExercise();
+      navigationApi.toCreateExerciseForExistingTraining(trainingId);
     },
     onDelete: async (trainingId) => {
       await navigationApi.toTrainings();

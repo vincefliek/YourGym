@@ -8,7 +8,8 @@ import {
   Menu,
   NotFound,
   CreateTraining,
-  CreateExercise,
+  CreateExerciseForNewTraining,
+  CreateExerciseForExistingTraining,
   EditNewExercise,
   EditExistingExercise,
   Training,
@@ -52,8 +53,14 @@ export class App extends React.Component {
               element={<CreateTraining />}
             />
             <Route
-              path={this.apis.navigationApi.routes.createExercise}
-              element={<CreateExercise />}
+              path={this.apis.navigationApi.routes.createExerciseForNewTraining}
+              element={<CreateExerciseForNewTraining />}
+            />
+            <Route
+              path={
+                this.apis.navigationApi.routes.createExerciseForExistingTraining
+              }
+              element={<CreateExerciseForExistingTraining />}
             />
             <Route
               path={this.apis.navigationApi.routes.editNewExercise}

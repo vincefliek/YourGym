@@ -63,22 +63,6 @@ export const controller = (serviceLocator) => {
     onSave: () => {
       const trainingId = getParams().training;
 
-      const trainings = getData().trainings.map(tr => {
-        if (tr.id === trainingId) {
-          return {
-            ...tr,
-            exercises: tr.exercises.map(exercise => ({
-              ...exercise,
-              setsPreview: trainingsApi.create.setsPreview(exercise.sets),
-            })),
-          };
-        }
-
-        return tr;
-      });
-
-      trainingsApi.update.allTrainings(trainings);
-
       navigationApi.toEditTraining(trainingId);
     },
   };
