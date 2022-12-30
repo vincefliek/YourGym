@@ -2,11 +2,21 @@
 @use "../../components/common/_fonts";
 
 .screen {
-  height: auto;
+  height: 100%;
+  width: 100%;
   display: flex;
   overflow: auto;
   flex-direction: column;
   align-items: center;
+}
+
+.swiper {
+  height: 100%;
+  width: 100%;
+}
+
+.swiperSlide {
+  overflow: auto;
 }
 
 .navbarContainer.navbarContainer {
@@ -16,6 +26,10 @@
 .switch {
   display: flex;
   align-items: center;
+}
+
+.swiperPaginationFraction {
+  width: auto;
 }
 
 .topBar {
@@ -97,7 +111,7 @@
 .setsDate {
   font-size: 16px;
   font-family: fonts.$nunito;
-  margin-bottom: 10px;
+  margin: 0 20px 10px;
 }
 
 .setsHistoryBox {
@@ -108,9 +122,15 @@
 }
 
 .setsByDate {
-  display: flex;
   & + & {
     margin-top: 25px;
+  }
+}
+
+.setHistory {
+  display: flex;
+  & + & {
+    margin-top: 15px;
   }
 }
 
@@ -120,4 +140,22 @@
 
 .setTime {
   flex: 0 0 auto;
+}
+
+.setEnter {
+  transform: translateX(-390px);
+}
+
+.setActiveEnter {
+  transform: translateX(0);
+  transition: all .25s ease-in;
+}
+
+.setExit {
+  opacity: 1;
+}
+
+.setActiveExit {
+  transition: all .25s ease-in;
+  transform: translateX(-390px);
 }

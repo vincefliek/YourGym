@@ -1,4 +1,11 @@
 import React from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Navigation } from 'swiper';
+import classnames from 'classnames';
+import {
+  CSSTransition,
+  TransitionGroup,
+} from 'react-transition-group';
 
 import {
   Button,
@@ -13,6 +20,8 @@ import { ReactComponent as ArrowLeft } from '../../assets/arrowLeft.svg';
 import { ReactComponent as ArrowRight } from '../../assets/arrowRight.svg';
 import { ReactComponent as DoneIcon } from '../../assets/done.svg';
 
+import 'swiper/scss';
+import 'swiper/scss/pagination';
 import style from './style.module.scss';
 
 class PureExercise extends React.Component {
@@ -27,13 +36,7 @@ class PureExercise extends React.Component {
 
   renderBottomBar = () => {
     const {
-      training,
-      exercise,
-      getCurrentExercise,
-      getTotalExercises,
       onBack,
-      onExerciseNext,
-      onExercisePrev,
     } = this.props;
     return (
       <NavbarContainer className={style.navbarContainer}>
@@ -48,19 +51,18 @@ class PureExercise extends React.Component {
           <Button
             skin="icon"
             size="large"
-            onClick={() => onExercisePrev(training, exercise)}
+            className='swiperButtonPrev'
           >
             <ArrowLeft />
           </Button>
-          <div>
-            {getCurrentExercise(training, exercise)}
-            /
-            {getTotalExercises(training)}
-          </div>
+          <div className={classnames(
+            'swiperPaginationFraction',
+            style.swiperPaginationFraction,
+          )}></div>
           <Button
             skin="icon"
             size="large"
-            onClick={() => onExerciseNext(training, exercise)}
+            className='swiperButtonNext'
           >
             <ArrowRight />
           </Button>
@@ -69,61 +71,67 @@ class PureExercise extends React.Component {
     );
   };
 
-  renderSets = () => {
+  renderSets = (exercise) => {
     const {
       training,
-      exercise,
       onDoneSet,
       onChangeRepetitions,
       onChangeWeight,
     } = this.props;
     return (
-      <ul className={style.sets}>
+      <TransitionGroup component={'ul'} className={style.sets}>
         {exercise.sets.map((set) => {
           return (
-            <li
+            <CSSTransition
               key={set.id}
-              className={style.set}
+              timeout={250}
+              classNames={{
+                exit: style.setExit,
+                exitActive: style.setActiveExit,
+              }}
             >
-              <div className={style.setPreview}>
-                <div className={style.setRepetitions}>
-                  <Input
-                    type="number"
-                    value={set.repetitions}
-                    onBlur={value =>
-                      onChangeRepetitions(exercise.id, set.id, value)
-                    }
-                  />
-                </div>
-                <div>X</div>
-                <div className={style.setWeight}>
-                  <Input
-                    type="number"
-                    value={set.weight}
-                    onBlur={value => onChangeWeight(exercise.id, set.id, value)}
-                  />
-                </div>
-                <div >
+              <li className={style.set}>
+                <div className={style.setPreview}>
+                  <div className={style.setRepetitions}>
+                    <Input
+                      type="number"
+                      value={set.repetitions}
+                      onBlur={value =>
+                        onChangeRepetitions(exercise.id, set.id, value)
+                      }
+                    />
+                  </div>
+                  <div>X</div>
+                  <div className={style.setWeight}>
+                    <Input
+                      type="number"
+                      value={set.weight}
+                      onBlur={
+                        value => onChangeWeight(exercise.id, set.id, value)
+                      }
+                    />
+                  </div>
+                  <div >
                 kg
+                  </div>
+                  <Button
+                    skin="icon"
+                    size="large"
+                    className={style.setDone}
+                    onClick={() => onDoneSet(training.id, exercise.id, set)}
+                  >
+                    <DoneIcon />
+                  </Button>
                 </div>
-                <Button
-                  skin="icon"
-                  size="large"
-                  className={style.setDone}
-                  onClick={() => onDoneSet(training.id, exercise.id, set)}
-                >
-                  <DoneIcon />
-                </Button>
-              </div>
-            </li>
+              </li>
+            </CSSTransition>
           );
         })}
-      </ul>
+      </TransitionGroup>
     );
   };
 
-  renderSetsHistory = () => {
-    const { exercise } = this.props;
+  renderSetsHistory = (exercise) => {
     return (
       <div className={style.history}>
         <div className={style.historyUnit}>
@@ -133,35 +141,43 @@ class PureExercise extends React.Component {
           {exercise.setsHistory.map(setsByDate => {
             return (
               <li
-                key={setsByDate.date}
+                key={setsByDate.id}
                 className={style.setsByDate}
               >
-                <ul className={style.sets}>
-                  <div className={style.setsDate}>
-                    <b>
-                      {setsByDate.date}
-                    </b>
-                  </div>
+                <div className={style.setsDate}>
+                  <b>
+                    {setsByDate.date}
+                  </b>
+                </div>
 
+                <TransitionGroup component={'ul'} className={style.sets}>
                   {setsByDate.sets.map((set, index) => {
                     return (
-                      <li
+                      <CSSTransition
                         key={set.id}
-                        className={style.set}
+                        timeout={250}
+                        classNames={{
+                          enter: style.setEnter,
+                          enterActive: style.setActiveEnter,
+                        }}
                       >
-                        <div className={style.setPreview}>
-                          <div className={style.setUnit}>
-                            <b>№{setsByDate.sets.length - index}</b> {' '}
-                            {set.repetitions}x{set.weight}kg
+                        <li
+                          className={style.setHistory}
+                        >
+                          <div className={style.setPreview}>
+                            <div className={style.setUnit}>
+                              <b>№{setsByDate.sets.length - index}</b> {' '}
+                              {set.repetitions}x{set.weight}kg
+                            </div>
+                            <div className={style.setTime}>
+                              {set.time}
+                            </div>
                           </div>
-                          <div className={style.setTime}>
-                            {set.time}
-                          </div>
-                        </div>
-                      </li>
+                        </li>
+                      </CSSTransition>
                     );
                   })}
-                </ul>
+                </TransitionGroup>
               </li>
             );
           })}
@@ -171,21 +187,44 @@ class PureExercise extends React.Component {
   };
 
   render() {
-    const { exercise } = this.props;
-
-    const areSets = Boolean(exercise.sets.length);
-    const areSetsHistory = Boolean(exercise.setsHistory.length);
-
+    const { training, exercise, getCurrentExercise } = this.props;
     return (
       <Layout
         topBar={this.renderTopBar()}
         bottomBar={this.renderBottomBar()}
       >
         <div className={style.screen}>
-          {areSets && this.renderSets()}
-          {areSetsHistory && this.renderSetsHistory()}
+          <Swiper
+            pagination={{
+              el: '.swiperPaginationFraction',
+              type: 'fraction',
+            }}
+            navigation={{
+              prevEl: '.swiperButtonPrev',
+              nextEl: '.swiperButtonNext',
+            }}
+            modules={[Pagination, Navigation]}
+            initialSlide={getCurrentExercise(training, exercise) - 1}
+            className={style.swiper}
+          >
+            {training.exercises.map(ex => {
+              const areSets = Boolean(ex.sets.length);
+              const areSetsHistory = Boolean(ex.setsHistory.length);
+
+              return (
+                <SwiperSlide
+                  key={ex.id}
+                  className={style.swiperSlide}
+                >
+                  {areSets && this.renderSets(ex)}
+                  {areSetsHistory && this.renderSetsHistory(ex)}
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
         </div>
       </Layout>
+
     );
   }
 }
@@ -196,12 +235,9 @@ export const Exercise = connect({
   training: ctrl.getTraining(),
   exercise: ctrl.getExercise(),
   getCurrentExercise: ctrl.getCurrentExerciseIntoNavbar,
-  getTotalExercises: ctrl.getTotalExercisesIntoNavbar,
   onChangeRepetitions: ctrl.onChangeRepetitions,
   onChangeWeight: ctrl.onChangeWeight,
   onDoneSet: ctrl.onDoneSet,
-  onExerciseNext: ctrl.onExerciseNext,
-  onExercisePrev: ctrl.onExercisePrev,
   onNoData: ctrl.onNoData,
   onBack: ctrl.onBack,
 }))(
