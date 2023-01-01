@@ -19,6 +19,11 @@
   overflow: auto;
 }
 
+.name {
+  overflow: hidden;
+  text-align: center;
+}
+
 .navbarContainer.navbarContainer {
   justify-content: space-between;
 }

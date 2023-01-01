@@ -1,6 +1,6 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation } from 'swiper';
+import { Pagination, Navigation, Controller  } from 'swiper';
 import classnames from 'classnames';
 import {
   CSSTransition,
@@ -25,11 +25,34 @@ import 'swiper/scss/pagination';
 import style from './style.module.scss';
 
 class PureExercise extends React.Component {
+  constructor (props) {
+    super(props);
+
+    this.state = {
+      controlledSwiper: null,
+    };
+
+  }
   renderTopBar = () => {
-    const { exercise } = this.props;
+    const { training } = this.props;
     return(
       <div className={style.topBar}>
-        {exercise.name}
+        <Swiper
+          modules={[Pagination, Navigation, Controller ]}
+          allowTouchMove={false}
+          onSwiper={swiper => this.setState({controlledSwiper: swiper})}
+          className={style.swiper}
+        >
+          {training.exercises.map(ex => {
+            return (
+              <SwiperSlide key={ex.id}>
+                <div className={style.name}>
+                  {ex.name}
+                </div>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
       </div>
     );
   };
@@ -70,6 +93,9 @@ class PureExercise extends React.Component {
       </NavbarContainer>
     );
   };
+
+  // 1. add swiper on names of exercises
+  // 2. add hash on slides
 
   renderSets = (exercise) => {
     const {
@@ -203,7 +229,8 @@ class PureExercise extends React.Component {
               prevEl: '.swiperButtonPrev',
               nextEl: '.swiperButtonNext',
             }}
-            modules={[Pagination, Navigation]}
+            controller={{ control: this.state.controlledSwiper }}
+            modules={[Pagination, Navigation, Controller ]}
             initialSlide={getCurrentExercise(training, exercise) - 1}
             className={style.swiper}
           >
