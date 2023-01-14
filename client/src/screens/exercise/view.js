@@ -1,6 +1,6 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation, Controller  } from 'swiper';
+import { Pagination, Navigation, Controller, HashNavigation } from 'swiper';
 import classnames from 'classnames';
 import {
   CSSTransition,
@@ -31,14 +31,14 @@ class PureExercise extends React.Component {
     this.state = {
       controlledSwiper: null,
     };
-
   }
+
   renderTopBar = () => {
     const { training } = this.props;
     return(
       <div className={style.topBar}>
         <Swiper
-          modules={[Pagination, Navigation, Controller ]}
+          modules={[ Controller ]}
           allowTouchMove={false}
           onSwiper={swiper => this.setState({controlledSwiper: swiper})}
           className={style.swiper}
@@ -59,8 +59,11 @@ class PureExercise extends React.Component {
 
   renderBottomBar = () => {
     const {
+      training,
       onBack,
     } = this.props;
+    const totalExercises = training.exercises.length;
+
     return (
       <NavbarContainer className={style.navbarContainer}>
         <Button
@@ -70,11 +73,13 @@ class PureExercise extends React.Component {
         >
           <BackIcon />
         </Button>
-        <div className={style.switch}>
+        <div className={classnames(style.navigation, {
+          [style.noNavigation]: totalExercises === 1,
+        })}>
           <Button
             skin="icon"
             size="large"
-            className='swiperButtonPrev'
+            className="swiperButtonPrev"
           >
             <ArrowLeft />
           </Button>
@@ -85,7 +90,7 @@ class PureExercise extends React.Component {
           <Button
             skin="icon"
             size="large"
-            className='swiperButtonNext'
+            className="swiperButtonNext"
           >
             <ArrowRight />
           </Button>
@@ -94,9 +99,6 @@ class PureExercise extends React.Component {
     );
   };
 
-  // 1. add swiper on names of exercises
-  // 2. add hash on slides
-
   renderSets = (exercise) => {
     const {
       training,
@@ -104,6 +106,7 @@ class PureExercise extends React.Component {
       onChangeRepetitions,
       onChangeWeight,
     } = this.props;
+
     return (
       <TransitionGroup component={'ul'} className={style.sets}>
         {exercise.sets.map((set) => {
@@ -137,9 +140,7 @@ class PureExercise extends React.Component {
                       }
                     />
                   </div>
-                  <div >
-                kg
-                  </div>
+                  <div>kg</div>
                   <Button
                     skin="icon"
                     size="large"
@@ -187,9 +188,7 @@ class PureExercise extends React.Component {
                           enterActive: style.setActiveEnter,
                         }}
                       >
-                        <li
-                          className={style.setHistory}
-                        >
+                        <li className={style.setHistory}>
                           <div className={style.setPreview}>
                             <div className={style.setUnit}>
                               <b>№{setsByDate.sets.length - index}</b> {' '}
@@ -213,7 +212,13 @@ class PureExercise extends React.Component {
   };
 
   render() {
-    const { training, exercise, getCurrentExercise } = this.props;
+    const {
+      training,
+      exercise,
+      getHash,
+      getCurrentExercise,
+    } = this.props;
+
     return (
       <Layout
         topBar={this.renderTopBar()}
@@ -229,21 +234,22 @@ class PureExercise extends React.Component {
               prevEl: '.swiperButtonPrev',
               nextEl: '.swiperButtonNext',
             }}
+            hashNavigation={true}
             controller={{ control: this.state.controlledSwiper }}
-            modules={[Pagination, Navigation, Controller ]}
+            modules={[Pagination, Navigation, Controller, HashNavigation ]}
             initialSlide={getCurrentExercise(training, exercise) - 1}
             className={style.swiper}
           >
             {training.exercises.map(ex => {
-              const areSets = Boolean(ex.sets.length);
               const areSetsHistory = Boolean(ex.setsHistory.length);
 
               return (
                 <SwiperSlide
                   key={ex.id}
+                  data-hash={getHash(training.id, ex.id)}
                   className={style.swiperSlide}
                 >
-                  {areSets && this.renderSets(ex)}
+                  {this.renderSets(ex)}
                   {areSetsHistory && this.renderSetsHistory(ex)}
                 </SwiperSlide>
               );
@@ -251,7 +257,6 @@ class PureExercise extends React.Component {
           </Swiper>
         </div>
       </Layout>
-
     );
   }
 }
@@ -261,12 +266,14 @@ export const Exercise = connect({
 }, ctrl => ({
   training: ctrl.getTraining(),
   exercise: ctrl.getExercise(),
+  getHash: ctrl.getHash,
   getCurrentExercise: ctrl.getCurrentExerciseIntoNavbar,
   onChangeRepetitions: ctrl.onChangeRepetitions,
   onChangeWeight: ctrl.onChangeWeight,
   onDoneSet: ctrl.onDoneSet,
   onNoData: ctrl.onNoData,
   onBack: ctrl.onBack,
+
 }))(
   requireData(props => ({
     isData: Boolean(props.exercise),

@@ -28,9 +28,13 @@
   justify-content: space-between;
 }
 
-.switch {
+.navigation {
   display: flex;
   align-items: center;
+}
+
+.noNavigation {
+  display: none;
 }
 
 .swiperPaginationFraction {

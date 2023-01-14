@@ -26,11 +26,11 @@ export const controller = (serviceLocator) => {
 
       return exercise;
     },
+    getHash: (trainingId, exerciseId) => {
+      return`/trainings/${trainingId}/${exerciseId}`;
+    },
     getCurrentExerciseIntoNavbar: (training, exercise) => {
       return training.exercises.indexOf(exercise) + 1;
-    },
-    getTotalExercisesIntoNavbar: (training) => {
-      return training.exercises.length;
     },
     onChangeRepetitions: (exerciseId, setId, value) => {
       const trainingId = findTraining().id;
@@ -103,28 +103,6 @@ export const controller = (serviceLocator) => {
     onDoneSet: async (trainingId, exerciseId, set) => {
       await trainingsApi.create.setsHistory(trainingId, exerciseId, set);
       trainingsApi.delete.set(trainingId, exerciseId, set.id);
-    },
-    onExerciseNext: async (training, exercise) => {
-      const currentExerciseIndex = training.exercises.indexOf(exercise);
-
-      if (currentExerciseIndex < training.exercises.length - 1) {
-        const nextExerciseId = training.exercises[currentExerciseIndex + 1].id;
-
-        await navigationApi.toExercise(training.id, nextExerciseId);
-        const trainings = getData().trainings;
-        trainingsApi.update.allTrainings(trainings);
-      }
-    },
-    onExercisePrev: async (training, exercise) => {
-      const currentExerciseIndex = training.exercises.indexOf(exercise);
-
-      if (currentExerciseIndex > 0) {
-        const prevExerciseId = training.exercises[currentExerciseIndex - 1].id;
-
-        await navigationApi.toExercise(training.id, prevExerciseId);
-        const trainings = getData().trainings;
-        trainingsApi.update.allTrainings(trainings);
-      }
     },
     onNoData: () => {
       navigationApi.toTrainings();
