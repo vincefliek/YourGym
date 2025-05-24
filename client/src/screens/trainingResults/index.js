@@ -1,0 +1,1 @@
+export { TrainingResults } from './view';

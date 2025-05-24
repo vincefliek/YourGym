@@ -20,7 +20,9 @@ class PureExercise extends React.Component {
     const { exercise } = this.props;
     return(
       <div className={style.topBar}>
-        {exercise.name}
+        <div className={style.name}>
+          {exercise.name}
+        </div>
       </div>
     );
   };
@@ -32,6 +34,8 @@ class PureExercise extends React.Component {
       getCurrentExercise,
       getTotalExercises,
       onBack,
+      onStart,
+      onStopwatch,
       onExerciseNext,
       onExercisePrev,
     } = this.props;
@@ -44,6 +48,23 @@ class PureExercise extends React.Component {
         >
           <BackIcon />
         </Button>
+        {!training.trainingActive ?
+          <Button
+            skin="text"
+            size="large"
+            onClick={() => onStart(training.id)}
+          >
+            Start
+          </Button>
+          :
+          <Button
+            skin="text"
+            size="large"
+            onClick={() => onStopwatch(training)}
+          >
+            {training.trainingTime}
+          </Button>
+        }
         <div className={style.switch}>
           <Button
             skin="icon"
@@ -110,7 +131,7 @@ class PureExercise extends React.Component {
                   skin="icon"
                   size="large"
                   className={style.setDone}
-                  onClick={() => onDoneSet(training.id, exercise.id, set)}
+                  onClick={() => onDoneSet(training, exercise.id, set)}
                 >
                   <DoneIcon />
                 </Button>
@@ -204,6 +225,8 @@ export const Exercise = connect({
   onExercisePrev: ctrl.onExercisePrev,
   onNoData: ctrl.onNoData,
   onBack: ctrl.onBack,
+  onStart: ctrl.onStart,
+  onStopwatch: ctrl.onStopwatch,
 }))(
   requireData(props => ({
     isData: Boolean(props.exercise),
