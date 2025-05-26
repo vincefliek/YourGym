@@ -2,8 +2,8 @@ import React from 'react';
 import classnames from 'classnames';
 
 import { connect } from '../../utils';
-import Burger from '../../assets/burger.svg';
-import Dumbbell from '../../assets/dumbbell.svg';
+import { ReactComponent as Burger } from '../../assets/burger.svg';
+import { ReactComponent as Dumbbell } from '../../assets/dumbbell.svg';
 import { controller } from './controller';
 import { Button } from '../Button';
 import { NavbarContainer } from '../NavbarContainer';

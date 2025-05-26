@@ -4,8 +4,8 @@ import { Button, Layout, Navbar, NavbarContainer } from '../../components';
 import { connect } from '../../utils';
 import { controller } from './controller';
 import { Training } from '../../model/types';
-import DeleteIcon from '../../assets/delete.svg';
-import AddIcon from '../../assets/add.svg';
+import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
+import { ReactComponent as AddIcon } from '../../assets/add.svg';
 
 import style from './style.module.scss';
 

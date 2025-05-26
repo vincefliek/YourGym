@@ -4,8 +4,8 @@ import classnames from 'classnames';
 import { Button, Input, Layout, NavbarContainer } from '../../components';
 import { connect, requireData } from '../../utils';
 import { controller } from './controller';
-import DoneIcon from '../../assets/done.svg';
-import DeleteIcon from '../../assets/delete.svg';
+import { ReactComponent as DoneIcon } from '../../assets/done.svg';
+import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
 import {
   CSSTransition,
   TransitionGroup,
