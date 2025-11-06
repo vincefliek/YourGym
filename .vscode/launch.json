@@ -10,7 +10,8 @@
       "restart": true,
       "runtimeExecutable": "node",
       "console": "integratedTerminal",
-      "watch": true,
+      "preLaunchTask": "start DB",
+      "postDebugTask": "stop DB",
       "env": {
         "NODE_ENV": "development"
       }

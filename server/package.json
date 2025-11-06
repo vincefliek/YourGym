@@ -6,8 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "NODE_ENV=development node index.js",
-    "test-routes": "bash ./testRoutesInCLI.sh"
+    "dev": "NODE_ENV=development node index.js && supabase start",
+    "startDB": "supabase start",
+    "stopDB": "supabase stop"
   },
   "author": "",
   "license": "ISC",
@@ -17,5 +18,8 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "supabase": "^2.54.11"
   }
 }

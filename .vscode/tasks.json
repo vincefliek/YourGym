@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "start DB",
+      "type": "shell",
+      "command": "npm run startDB",
+      "options": {
+        "cwd": "${workspaceFolder}/server"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "stop DB",
+      "type": "shell",
+      "command": "npm run stopDB",
+      "options": {
+        "cwd": "${workspaceFolder}/server"
+      },
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}
