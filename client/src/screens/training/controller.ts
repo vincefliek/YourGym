@@ -2,7 +2,9 @@ import { AppContext } from '../../types';
 import { Training, Exercise } from '../../model/types';
 import { Controller } from '../../utils/HOCs/types';
 
-export const controller: Controller = (serviceLocator: AppContext['serviceLocator']) => {
+export const controller: Controller = (
+  serviceLocator: AppContext['serviceLocator'],
+) => {
   const { getStoreData } = serviceLocator.getStore();
   const { navigationApi, trainingsApi } = serviceLocator.getAPIs();
 
@@ -43,7 +45,7 @@ export const controller: Controller = (serviceLocator: AppContext['serviceLocato
         training.id === params.training);
 
       if (training) {
-        navigationApi.toEditExistingExercise(training.id, training.exercises[0].id);
+        navigationApi.toEditTraining(training.id);
       }
     },
     onOpenExercise: (training: Training, exercise: Exercise) => {

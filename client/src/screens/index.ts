@@ -8,3 +8,4 @@ export { Training } from './training';
 export { Exercise } from './exercise';
 export { EditNewExercise } from './editNewExercise';
 export { EditExistingExercise } from './editExistingExercise';
+export { EditExistingTraining } from './editExistingTraining/view';

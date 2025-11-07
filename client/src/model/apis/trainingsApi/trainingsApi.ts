@@ -1,5 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Exercise, Set, SetsByDate, Training, ApiTools } from '../../types';
+import {
+  Exercise,
+  Set,
+  SetsByDate,
+  Training,
+  ApiTools,
+  TrainingsApi,
+} from '../../types';
 import {
   allTrainingsSchema,
   trainingSchema,
@@ -8,7 +15,9 @@ import {
   setsHistorySchema,
 } from './schemas';
 
-export const createTrainingsApi = ({ store, validator }: ApiTools) => {
+export const createTrainingsApi = (
+  { store, validator }: ApiTools,
+): TrainingsApi => {
   validator.addSchema(allTrainingsSchema);
   validator.addSchema(trainingSchema);
   validator.addSchema(exerciseSchema);
@@ -148,7 +157,9 @@ export const createTrainingsApi = ({ store, validator }: ApiTools) => {
     const newTraining = getData().newTraining;
     const newExercise = getData().newExercise;
 
-    const _deleteSet = (exercises: Exercise[]) => exercises.map((exercise: Exercise) => {
+    const _deleteSet = (
+      exercises: Exercise[],
+    ) => exercises.map((exercise: Exercise) => {
       if (exercise.id === exerciseId) {
         return {
           ...exercise,
@@ -224,7 +235,12 @@ export const createTrainingsApi = ({ store, validator }: ApiTools) => {
     return currentTime;
   };
 
-  const addSetToHistory = (trainingId: string, exerciseId: string, data: SetsByDate, set: Set) => {
+  const addSetToHistory = (
+    trainingId: string,
+    exerciseId: string,
+    data: SetsByDate,
+    set: Set,
+  ) => {
     const _addSetToHistory = (setsHistory: SetsByDate[]) => {
       const setsByCurrentDate = setsHistory.find(
         (setsByDate: SetsByDate) => setsByDate.date === data.date,
@@ -311,7 +327,7 @@ export const createTrainingsApi = ({ store, validator }: ApiTools) => {
       validate(data, setSchema);
       addSet(trainingId, exerciseId, data);
     },
-    setsHistory: (trainingId: string, exerciseId: string, set: Set) => {
+    setsHistory: async (trainingId: string, exerciseId: string, set: Set) => {
       const data: SetsByDate = {
         id: uuidv4(),
         date: createCurrentDate(),
@@ -348,6 +364,47 @@ export const createTrainingsApi = ({ store, validator }: ApiTools) => {
 
       validate(data, exerciseSchema);
       store.newExercise = data;
+    },
+    training: (trainingId: string, data: Partial<Training>) => {
+      const trainings = getData().trainings.map((tr: Training) => {
+        if (tr.id === trainingId) {
+          return {
+            ...tr,
+            ...data,
+          };
+        }
+
+        return tr;
+      });
+
+      _update.allTrainings(trainings);
+    },
+    exercise: (
+      trainingId: string,
+      exerciseId: string,
+      data: Partial<Exercise>,
+    ) => {
+      const trainings = getData().trainings.map((training: Training) => {
+        if (training.id === trainingId) {
+          return {
+            ...training,
+            exercises: training.exercises.map((exercise: Exercise) => {
+              if (exercise.id === exerciseId) {
+                return {
+                  ...exercise,
+                  ...data,
+                };
+              }
+
+              return exercise;
+            }),
+          };
+        }
+
+        return training;
+      });
+
+      _update.allTrainings(trainings);
     },
   };
 

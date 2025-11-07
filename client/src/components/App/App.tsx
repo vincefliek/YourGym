@@ -13,6 +13,7 @@ import {
   EditExistingExercise,
   Training,
   Exercise,
+  EditExistingTraining,
 } from '../../screens';
 import { Navigator } from '../../components';
 import { AppContext } from '../../utils';
@@ -73,6 +74,10 @@ export class App extends React.Component<AppProps, AppState> {
             <Route
               path={this.apis.navigationApi.routes.openExercise}
               element={<Exercise />}
+            />
+            <Route
+              path={this.apis.navigationApi.routes.editTraining}
+              element={<EditExistingTraining />}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>

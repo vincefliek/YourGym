@@ -14,8 +14,9 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   return {
     getExercise: () => {
       const exerciseId = getParams().exercise;
-      const exercise = getData().newTraining?.exercises.find((exercise: Exercise) =>
-        exercise.id === exerciseId);
+      const exercise = getData().newTraining?.exercises.find(
+        (exercise: Exercise) => exercise.id === exerciseId,
+      );
 
       return exercise;
     },
@@ -89,18 +90,24 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
       const trainingId = getParams().training;
       const exerciseId = getParams().exercise;
 
-      trainingsApi.create.set(trainingId, exerciseId);
+      if (trainingId && exerciseId) {
+        trainingsApi.create.set(trainingId, exerciseId);
+      }
     },
     onDeleteSet: (exerciseId: string, setId: string) => {
       const trainingId = getParams().training;
 
-      trainingsApi.delete.set(trainingId, exerciseId, setId);
+      if (trainingId) {
+        trainingsApi.delete.set(trainingId, exerciseId, setId);
+      }
     },
-    onDelete: async () => {
+    onDelete: () => {
       const trainingId = getParams().training;
       const exerciseId = getParams().exercise;
 
-      await trainingsApi.delete.exercise(trainingId, exerciseId);
+      if (trainingId && exerciseId) {
+        trainingsApi.delete.exercise(trainingId, exerciseId);
+      }
       navigationApi.toCreateTraining();
     },
     onSave: () => {

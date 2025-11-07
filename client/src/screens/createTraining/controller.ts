@@ -1,5 +1,5 @@
 import { AppContext } from '../../types';
-import { Exercise, Training } from '../../model/types';
+import { Exercise } from '../../model/types';
 
 export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   const { getStoreData } = serviceLocator.getStore();
@@ -33,6 +33,9 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
       const trainingId = getData().newTraining?.id;
       if (trainingId) {
         trainingsApi.create.newExercise();
+        navigationApi.setBackRouteWithReplace(
+          navigationApi.routes.createTraining,
+        );
         navigationApi.toCreateExercise(trainingId);
       }
     },

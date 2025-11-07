@@ -8,6 +8,7 @@ export class Store implements StoreInterface {
     this.state = {
       nav: {
         route: undefined,
+        backRouteWithHistoryReplace: undefined,
       },
       trainings: [],
       newTraining: null,
@@ -15,6 +16,7 @@ export class Store implements StoreInterface {
     };
     this.subscribers = {
       route: [],
+      backRouteWithHistoryReplace: [],
       trainings: [],
       newTraining: [],
       newExercise: [],
@@ -25,7 +27,10 @@ export class Store implements StoreInterface {
     validateAllDataAccessorsDeclared(publicDataAccessors);
   }
 
-  _updateStoreData = (fn: (state: StoreInterface['state']) => Partial<StoreInterface['state']>, dataAccessorsToNotify: string[]) => {
+  _updateStoreData = (
+    fn: (state: StoreInterface['state']) => Partial<StoreInterface['state']>,
+    dataAccessorsToNotify: string[],
+  ) => {
     validateDataAccessors(dataAccessorsToNotify);
 
     const newData = fn(this.state);
@@ -67,7 +72,9 @@ export class Store implements StoreInterface {
     });
   };
 
-  private isValidAccessor(accessor: string): accessor is keyof StoreInterface['subscribers'] {
+  private isValidAccessor(
+    accessor: string,
+  ): accessor is keyof StoreInterface['subscribers'] {
     return accessor in this.subscribers;
   };
 
@@ -91,6 +98,7 @@ export class Store implements StoreInterface {
 
     const publicDataAccessorsToData = {
       route: this.state.nav.route,
+      backRouteWithHistoryReplace: this.state.nav.backRouteWithHistoryReplace,
       trainings: this.state.trainings,
       newTraining: this.state.newTraining,
       newExercise: this.state.newExercise,
@@ -102,10 +110,11 @@ export class Store implements StoreInterface {
     validateDataAccessors(dataAccessors);
     validateAllDataAccessorsDeclared(dataAccessors);
 
-    const data = publicDataAccessors.reduce<{ [key: string]: any }>((acc, prop) => {
-      acc[prop] = publicDataAccessorsToData[prop as DataKey];
-      return acc;
-    }, {});
+    const data = publicDataAccessors.reduce<{ [key: string]: any }>(
+      (acc, prop) => {
+        acc[prop] = publicDataAccessorsToData[prop as DataKey];
+        return acc;
+      }, {});
 
     return data;
   };
@@ -113,6 +122,10 @@ export class Store implements StoreInterface {
 
   get route(): string | undefined {
     return this.state.nav.route;
+  }
+
+  get backRouteWithHistoryReplace(): string | undefined {
+    return this.state.nav.backRouteWithHistoryReplace;
   }
 
   get trainings(): Training[] {
@@ -136,6 +149,17 @@ export class Store implements StoreInterface {
     });
 
     this._updateStoreData(fn, ['route']);
+  }
+
+  set backRouteWithHistoryReplace(data: string | undefined) {
+    const fn = (state: StoreInterface['state']) => ({
+      nav: {
+        ...state.nav,
+        backRouteWithHistoryReplace: data,
+      },
+    });
+
+    this._updateStoreData(fn, ['backRouteWithHistoryReplace']);
   }
 
   set trainings(data: Training[]) {
@@ -165,6 +189,7 @@ export class Store implements StoreInterface {
 
 const allPublicDataAccessors = [
   'route',
+  'backRouteWithHistoryReplace',
   'trainings',
   'newTraining',
   'newExercise',

@@ -131,20 +131,14 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
       const exercise = training?.exercises.find((exercise: Exercise) =>
         exercise.id === params.exercise);
 
+      await navigationApi.goBack();
+
       if (training && exercise) {
-        await navigationApi.toTraining(training.id);
-        trainingsApi.delete.set(training.id, exercise.id, exercise.sets[0].id);
+        trainingsApi.delete.exercise(training.id, exercise.id);
       }
     },
-    onSave: () => {
-      const params = getParams();
-      const trainings = getData().trainings;
-      const training = trainings.find((training: Training) =>
-        training.id === params.training);
-
-      if (training) {
-        navigationApi.toTraining(training.id);
-      }
+    onSave: async () => {
+      await navigationApi.goBack();
     },
   };
 };

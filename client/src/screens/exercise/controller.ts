@@ -131,7 +131,9 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
     onBack: () => {
       const trainingId = getParams().training;
 
-      navigationApi.toTraining(trainingId);
+      if (trainingId) {
+        navigationApi.toTraining(trainingId);
+      }
     },
   };
 };

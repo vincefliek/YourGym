@@ -1,5 +1,5 @@
 import { AppContext } from '../../types';
-import { Set, Exercise } from '../../model/types';
+import { Set } from '../../model/types';
 
 export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   const { getStoreData } = serviceLocator.getStore();
@@ -53,24 +53,31 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
     },
     onAddSet: () => {
       const trainingId = getParams().training;
-      const exerciseId = getData().newExercise.id;
+      const exerciseId = getData().newExercise?.id;
 
-      trainingsApi.create.set(trainingId, exerciseId);
+      if (trainingId && exerciseId) {
+        trainingsApi.create.set(trainingId, exerciseId);
+      }
     },
     onDeleteSet: (exerciseId: string, setId: string) => {
       const trainingId = getParams().training;
 
-      trainingsApi.delete.set(trainingId, exerciseId, setId);
+      if (trainingId) {
+        trainingsApi.delete.set(trainingId, exerciseId, setId);
+      }
     },
     onDelete: async () => {
-      await navigationApi.toCreateTraining();
+      await navigationApi.goBack();
       trainingsApi.delete.newExercise();
     },
     onSave: async () => {
       const trainingId = getParams().training;
 
-      await navigationApi.toCreateTraining();
-      trainingsApi.save.newExercise(trainingId);
+      await navigationApi.goBack();
+
+      if (trainingId) {
+        trainingsApi.save.newExercise(trainingId);
+      }
     },
   };
 };

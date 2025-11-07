@@ -1,6 +1,6 @@
 import { generatePath, matchPath } from 'react-router-dom';
-import { Store } from '../../store';
 import { waitForCondition } from '../../../utils';
+import { NavigationApi, Store } from '../../types';
 
 interface Routes {
   home: string;
@@ -15,13 +15,9 @@ interface Routes {
   openExercise: string;
 }
 
-interface StoreType {
-  getStoreData: Store['getStoreData'];
-  subscribe: Store['subscribe'];
-  route?: string;
-}
-
-export const createNavigationApi = ({ store }: { store: StoreType }) => {
+export const createNavigationApi = (
+  { store }: { store: Store },
+): NavigationApi => {
   const routes: Routes = {
     home: '/',
     trainings: '/trainings',
@@ -41,14 +37,26 @@ export const createNavigationApi = ({ store }: { store: StoreType }) => {
    * - `#/`
    * - `/`
    */
-  const getPathName = (): string => window.location.hash.slice(1) || routes.home;
+  const getPathName = (): string =>
+    window.location.hash.slice(1) || routes.home;
 
-  const getData = () => store.getStoreData(['route']);
+  const getPathParams = (route: string) => {
+    const match = matchPath(route, getPathName());
+    return match?.params ?? {};
+  };
+
+  const getData = () => store.getStoreData([
+    'route',
+    'backRouteWithHistoryReplace',
+  ]);
 
   const isRouteOpenedRightNow = (route: string): boolean =>
     Boolean(matchPath(route, getPathName()));
 
-  const setRoute = async (route: string, params: Record<string, string> = {}) => {
+  const setRoute = async (
+    route: string,
+    params: Record<string, string> = {},
+  ) => {
     // TODO [vlad-ozh] [it's a hack]
     if (isRouteOpenedRightNow(route) && (route !== routes.openExercise)) {
       return;
@@ -59,16 +67,33 @@ export const createNavigationApi = ({ store }: { store: StoreType }) => {
     return waitForCondition(async () => isRouteOpenedRightNow(route));
   };
 
+  const setBackRouteWithReplace = (
+    route: string | undefined,
+  ) => {
+    store.backRouteWithHistoryReplace = route
+      ? generatePath(route, getPathParams(route))
+      : route;
+  };
+
   return {
     routes,
+    setBackRouteWithReplace,
     resetRoute: () => {
       if (getData().route !== undefined) {
         store.route = undefined;
       }
     },
     goBack: () => {
-      // Going back in history, will need to handle this differently
-      window.history.back();
+      const backRoute = getData().backRouteWithHistoryReplace;
+
+      if (backRoute !== undefined) {
+        return setRoute(backRoute).then(() => {
+          setBackRouteWithReplace(undefined);
+        });
+      } else {
+        // Going back in history, will need to handle this differently
+        window.history.back();
+      }
     },
     toHome: () => {
       return setRoute(routes.home);
@@ -99,6 +124,11 @@ export const createNavigationApi = ({ store }: { store: StoreType }) => {
         exercise: exerciseId,
       });
     },
+    toEditTraining: (trainingId: string) => {
+      return setRoute(routes.editTraining, {
+        training: trainingId,
+      });
+    },
     toTraining: (trainingId: string) => {
       return setRoute(routes.openTraining, {
         training: trainingId,
@@ -119,9 +149,6 @@ export const createNavigationApi = ({ store }: { store: StoreType }) => {
     isMenuUrl: () => {
       return isRouteOpenedRightNow(routes.menu);
     },
-    getPathParams: (route: string) => {
-      const match = matchPath(route, getPathName());
-      return match?.params ?? {};
-    },
+    getPathParams,
   };
 };
