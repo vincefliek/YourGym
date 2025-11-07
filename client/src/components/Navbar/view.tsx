@@ -33,7 +33,7 @@ class PureNavbar extends React.Component<NavbarProps, NavbarState> {
           })}
           onClick={onHomeClick}
         >
-          <Dumbbell />
+          Home
         </Button>
         <Button
           skin="text"
@@ -47,15 +47,16 @@ class PureNavbar extends React.Component<NavbarProps, NavbarState> {
           Trainings
         </Button>
         <Button
-          skin="text"
-          font="indieFlower"
+          skin="icon"
           size="large"
-          className={classnames({
+          className={classnames(style.burger, {
             [style.active]: isBurgerActive,
+            [style.animationBurger]: isBurgerActive,
           })}
           onClick={onBurgerClick}
         >
           <Burger />
+          <Dumbbell />
         </Button>
       </NavbarContainer>
     );
