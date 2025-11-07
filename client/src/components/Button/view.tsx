@@ -1,8 +1,11 @@
 import React from 'react';
 import classnames from 'classnames';
 import { ButtonProps } from './types';
+import { isIOS as _isIOS } from '../../utils';
 
 import style from './style.module.scss';
+
+const isIOS = _isIOS();
 
 export const Button: React.FC<ButtonProps> = ({
   skin,
@@ -10,6 +13,7 @@ export const Button: React.FC<ButtonProps> = ({
   size,
   className,
   children,
+  onClick,
   ...props
 }) => {
   const skinClassName = {
@@ -29,10 +33,22 @@ export const Button: React.FC<ButtonProps> = ({
     [style.xLarge]: size === 'xLarge',
   };
 
+  /**
+   * iOS fix:
+   * on iOS, onClick event is not always triggered.
+   * the issue was noticed when focus was on input and
+   * later un-focusing it by clicking in an empty space.
+   * after that, all buttons became unclickable.
+   */
+  const onClickIOSFix = isIOS
+    ? { onTouchEnd: (e: any) => onClick?.(e) }
+    : { onClick };
+
   return (
     <button
       type="button"
       {...props}
+      {...onClickIOSFix}
       className={classnames(
         className,
         style.button,

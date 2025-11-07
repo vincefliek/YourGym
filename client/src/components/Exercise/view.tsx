@@ -26,7 +26,6 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
           type="text"
           value={data.name}
           onBlur={onChangeName}
-          onChange={() => {}}
           className={style.input}
         />
       </div>
