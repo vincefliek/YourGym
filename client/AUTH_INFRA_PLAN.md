@@ -69,48 +69,60 @@
 ## 3. Session & Token Management
 
 - Do NOT use localStorage/sessionStorage for tokens.
-- Supabase returns tokens in the response body, not via cookies. You must handle tokens manually in the frontend.
-- Store tokens in cookies (preferably httpOnly, set by backend if possible). If backend cannot set httpOnly cookies, use secure, short-lived, in-memory storage for access tokens. For refresh tokens, if you must store them, use cookies with `Secure` and `SameSite=Strict` attributes.
-- On signin/signup, extract `access_token`, `refresh_token`, `expires_in`, and `expires_at` from the response body (`data.session`).
-- On signout, clear all cookies and tokens (via backend endpoint or by expiring cookies in frontend).
+- Supabase returns tokens in the response body.
+- Store tokens in cookies (preferably httpOnly, set by backend). For refresh tokens, use cookies with `Secure` and `SameSite=Strict` attributes to store them.
+- On signin/signup, backend sets `access_token`, `refresh_token`, and related tokens as httpOnly cookies (using `res.cookie()` in Express) with `Secure` and `SameSite=Strict` attributes. Tokens are NOT sent in the response body.
+- On signout, backend clears cookies (using `res.clearCookie()` in Express).
+- Frontend only uses `credentials: 'include'` in fetch requests to ensure cookies are sent/received.
 - Implement token refresh logic:
-  - When access token expires, use the refresh token (from cookie or memory) to request a new access token from Supabase (via your backend `/api/refresh` endpoint).
-  - Create a function (e.g. `refreshToken(refreshToken: string)`) that calls the backend refresh endpoint, passing the refresh token, and updates the access token.
+  - When access token expires, frontend calls `/api/refresh` (with `credentials: 'include'`), backend reads the refresh token from the cookie, requests a new access token from Supabase, and sets the new access token as a cookie.
   - Automatically attempt token refresh on 401/expired token responses.
-- Example:
-  ```ts
-  // Store tokens in cookies
-  document.cookie = `access_token=${accessToken}; path=/; Secure; SameSite=Strict`;
-  document.cookie = `refresh_token=${refreshToken}; path=/; Secure; SameSite=Strict`;
-
-  // Refresh token logic
-  export async function refreshToken(refreshToken: string) {
-    const res = await fetch(`${BASE_URL}/api/refresh`, {
-      method: 'POST',
-      body: JSON.stringify({ refresh_token: refreshToken }),
-      headers: { 'Content-Type': 'application/json' }
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
-    // Update tokens in cookies
-    return data;
-  }
+- Example (backend):
+  ```js
+  // In Express backend
+  res.cookie('access_token', access_token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: expires_in * 1000,
+    path: '/',
+  });
+  res.cookie('refresh_token', refresh_token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    path: '/',
+  });
+  // On signout
+  res.clearCookie('access_token', { path: '/' });
+  res.clearCookie('refresh_token', { path: '/' });
   ```
-- Never expose tokens to UI components. Keep all token logic in the infra layer.
-- Ensure all session management logic (get/set/clear user, token refresh) is handled via cookies and backend endpoints, not localStorage.
+- Example (frontend):
+  ```ts
+  // All fetch requests
+  fetch(`${BASE_URL}/api/endpoint`, { ...options, credentials: 'include' });
+  // No direct token handling in frontend
+  ```
+- Never expose tokens to UI components. Keep all token logic in backend-managed cookies.
+- Ensure all session management logic (get/set/clear user, token refresh) is handled via cookies and backend endpoints, not localStorage or frontend JS-accessible storage.
 
 ## 4. Auth State Management
 
 - Use your custom Store (see `store.ts`) to manage auth state.
-- Add new state fields: `user`, `accessToken`, `isAuthenticated`, `authLoading`, `authError`.
+- Add new state fields: `user`, `isAuthenticated`, `authLoading`, `authError`.
+- Do NOT store or manage access/refresh tokens in the frontend store—these are managed by backend httpOnly cookies.
+- Auth state should be derived from backend responses by working via methods of the `authApi`.
 - Add subscribers for auth state changes.
-- Update state on signin/signup/signout.
+- Update state on signin/signup/signout by fetching user info from backend endpoints by working via methods of the `authApi`.
 - Example:
   ```ts
-  store.state.auth = { user: null, accessToken: null, isAuthenticated: false, authLoading: false, authError: null };
+  store.state.auth = { user: null, isAuthenticated: false, authLoading: false, authError: null };
   // ...
   store._updateStoreData(/* ... */);
   ```
+- To check authentication, call a dedicated method of `authApi` and update store based on the response.
+- Never expose or store tokens in the frontend state or UI components.
 
 ## 5. Input Validation
 
