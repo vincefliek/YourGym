@@ -1,5 +1,4 @@
-import { Store } from '../model/store';
-import { NavigationApi, TrainingsApi } from '../model/types';
+import { Store, NavigationApi, TrainingsApi } from '../model/types';
 
 export interface AppAPIs {
   navigationApi: NavigationApi;

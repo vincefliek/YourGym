@@ -33,7 +33,7 @@
     "husky": "^7.0.4"
   },
   "scripts": {
-    "start": "git add .husky/pre-commit && react-scripts start",
+    "start": "git add .husky/pre-commit && HTTPS=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
