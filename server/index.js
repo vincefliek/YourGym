@@ -42,6 +42,54 @@ app.post('/api/workouts', async (req, res) => {
   // res.json(data);
 })
 
+app.post('/api/signup', async (req, res) => {
+  const { email, password } = req.body;
+
+  const { data, error } = await supabase.auth.signUp({ email, password });
+
+  if (error) {
+    return res
+      .status(400)
+      .json({ error: error.message });
+  }
+
+  res.json(data);
+});
+
+app.post('/api/signin', async (req, res) => {
+  const { email, password } = req.body;
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    return res
+      .status(400)
+      .json({ error: error.message });
+  }
+
+  res.json(data);
+});
+
+app.get('/api/session', async (req, res) => {
+  const { access_token } = req.headers;
+
+  if (!access_token) {
+    return res
+      .status(401)
+      .json({ error: 'No access token provided' });
+  }
+
+  const { data, error } = await supabase.auth.getUser(access_token);
+
+  if (error) {
+    return res
+      .status(401)
+      .json({ error: error.message });
+  }
+
+  res.json({ user: data.user });
+});
+
 app.listen(port, () => {
   console.log(`YourGym server is listening on port ${port}`);
 });
