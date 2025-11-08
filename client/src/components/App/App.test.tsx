@@ -1,8 +1,15 @@
 import { render, screen } from '@testing-library/react';
+import { HashRouter } from 'react-router-dom';
 import {App} from './App';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('renders App with navbar', () => {
+  render(<HashRouter><App /></HashRouter>);
+  const homeBtn = screen.getByText(/Home/i, {
+    selector: 'button',
+  });
+  const trainingsBtn = screen.getByText(/Trainings/i, {
+    selector: 'button',
+  });
+  expect(homeBtn).toBeInTheDocument();
+  expect(trainingsBtn).toBeInTheDocument();
 });
