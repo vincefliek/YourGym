@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'development') {
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors({ origin: 'https://vincefliek.github.io/YourGym/' }));
+app.use(cors({ origin: process.env.CORS_ORIGIN }));
 
 const port = 3100;
 
