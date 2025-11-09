@@ -1,12 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import cors from 'cors'
+import cors from 'cors';
 
-import { initSupabase } from './src/db/index.js';
+import { initSupabase } from './db';
 
 if (process.env.NODE_ENV === 'development') {
-  dotenv.config({ path: 'server/.env' });
+  dotenv.config({ path: '.env' });
 }
 
 const app = express();
@@ -67,7 +67,45 @@ app.post('/api/signin', async (req, res) => {
       .json({ error: error.message });
   }
 
+  if (!data.session) {
+    return res
+      .status(400)
+      .json({ error: 'No session returned', data });
+  }
+
+  const { access_token, refresh_token, expires_in } = data.session;
+
+  res.cookie('access_token', access_token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: expires_in * 1000,
+    path: '/',
+  });
+  res.cookie('refresh_token', refresh_token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    path: '/',
+  });
+
   res.json(data);
+});
+
+app.post('/api/signout', async (req, res) => {
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    return res
+      .status(400)
+      .json({ error: error.message });
+  }
+
+  res.clearCookie('access_token', { path: '/' });
+  res.clearCookie('refresh_token', { path: '/' });
+
+  res.json({ message: 'Signed out successfully' });
 });
 
 app.get('/api/session', async (req, res) => {
@@ -79,6 +117,7 @@ app.get('/api/session', async (req, res) => {
       .json({ error: 'No access token provided' });
   }
 
+  // @ts-ignore TODO fix
   const { data, error } = await supabase.auth.getUser(access_token);
 
   if (error) {

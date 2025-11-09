@@ -2,11 +2,12 @@
   "name": "your-gym-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "type": "module",
+  "main": "dist/index.js",
+  "type": "commonjs",
   "scripts": {
-    "start": "node index.js",
-    "dev": "NODE_ENV=development node index.js && supabase start",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "NODE_ENV=development ts-node src/index.ts && npm run startDB",
     "startDB": "supabase start",
     "stopDB": "supabase stop"
   },
@@ -20,6 +21,11 @@
     "express": "^4.17.3"
   },
   "devDependencies": {
-    "supabase": "^2.54.11"
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.10.0",
+    "supabase": "^2.54.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }
