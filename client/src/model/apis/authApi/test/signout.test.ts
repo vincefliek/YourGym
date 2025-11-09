@@ -1,0 +1,31 @@
+import { createAuthApi } from '../authApi';
+import { Store } from '../../../store';
+import { Validator } from '../../../validation';
+import { mockUser } from './mockData';
+import { mockFetch } from './utils';
+
+describe('signout', () => {
+  let store: Store;
+  let validator: Validator;
+  let authApi: ReturnType<typeof createAuthApi>;
+
+  beforeEach(() => {
+    store = new Store();
+    validator = new Validator();
+    authApi = createAuthApi({ store, validator });
+    mockFetch({ success: true });
+    store.auth = {
+      user: mockUser,
+      isAuthenticated: true,
+      authLoading: false,
+      authError: null,
+    };
+  });
+
+  it('should signout successfully', async () => {
+    const result = await authApi.signout();
+    expect(result.success).toBe(true);
+    expect(store.auth.isAuthenticated).toBe(false);
+    expect(store.auth.user).toBeNull();
+  });
+});

@@ -28,22 +28,6 @@ export interface Training {
 }
 
 export interface Store {
-  state: {
-    nav: {
-      route: string | undefined;
-      backRouteWithHistoryReplace: string | undefined;
-    };
-    trainings: Training[];
-    newTraining: Training | null;
-    newExercise: Exercise | null;
-  };
-  subscribers: {
-    route: Array<() => void>;
-    backRouteWithHistoryReplace: Array<() => void>;
-    trainings: Array<() => void>;
-    newTraining: Array<() => void>;
-    newExercise: Array<() => void>;
-  };
   getStoreData: (publicDataAccessors: string[]) => { [key: string]: any };
   subscribe: (subscriber: () => void, publicDataAccessors: string[]) => () => void;
   get route(): string | undefined;
@@ -56,10 +40,22 @@ export interface Store {
   set newTraining(value: Training | null);
   get newExercise(): Exercise | null;
   set newExercise(value: Exercise | null);
-  _updateStoreData: (fn: (state: Store['state']) => Partial<Store['state']>, dataAccessorsToNotify: string[]) => void;
-  _notify: (dataAccessorsToNotify: string[]) => void;
-  _subscribe: (subscriber: () => void, publicDataAccessors: string[]) => void;
-  _delete: (subscriber: () => void) => void;
+  get auth(): AuthState;
+  set auth(data: Partial<AuthState>);
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name?: string;
+  // Add more fields as needed
+}
+
+export interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  authLoading: boolean;
+  authError: string | null;
 }
 
 export interface ApiTools {

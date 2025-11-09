@@ -1,8 +1,33 @@
-import { Store as StoreInterface, Training, Exercise } from '../types';
+import {
+  Store as StoreInterface,
+  AuthState,
+  Training,
+  Exercise,
+} from '../types';
+
+interface State {
+  nav: {
+    route: string | undefined;
+    backRouteWithHistoryReplace: string | undefined;
+  };
+  trainings: Training[];
+  newTraining: Training | null;
+  newExercise: Exercise | null;
+  auth: AuthState;
+}
+
+interface Subscribers {
+  route: Array<() => void>;
+  backRouteWithHistoryReplace: Array<() => void>;
+  trainings: Array<() => void>;
+  newTraining: Array<() => void>;
+  newExercise: Array<() => void>;
+  auth: Array<() => void>;
+}
 
 export class Store implements StoreInterface {
-  state: StoreInterface['state'];
-  subscribers: StoreInterface['subscribers'];
+  private state: State;
+  private subscribers: Subscribers;
 
   constructor() {
     this.state = {
@@ -13,6 +38,12 @@ export class Store implements StoreInterface {
       trainings: [],
       newTraining: null,
       newExercise: null,
+      auth: {
+        user: null,
+        isAuthenticated: false,
+        authLoading: false,
+        authError: null,
+      },
     };
     this.subscribers = {
       route: [],
@@ -20,6 +51,7 @@ export class Store implements StoreInterface {
       trainings: [],
       newTraining: [],
       newExercise: [],
+      auth: [],
     };
 
     const publicDataAccessors = Object.keys(this.subscribers);
@@ -27,8 +59,8 @@ export class Store implements StoreInterface {
     validateAllDataAccessorsDeclared(publicDataAccessors);
   }
 
-  _updateStoreData = (
-    fn: (state: StoreInterface['state']) => Partial<StoreInterface['state']>,
+  private _updateStoreData = (
+    fn: (state: State) => Partial<State>,
     dataAccessorsToNotify: string[],
   ) => {
     validateDataAccessors(dataAccessorsToNotify);
@@ -43,7 +75,7 @@ export class Store implements StoreInterface {
     this._notify(dataAccessorsToNotify);
   };
 
-  _notify = (dataAccessorsToNotify: string[]) => {
+  private _notify = (dataAccessorsToNotify: string[]) => {
     validateDataAccessors(dataAccessorsToNotify);
 
     dataAccessorsToNotify.forEach((accessor) => {
@@ -55,7 +87,10 @@ export class Store implements StoreInterface {
     });
   };
 
-  _subscribe = (subscriber: () => void, publicDataAccessors: string[]) => {
+  private _subscribe = (
+    subscriber: () => void,
+    publicDataAccessors: string[],
+  ) => {
     publicDataAccessors.forEach((accessor) => {
       if (this.isValidAccessor(accessor)) {
         this.subscribers[accessor].push(subscriber);
@@ -63,7 +98,7 @@ export class Store implements StoreInterface {
     });
   };
 
-  _delete = (subscriber: () => void) => {
+  private _delete = (subscriber: () => void) => {
     Object.keys(this.subscribers).forEach((accessor) => {
       if (this.isValidAccessor(accessor)) {
         this.subscribers[accessor] =
@@ -74,7 +109,7 @@ export class Store implements StoreInterface {
 
   private isValidAccessor(
     accessor: string,
-  ): accessor is keyof StoreInterface['subscribers'] {
+  ): accessor is keyof Subscribers {
     return accessor in this.subscribers;
   };
 
@@ -102,6 +137,7 @@ export class Store implements StoreInterface {
       trainings: this.state.trainings,
       newTraining: this.state.newTraining,
       newExercise: this.state.newExercise,
+      auth: this.state.auth,
     } as const;
 
     type DataKey = keyof typeof publicDataAccessorsToData;
@@ -140,8 +176,19 @@ export class Store implements StoreInterface {
     return this.state.newExercise;
   }
 
+  get auth(): AuthState {
+    return this.state.auth;
+  }
+
+  set auth(data: Partial<AuthState>) {
+    const fn = (state: State): Partial<State> => ({
+      auth: { ...state, ...data } as AuthState,
+    });
+    this._updateStoreData(fn, ['auth']);
+  }
+
   set route(data: string | undefined) {
-    const fn = (state: StoreInterface['state']) => ({
+    const fn = (state: State) => ({
       nav: {
         ...state.nav,
         route: data,
@@ -152,7 +199,7 @@ export class Store implements StoreInterface {
   }
 
   set backRouteWithHistoryReplace(data: string | undefined) {
-    const fn = (state: StoreInterface['state']) => ({
+    const fn = (state: State) => ({
       nav: {
         ...state.nav,
         backRouteWithHistoryReplace: data,
@@ -193,6 +240,7 @@ const allPublicDataAccessors = [
   'trainings',
   'newTraining',
   'newExercise',
+  'auth',
 ];
 
 function validateDataAccessors(publicDataAccessors: string[]): void {
