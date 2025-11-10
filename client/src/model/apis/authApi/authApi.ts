@@ -1,4 +1,4 @@
-import type { Store } from '../../types';
+import type { AuthApi, Store } from '../../types';
 import { Validator } from '../../validation';
 import { validateEmail, validatePassword } from './authValidation';
 
@@ -8,15 +8,15 @@ const BASE_URL = process.env.NODE_ENV === 'production'
 
 export const createAuthApi = (
   tools: { store: Store, validator: Validator },
-) => {
+): AuthApi => {
   const { store } = tools;
 
   async function signup(email: string, password: string) {
     if (!validateEmail(email)) {
-      return { error: 'Invalid email format' };
+      throw new Error('Invalid email format');
     }
     if (!validatePassword(password)) {
-      return { error: 'Password does not meet requirements' };
+      throw new Error('Password does not meet requirements');
     }
 
     store.auth = { authLoading: true };
@@ -41,23 +41,17 @@ export const createAuthApi = (
         authLoading: false,
         authError: null,
       };
-
-      return data;
     } catch (e: any) {
       store.auth = {
         authError: e.message,
         authLoading: false,
       };
-      return { error: e.message };
     }
   }
 
   async function signin(email: string, password: string) {
     if (!validateEmail(email)) {
-      return { error: 'Invalid email format' };
-    }
-    if (!validatePassword(password)) {
-      return { error: 'Password does not meet requirements' };
+      throw new Error('Invalid email format');
     }
 
     store.auth = { authLoading: true };
@@ -82,14 +76,11 @@ export const createAuthApi = (
         authLoading: false,
         authError: null,
       };
-
-      return data;
     } catch (e: any) {
       store.auth = {
         authError: e.message,
         authLoading: false,
       };
-      return { error: e.message };
     }
   }
 
@@ -97,7 +88,7 @@ export const createAuthApi = (
     store.auth = { authLoading: true };
 
     try {
-      const res = await fetch(`${BASE_URL}/api/signout`, {
+      const res = await fetch(`${BASE_URL}/api/logout`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -112,15 +103,11 @@ export const createAuthApi = (
         authLoading: false,
         authError: null,
       };
-
-      return { success: true };
     } catch (e: any) {
       store.auth = {
         authError: e.message,
         authLoading: false,
       };
-
-      return { error: e.message };
     }
   }
 

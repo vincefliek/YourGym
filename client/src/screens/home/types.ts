@@ -1,10 +1,15 @@
 export interface HomeProps {
-  onClick: () => void;
+  isAuthenticated: boolean;
+  fetchAuthData: () => Promise<void>;
+  signin: (email: string, password: string) => void;
+  signup: (email: string, password: string) => void;
+  signout: () => void;
 }
 
-export interface HomeState {}
-
 export interface HomeController {
-  goToTraining: () => void;
-  storeDataAccessors: string[];
+  isAuthenticated: () => boolean;
+  fetchAuthData: () => Promise<void>;
+  signin: (email: string, password: string) => void;
+  signup: (email: string, password: string) => void;
+  signout: () => void;
 }

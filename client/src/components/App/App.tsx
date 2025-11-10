@@ -17,7 +17,12 @@ import {
 } from '../../screens';
 import { Navigator } from '../../components';
 import { AppContext } from '../../utils';
-import { AppProps, AppState, AppAPIs, AppContext as IAppContext } from '../../types';
+import {
+  AppProps,
+  AppState,
+  AppAPIs,
+  AppContext as IAppContext,
+} from '../../types';
 import style from './style.module.scss';
 
 export class App extends React.Component<AppProps, AppState> {

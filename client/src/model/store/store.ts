@@ -182,7 +182,7 @@ export class Store implements StoreInterface {
 
   set auth(data: Partial<AuthState>) {
     const fn = (state: State): Partial<State> => ({
-      auth: { ...state, ...data } as AuthState,
+      auth: { ...state.auth, ...data } as AuthState,
     });
     this._updateStoreData(fn, ['auth']);
   }

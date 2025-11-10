@@ -124,3 +124,11 @@ export interface TrainingsApi {
     newExercise: (trainingId: string) => void;
   };
 }
+
+export interface AuthApi {
+  signin: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string) => Promise<void>;
+  signout: () => Promise<void>;
+  getSession: () => Promise<void>;
+  refreshToken: () => Promise<void>;
+}
