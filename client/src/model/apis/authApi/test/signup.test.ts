@@ -17,13 +17,15 @@ describe('signup', () => {
   });
 
   it('should validate email and password', async () => {
-    const result = await authApi.signup('invalid', '123');
-    expect(result.error).toBe('Invalid email format');
+    await expect(
+      authApi.signup('invalid', '123'),
+    ).rejects.toThrow('Invalid email format');
   });
 
   it('should signup successfully', async () => {
-    const result = await authApi.signup(mockUser.email, 'password1');
-    expect(result.user).toBeDefined();
+    await authApi.signup(mockUser.email, 'password1');
+
+    expect(store.auth.user).toBeDefined();
     expect(store.auth.isAuthenticated).toBe(true);
   });
 });

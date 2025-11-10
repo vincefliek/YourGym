@@ -23,8 +23,11 @@ describe('signout', () => {
   });
 
   it('should signout successfully', async () => {
-    const result = await authApi.signout();
-    expect(result.success).toBe(true);
+    expect(store.auth.isAuthenticated).toBe(true);
+    expect(store.auth.user).toBeDefined();
+
+    await authApi.signout();
+
     expect(store.auth.isAuthenticated).toBe(false);
     expect(store.auth.user).toBeNull();
   });

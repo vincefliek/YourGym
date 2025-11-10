@@ -16,14 +16,16 @@ describe('signin', () => {
     mockFetch({ user: mockUser });
   });
 
-  it('should validate email and password', async () => {
-    const result = await authApi.signin('invalid', '123');
-    expect(result.error).toBe('Invalid email format');
+  it('should validate email', async () => {
+    await expect(
+      authApi.signin('invalid', '123'),
+    ).rejects.toThrow('Invalid email format');
   });
 
   it('should signin successfully', async () => {
-    const result = await authApi.signin(mockUser.email, 'password1');
-    expect(result.user).toBeDefined();
+    await authApi.signin(mockUser.email, 'password1');
+
+    expect(store.auth.user).toBeDefined();
     expect(store.auth.isAuthenticated).toBe(true);
   });
 });
