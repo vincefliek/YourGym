@@ -12,6 +12,7 @@ import {
   registerAuthRoutes,
   createRequireAuthMiddleware,
 } from './auth';
+import { routes } from './routes';
 
 if (process.env.NODE_ENV === 'development') {
   dotenv.config({ path: '.env' });
@@ -35,9 +36,9 @@ app.get('/', (req, res) => {
   res.send('YourGym server welcomes you!');
 });
 
-app.get('/api/workouts', requireAuth, async (req, res) => {
+app.get(routes.workouts, requireAuth, async (req, res) => {
   const { data, error } = await supabase
-    .from('workouts')
+    .from('completed_exercises')
     .select('*')
     .order('date', { ascending: false })
 
@@ -48,13 +49,14 @@ app.get('/api/workouts', requireAuth, async (req, res) => {
   res.json(data)
 })
 
-app.post('/api/workouts', requireAuth, async (req, res) => {
-  const { exercise, reps, weight, date } = req.body;
+app.post(routes.workouts, requireAuth, async (req, res) => {
+  const { type, reps, weight, date } = req.body;
   const user = (req as any).auth.user;
 
   const { data, error } = await supabase
-    .from('workouts')
-    .insert([{ exercise, reps, weight, date, user_id: user.id }]);
+    .from('completed_exercises')
+    .insert([{ type, reps, weight, date, user_id: user.id }])
+    .select();
 
   if (error) {
     return res.status(400).json({ error: error.message });
@@ -63,7 +65,7 @@ app.post('/api/workouts', requireAuth, async (req, res) => {
   res.json(data);
 });
 
-app.get('/api/profile', requireAuth, async (req, res) => {
+app.get(routes.profile, requireAuth, async (req, res) => {
   const user = (req as any).auth.user;
 
   res.json({ user });

@@ -1,10 +1,10 @@
-import express from 'express';
 import type { Express, Request, Response, NextFunction } from 'express';
-// @ts-ignore
 import rateLimit from 'express-rate-limit';
 import type { Session, SupabaseClient } from '@supabase/supabase-js';
 
-const { COOKIE_DOMAIN = undefined } = process.env;
+import { routes } from '../routes';
+
+const { COOKIE_DOMAIN = undefined, NODE_ENV } = process.env;
 
 const authLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -13,7 +13,7 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-const isDevEnv = process.env.NODE_ENV === 'development';
+const isDevEnv = NODE_ENV === 'development';
 
 const getCookieOptions = (maxAgeSec: number) => ({
   httpOnly: true,
@@ -98,7 +98,6 @@ const createRequireAuthMiddleware = (supabase: SupabaseClient) => {
       (req as any).auth = { user: userData.user };
       next();
     } catch (err) {
-      console.error('Auth middleware error', err);
       return res.status(500).json({ error: 'Internal auth error' });
     }
   }
@@ -111,7 +110,7 @@ const registerAuthRoutes = (app: Express, supabase: SupabaseClient) => {
    * - creates user using email+password
    * - returns httpOnly cookies (access+refresh) on success
    */
-  app.post('/api/signup', authLimiter, async (req: Request, res: Response) => {
+  app.post(routes.signup, authLimiter, async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
       if (!email || !password) return res.status(400).json({ error: 'email and password required' });
@@ -140,7 +139,7 @@ const registerAuthRoutes = (app: Express, supabase: SupabaseClient) => {
     }
   });
 
-  app.post('/api/signin', authLimiter, async (req: Request, res: Response) => {
+  app.post(routes.signin, authLimiter, async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
 
@@ -174,7 +173,7 @@ const registerAuthRoutes = (app: Express, supabase: SupabaseClient) => {
    * Refresh endpoint (explicit)
    * - uses refresh token from cookie, refreshes session, sets rotated cookies
    */
-  app.post('/api/refresh', authLimiter, async (req: Request, res: Response) => {
+  app.post(routes.refreshSession, authLimiter, async (req: Request, res: Response) => {
     try {
       const refreshToken = req.cookies[REFRESH_TOKEN_COOKIE] as string | undefined;
       if (!refreshToken) return res.status(401).json({ error: 'Missing refresh token' });
@@ -201,7 +200,7 @@ const registerAuthRoutes = (app: Express, supabase: SupabaseClient) => {
    * - clears cookies. If you want to fully revoke sessions server-side, you'd use admin API (service_role).
    *   We intentionally avoid that here per your request.
    */
-  app.post('/api/logout', authLimiter, async (req: Request, res: Response) => {
+  app.post(routes.logout, authLimiter, async (req: Request, res: Response) => {
     try {
       const { error } = await supabase.auth.signOut();
 
@@ -219,7 +218,7 @@ const registerAuthRoutes = (app: Express, supabase: SupabaseClient) => {
     }
   });
 
-  app.get('/api/session', authLimiter, async (req, res) => {
+  app.get(routes.session, authLimiter, async (req, res) => {
     const accessToken = req.cookies[ACCESS_TOKEN_COOKIE] as string | undefined;
 
     if (!accessToken) {
