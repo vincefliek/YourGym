@@ -17,8 +17,8 @@ const isDevEnv = process.env.NODE_ENV === 'development';
 
 const getCookieOptions = (maxAgeSec: number) => ({
   httpOnly: true,
-  secure: !isDevEnv,
-  sameSite: 'lax' as const,
+  secure: isDevEnv ? false : true,
+  sameSite: isDevEnv ? 'lax' as const : 'none' as const,
   path: '/',
   maxAge: maxAgeSec * 1000,
   // domain: COOKIE_DOMAIN,
