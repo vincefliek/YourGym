@@ -4,13 +4,8 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Run Express Server",
-      "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/server/index.js",
-      "restart": true,
-      "runtimeExecutable": "node",
-      "console": "integratedTerminal",
-      "preLaunchTask": "start DB",
+      "name": "Run Server & DB",
+      "preLaunchTask": "start dev server",
       "postDebugTask": "stop DB",
       "env": {
         "NODE_ENV": "development"

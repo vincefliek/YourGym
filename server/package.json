@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "NODE_ENV=development ts-node src/index.ts && npm run startDB",
+    "dev": "NODE_ENV=development ts-node src/index.ts",
     "startDB": "supabase start",
     "stopDB": "supabase stop"
   },
@@ -16,9 +16,12 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.79.0",
     "body-parser": "^2.2.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

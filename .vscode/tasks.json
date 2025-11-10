@@ -7,9 +7,7 @@
       "command": "npm run startDB",
       "options": {
         "cwd": "${workspaceFolder}/server"
-      },
-      "group": "build",
-      "problemMatcher": []
+      }
     },
     {
       "label": "stop DB",
@@ -17,9 +15,16 @@
       "command": "npm run stopDB",
       "options": {
         "cwd": "${workspaceFolder}/server"
-      },
-      "group": "build",
-      "problemMatcher": []
+      }
+    },
+    {
+      "label": "start dev server",
+      "type": "shell",
+      "command": "npm run dev",
+      "dependsOn": ["start DB"],
+      "options": {
+        "cwd": "${workspaceFolder}/server"
+      }
     }
   ]
 }
