@@ -90,6 +90,7 @@ export const createAuthApi = (
     try {
       const res = await fetch(`${BASE_URL}/api/logout`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
       });
 
