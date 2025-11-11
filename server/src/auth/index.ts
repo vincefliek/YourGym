@@ -20,12 +20,12 @@ const sameMandatoryCookieOptions = {
   secure: isDevEnv ? false : true,
   sameSite: isDevEnv ? 'lax' as const : 'none' as const,
   path: '/',
+  domain: COOKIE_DOMAIN,
 };
 
 const getCookieOptions = (maxAgeSec: number) => ({
   ...sameMandatoryCookieOptions,
   maxAge: maxAgeSec * 1000,
-  // domain: COOKIE_DOMAIN,
 });
 
 /**
@@ -37,7 +37,6 @@ const getCookieOptions = (maxAgeSec: number) => ({
  */
 const getClearCookieOptions = () => ({
   ...sameMandatoryCookieOptions,
-  // domain: COOKIE_DOMAIN,
 });
 
 const ACCESS_TOKEN_COOKIE = 'sb_access';
