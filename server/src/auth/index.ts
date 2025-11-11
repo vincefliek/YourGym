@@ -1,6 +1,6 @@
 import type { Express, Request, Response, NextFunction } from 'express';
 import rateLimit from 'express-rate-limit';
-import type { Session, SupabaseClient } from '@supabase/supabase-js';
+import type { Session, SupabaseClient, AuthResponse } from '@supabase/supabase-js';
 
 import { routes } from '../routes';
 
@@ -49,8 +49,21 @@ function setSessionCookies(res: Response, session: Session) {
  * Clear auth cookies (logout client-side).
  */
 function clearSessionCookies(res: Response) {
-  res.clearCookie(ACCESS_TOKEN_COOKIE, { path: '/', domain: COOKIE_DOMAIN });
-  res.clearCookie(REFRESH_TOKEN_COOKIE, { path: '/', domain: COOKIE_DOMAIN });
+  res.clearCookie(ACCESS_TOKEN_COOKIE, {
+    path: '/',
+    // domain: COOKIE_DOMAIN,
+  });
+  res.clearCookie(REFRESH_TOKEN_COOKIE, {
+    path: '/',
+    // domain: COOKIE_DOMAIN,
+  });
+}
+
+const assignAuthDataToRequest = (req: Request, data: AuthResponse['data']) => {
+  (req as any).auth = { user: data.user };
+};
+export const getAuthDataFromRequest = (req: Request): AuthResponse['data'] => {
+  return (req as any).auth ?? {};
 }
 
 /**
@@ -59,7 +72,7 @@ function clearSessionCookies(res: Response) {
  * - if access token expired, tries to refresh using refresh token.
  * - if refresh successful, rotates tokens and continues.
  */
-const createRequireAuthMiddleware = (supabase: SupabaseClient) => {
+const createRequireAuthMiddleware = (supabase: () => SupabaseClient) => {
   async function requireAuth(req: Request, res: Response, next: NextFunction) {
     try {
       const accessToken = req.cookies[ACCESS_TOKEN_COOKIE] as string | undefined;
@@ -70,14 +83,14 @@ const createRequireAuthMiddleware = (supabase: SupabaseClient) => {
       }
 
       // Try to get user using current access token
-      const { data: userData, error: userErr } = await supabase.auth.getUser(accessToken);
+      const { data: userData, error: userErr } = await supabase().auth.getUser(accessToken);
 
       if (userErr) {
         // If token expired / invalid, try refresh path
         if (refreshToken) {
-          const { data: refreshData, error: refreshErr } = await supabase.auth.refreshSession({
+          const { data: refreshData, error: refreshErr } = await supabase().auth.refreshSession({
             refresh_token: refreshToken,
-          } as any); // typings sometimes accept session/currentSession; passing object with refresh_token works
+          });
 
           if (refreshErr || !refreshData?.session) {
             clearSessionCookies(res);
@@ -86,8 +99,10 @@ const createRequireAuthMiddleware = (supabase: SupabaseClient) => {
 
           // rotate: set new cookies
           setSessionCookies(res, refreshData.session);
+
           // attach user to req and continue
-          (req as any).auth = { user: refreshData.user };
+          assignAuthDataToRequest(req, refreshData);
+
           return next();
         } else {
           return res.status(401).json({ error: 'Access token invalid and no refresh token' });
@@ -95,7 +110,8 @@ const createRequireAuthMiddleware = (supabase: SupabaseClient) => {
       }
 
       // success: attach user
-      (req as any).auth = { user: userData.user };
+      assignAuthDataToRequest(req, { user: userData.user, session: null });
+
       next();
     } catch (err) {
       return res.status(500).json({ error: 'Internal auth error' });
@@ -104,7 +120,7 @@ const createRequireAuthMiddleware = (supabase: SupabaseClient) => {
   return requireAuth;
 };
 
-const registerAuthRoutes = (app: Express, supabase: SupabaseClient) => {
+const registerAuthRoutes = (app: Express, supabase: () => SupabaseClient) => {
   /**
    * Signup
    * - creates user using email+password
@@ -115,7 +131,7 @@ const registerAuthRoutes = (app: Express, supabase: SupabaseClient) => {
       const { email, password } = req.body;
       if (!email || !password) return res.status(400).json({ error: 'email and password required' });
 
-      const { data, error } = await supabase.auth.signUp({
+      const { data, error } = await supabase().auth.signUp({
         email,
         password,
       });
@@ -147,7 +163,7 @@ const registerAuthRoutes = (app: Express, supabase: SupabaseClient) => {
         return res.status(400).json({ error: 'email and password required' });
       }
 
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase().auth.signInWithPassword({
         email,
         password,
       });
@@ -176,9 +192,12 @@ const registerAuthRoutes = (app: Express, supabase: SupabaseClient) => {
   app.post(routes.refreshSession, authLimiter, async (req: Request, res: Response) => {
     try {
       const refreshToken = req.cookies[REFRESH_TOKEN_COOKIE] as string | undefined;
-      if (!refreshToken) return res.status(401).json({ error: 'Missing refresh token' });
 
-      const { data, error } = await supabase.auth.refreshSession({
+      if (!refreshToken) {
+        return res.status(401).json({ error: 'Missing refresh token' });
+      }
+
+      const { data, error } = await supabase().auth.refreshSession({
         refresh_token: refreshToken,
       } as any);
 
@@ -202,7 +221,7 @@ const registerAuthRoutes = (app: Express, supabase: SupabaseClient) => {
    */
   app.post(routes.logout, authLimiter, async (req: Request, res: Response) => {
     try {
-      const { error } = await supabase.auth.signOut();
+      const { error } = await supabase().auth.signOut();
 
       if (error) {
         return res
@@ -227,7 +246,7 @@ const registerAuthRoutes = (app: Express, supabase: SupabaseClient) => {
         .json({ error: 'No access token provided' });
     }
 
-    const { data, error } = await supabase.auth.getUser(accessToken);
+    const { data, error } = await supabase().auth.getUser(accessToken);
 
     if (error) {
       return res

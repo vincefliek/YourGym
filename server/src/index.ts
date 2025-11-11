@@ -2,15 +2,14 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cors from 'cors';
-// @ts-ignore
 import cookieParser from 'cookie-parser';
-// @ts-ignore
 import helmet from 'helmet';
 
 import { initSupabase } from './db';
 import {
   registerAuthRoutes,
   createRequireAuthMiddleware,
+  getAuthDataFromRequest,
 } from './auth';
 import { routes } from './routes';
 
@@ -27,17 +26,233 @@ app.use(cookieParser());
 
 const port = 3100;
 
-const supabase = initSupabase();
-const requireAuth = createRequireAuthMiddleware(supabase);
+const requireAuth = createRequireAuthMiddleware(initSupabase);
 
-registerAuthRoutes(app, supabase);
+registerAuthRoutes(app, initSupabase);
 
 app.get('/', (req, res) => {
   res.send('YourGym server welcomes you!');
 });
 
+/* ------------------ TEMPLATE WORKOUTS ------------------ */
+
+// Get all template workouts with template exercises (single query)
+app.get("/api/template-workouts", requireAuth, async (req, res) => {
+  try {
+    const { data, error } = await initSupabase()
+      .from("template_workouts")
+      .select("*, template_exercises(*)"); // relational fetch
+
+    if (error) throw error;
+
+    const workouts = data.map(w => {
+      let newWorkout = {
+        ...w,
+        exercises: w.template_exercises || [],
+      };
+      delete newWorkout.template_exercises;
+      return newWorkout;
+    });
+
+    res.json(workouts);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get specific template workout with its exercises
+app.get("/api/template-workouts/:workoutId", requireAuth, async (req, res) => {
+  const { workoutId } = req.params;
+
+  // TODO add validation
+
+  try {
+    const { data, error } = await initSupabase()
+      .from("template_workouts")
+      .select("*, template_exercises(*)")
+      .eq("id", workoutId)
+      .single();
+
+    if (error) throw error;
+
+    const workout = {
+      ...data,
+      exercises: data.template_exercises || []
+    };
+    delete workout.template_exercises;
+
+    res.json(workout);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Create template workout
+app.post("/api/template-workouts", requireAuth, async (req, res) => {
+  const { name } = req.body;
+  const user = getAuthDataFromRequest(req).user;
+
+  // TODO add validation
+
+  try {
+    const { data, error } = await initSupabase()
+      .from("template_workouts")
+      .insert([{ user_id: user?.id, name }])
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    res.status(201).json(data);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update template workout
+app.put("/api/template-workouts/:workoutId", requireAuth, async (req, res) => {
+  const { workoutId } = req.params;
+  const { name } = req.body;
+  const user = getAuthDataFromRequest(req).user;
+
+  // TODO add validation
+
+  try {
+    const { data, error } = await initSupabase()
+      .from("template_workouts")
+      .update({ user_id: user?.id, name })
+      .eq("id", workoutId)
+      .select()
+      .single();
+
+    // TODO better error status
+    if (error) throw error;
+
+    res.json(data);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete template workout and its template exercises
+app.delete(
+  "/api/template-workouts/:workoutId",
+  requireAuth,
+  async (req, res) => {
+    const { workoutId } = req.params;
+
+    try {
+      const { error: exrcError } = await initSupabase()
+        .from("template_exercises")
+        .delete()
+        .eq("workout_id", workoutId);
+
+      if (exrcError) throw exrcError;
+
+      const { error: wrktError } = await initSupabase()
+        .from("template_workouts")
+        .delete()
+        .eq("id", workoutId);
+
+      if (wrktError) throw wrktError;
+
+      res.json({ message: "Workout and exercises deleted" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+/* ------------------ TEMPLATE EXERCISES ------------------ */
+
+// Create template exercise under a template workout
+app.post(
+  "/api/template-workouts/:workoutId/exercises",
+  requireAuth,
+  async (req, res) => {
+    const { workoutId } = req.params;
+    const { type, reps, weight, date } = req.body;
+    const user = getAuthDataFromRequest(req).user;
+
+    // TODO add validation
+
+    try {
+      const { data, error } = await initSupabase()
+        .from("template_exercises")
+        .insert([{
+          workout_id: workoutId,
+          user_id: user?.id,
+          type,
+          reps,
+          weight,
+          date,
+        }])
+        .select()
+        .single();
+
+      // TODO better error status
+      if (error) throw error;
+
+      res.status(201).json(data);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+// Update specific template exercise
+app.put(
+  "/api/template-workouts/:workoutId/exercises/:exerciseId",
+  requireAuth,
+  async (req, res) => {
+    const { exerciseId } = req.params;
+    const { type, reps, weight } = req.body;
+    const user = getAuthDataFromRequest(req).user;
+
+    // TODO add validation
+
+    try {
+      const { data, error } = await initSupabase()
+        .from("template_exercises")
+        .update({ user_id: user?.id, type, reps, weight })
+        .eq("id", exerciseId)
+        .select()
+        .single();
+
+      // TODO better error status
+      if (error) throw error;
+
+      res.json(data);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+// Delete specific template exercise
+app.delete(
+  "/api/template-workouts/:workoutId/exercises/:exerciseId",
+  requireAuth,
+  async (req, res) => {
+    const { exerciseId } = req.params;
+
+    try {
+      const { error } = await initSupabase()
+        .from("template_exercises")
+        .delete()
+        .eq("id", exerciseId);
+
+      // TODO better error status
+      if (error) throw error;
+
+      res.json({ message: "Exercise deleted" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+/* ------------------ COMPLETED WORKOUTS ------------------ */
+
+// Get all workouts
 app.get(routes.workouts, requireAuth, async (req, res) => {
-  const { data, error } = await supabase
+  const { data, error } = await initSupabase()
     .from('completed_exercises')
     .select('*')
     .order('date', { ascending: false })
@@ -47,15 +262,15 @@ app.get(routes.workouts, requireAuth, async (req, res) => {
   }
 
   res.json(data)
-})
+});
 
 app.post(routes.workouts, requireAuth, async (req, res) => {
   const { type, reps, weight, date } = req.body;
-  const user = (req as any).auth.user;
+  const user = getAuthDataFromRequest(req).user;
 
-  const { data, error } = await supabase
+  const { data, error } = await initSupabase()
     .from('completed_exercises')
-    .insert([{ type, reps, weight, date, user_id: user.id }])
+    .insert([{ type, reps, weight, date, user_id: user?.id }])
     .select();
 
   if (error) {
@@ -66,7 +281,11 @@ app.post(routes.workouts, requireAuth, async (req, res) => {
 });
 
 app.get(routes.profile, requireAuth, async (req, res) => {
-  const user = (req as any).auth.user;
+  const userData = getAuthDataFromRequest(req).user;
+  const user = {
+    id: userData?.id,
+    email: userData?.email,
+  }
 
   res.json({ user });
 });
