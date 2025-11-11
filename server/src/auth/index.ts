@@ -15,12 +15,21 @@ const authLimiter = rateLimit({
 
 const isDevEnv = NODE_ENV === 'development';
 
-const getCookieOptions = (maxAgeSec: number) => ({
+const sameMandatoryCookieOptions = {
   httpOnly: true,
   secure: isDevEnv ? false : true,
   sameSite: isDevEnv ? 'lax' as const : 'none' as const,
   path: '/',
+};
+
+const getCookieOptions = (maxAgeSec: number) => ({
+  ...sameMandatoryCookieOptions,
   maxAge: maxAgeSec * 1000,
+  // domain: COOKIE_DOMAIN,
+});
+
+const getClearCookieOptions = () => ({
+  ...sameMandatoryCookieOptions,
   // domain: COOKIE_DOMAIN,
 });
 
@@ -49,14 +58,8 @@ function setSessionCookies(res: Response, session: Session) {
  * Clear auth cookies (logout client-side).
  */
 function clearSessionCookies(res: Response) {
-  res.clearCookie(ACCESS_TOKEN_COOKIE, {
-    path: '/',
-    // domain: COOKIE_DOMAIN,
-  });
-  res.clearCookie(REFRESH_TOKEN_COOKIE, {
-    path: '/',
-    // domain: COOKIE_DOMAIN,
-  });
+  res.clearCookie(ACCESS_TOKEN_COOKIE, getClearCookieOptions());
+  res.clearCookie(REFRESH_TOKEN_COOKIE, getClearCookieOptions());
 }
 
 const assignAuthDataToRequest = (req: Request, data: AuthResponse['data']) => {
