@@ -25,7 +25,6 @@ const sameMandatoryCookieOptions = {
 
 const getCookieOptions = (maxAgeSec: number) => ({
   ...sameMandatoryCookieOptions,
-  maxAge: maxAgeSec * 1000,
 });
 
 /**
