@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "NODE_ENV=development ts-node src/index.ts",
+    "dev": "NODE_ENV=development ts-node-dev --respawn --transpile-only src/index.ts",
     "startDB": "supabase start",
     "stopDB": "supabase stop"
   },
@@ -29,6 +29,7 @@
     "@types/node": "^24.10.0",
     "supabase": "^2.54.11",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }
 }
