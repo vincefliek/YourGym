@@ -28,6 +28,13 @@ const getCookieOptions = (maxAgeSec: number) => ({
   // domain: COOKIE_DOMAIN,
 });
 
+/**
+ * https://expressjs.com/en/api.html#res.clearCookie
+ * 
+ * IMPORTANT!
+ * Web browsers and other compliant clients will only clear the cookie
+ * if the given options is identical to those given to `res.cookie()`
+ */
 const getClearCookieOptions = () => ({
   ...sameMandatoryCookieOptions,
   // domain: COOKIE_DOMAIN,
