@@ -42,8 +42,11 @@ const app = express();
  * 
  * As a result, it can’t reliably know the real client’s IP,
  * so rate limiting might not work correctly.
+ * 
+ * Value "1" - because Render.com is behind 1 proxy server, so
+ * this value is secure enough.
  */
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 /**
  * Fix weird caching issues.
  * Example 1: status 304 with response body.
