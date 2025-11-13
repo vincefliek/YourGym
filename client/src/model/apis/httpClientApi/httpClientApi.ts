@@ -1,4 +1,10 @@
-import { ApiTools, AuthResponseData, HttpClientAPI, TokenPair, TokenStorage } from '../../types';
+import {
+  ApiTools,
+  AuthResponseData,
+  HttpClientAPI,
+  TokenPair,
+  TokenStorage,
+} from '../../types';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -66,6 +72,7 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
         access_token: refreshedSession.access_token,
         refresh_token: refreshedSession.refresh_token,
         expires_in: refreshedSession.expires_in,
+        expires_at: refreshedSession.expires_at,
       };
 
       tokenStorage.saveToken(newToken);
@@ -78,6 +85,15 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
     }
   }
 
+  const isExpireSoonFromNow = (expiresAtInSeconds: number | undefined) => {
+    if (!expiresAtInSeconds) return;
+
+    const nowInSeconds = Math.floor(Date.now() / 1000);
+
+    // refresh 30s early
+    return nowInSeconds >= expiresAtInSeconds - 30;
+  };
+
   async function request<TResponse = Response, TBody = any>(
     url: string,
     reqOptions: RequestOptions<TBody> = {},
@@ -86,11 +102,19 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
     const { method = 'GET', headers = {}, body, ...fetchOptions } = reqOptions;
 
     let tokenPair = tokenStorage.getToken();
-    let accessToken = tokenPair?.access_token;
+    let expires_at = tokenPair?.expires_at;
+
+    if (isExpireSoonFromNow(expires_at)) {
+      await performRefresh();
+    }
+
+    const updatedTokens = tokenStorage.getToken();
+    const accessToken = updatedTokens?.access_token;
 
     const mergedHeaders: Record<string, string> = {
       ...defaultHeaders,
       ...headers,
+      // TODO interpolate `token_type` instead of hardcoded "Bearer"
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     };
 
@@ -115,7 +139,8 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
         throw new Error(errMsg);
       }
 
-      return request<TResponse, TBody>(url, reqOptions, false); // retry once
+      const RETRY = false;
+      return request<TResponse, TBody>(url, reqOptions, RETRY);
     }
 
     if (!response.ok) {

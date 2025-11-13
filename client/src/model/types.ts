@@ -176,6 +176,7 @@ export interface TokenPair {
   access_token: string;
   refresh_token: string;
   expires_in: number; // seconds
+  expires_at: number; // seconds
 }
 
 export interface TokenStorage {

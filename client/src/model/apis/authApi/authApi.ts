@@ -36,6 +36,7 @@ export const createAuthApi: ApiFactory<
         access_token: session.access_token,
         refresh_token: session.refresh_token,
         expires_in: session.expires_in,
+        expires_at: session.expires_at,
       });
       store.auth = {
         user: data.user,
@@ -70,6 +71,7 @@ export const createAuthApi: ApiFactory<
         access_token: session.access_token,
         refresh_token: session.refresh_token,
         expires_in: session.expires_in,
+        expires_at: session.expires_at,
       });
 
       store.auth = {
@@ -148,6 +150,7 @@ export const createAuthApi: ApiFactory<
         access_token: session.access_token,
         refresh_token: session.refresh_token,
         expires_in: session.expires_in,
+        expires_at: session.expires_at,
       });
 
       store.auth = {
