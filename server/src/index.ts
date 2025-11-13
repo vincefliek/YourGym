@@ -12,6 +12,7 @@ import {
   getAuthDataFromRequest,
 } from './auth';
 import { routes } from './routes';
+import { timeoutMiddleware } from './utils';
 
 if (process.env.NODE_ENV === 'development') {
   dotenv.config({ path: '.env' });
@@ -32,17 +33,29 @@ const requireAuth = createRequireAuthMiddleware(initSupabase);
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
-app.use(helmet());
-app.use(cookieParser());
-
+/**
+ * Render hosting provider adds "X-Forwarded-For" header.
+ * This means that the server is behind the reserse-proxy,
+ * and looks like it's Cloudflare.
+ * 
+ * The issue was with 'express-rate-limit'.
+ * 
+ * As a result, it can’t reliably know the real client’s IP,
+ * so rate limiting might not work correctly.
+ */
+app.set('trust proxy', true);
 /**
  * Fix weird caching issues.
  * Example 1: status 304 with response body.
  * Example 2: status 200 without response body.
  */
 app.disable('etag');
+
+app.use(bodyParser.json({ limit: '100kb' }));
+app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
+app.use(helmet());
+app.use(cookieParser());
+app.use(timeoutMiddleware());
 
 registerAuthRoutes(app, initSupabase);
 
