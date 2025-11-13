@@ -17,15 +17,7 @@ if (process.env.NODE_ENV === 'development') {
   dotenv.config({ path: '.env' });
 }
 
-const app = express();
-
-app.use(bodyParser.json());
-app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
-app.use(helmet());
-app.use(cookieParser());
-
 const port = 3100;
-
 
 let initSupabase;
 
@@ -37,6 +29,20 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const requireAuth = createRequireAuthMiddleware(initSupabase);
+
+const app = express();
+
+app.use(bodyParser.json());
+app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
+app.use(helmet());
+app.use(cookieParser());
+
+/**
+ * Fix weird caching issues.
+ * Example 1: status 304 with response body.
+ * Example 2: status 200 without response body.
+ */
+app.disable('etag');
 
 registerAuthRoutes(app, initSupabase);
 
