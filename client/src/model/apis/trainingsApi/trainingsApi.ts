@@ -22,12 +22,15 @@ export const createTrainingsApi: ApiFactory<
   Pick<AppAPIs, 'httpClientAPI'>
 > = (
   { store, validator }: ApiTools,
+  dependencies,
 ) => {
   validator.addSchema(allTrainingsSchema);
   validator.addSchema(trainingSchema);
   validator.addSchema(exerciseSchema);
   validator.addSchema(setSchema);
   validator.addSchema(setsHistorySchema);
+
+  const { httpClientAPI } = dependencies;
 
   const validate = (data: any, schema: any) => {
     const validationResult = validator.validate(data, schema);

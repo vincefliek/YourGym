@@ -34,10 +34,18 @@ app.get('/', (req, res) => {
   res.send('YourGym server welcomes you!');
 });
 
+/* ------------------ CHECK SESSION ------------------ */
+
+app.get(routes.session, requireAuth, async (req, res) => {
+  const { user } = getAuthDataFromRequest(req);
+
+  res.json({ user });
+});
+
 /* ------------------ TEMPLATE WORKOUTS ------------------ */
 
 // Get all template workouts with template exercises (single query)
-app.get("/api/template-workouts", requireAuth, async (req, res) => {
+app.get(routes.templateWorkouts, requireAuth, async (req, res) => {
   try {
     const { data, error } = await initSupabase()
       .from("template_workouts")
@@ -61,7 +69,7 @@ app.get("/api/template-workouts", requireAuth, async (req, res) => {
 });
 
 // Get specific template workout with its exercises
-app.get("/api/template-workouts/:workoutId", requireAuth, async (req, res) => {
+app.get(routes.templateWorkout, requireAuth, async (req, res) => {
   const { workoutId } = req.params;
 
   // TODO add validation
@@ -88,7 +96,7 @@ app.get("/api/template-workouts/:workoutId", requireAuth, async (req, res) => {
 });
 
 // Create template workout
-app.post("/api/template-workouts", requireAuth, async (req, res) => {
+app.post(routes.templateWorkouts, requireAuth, async (req, res) => {
   const { name } = req.body;
   const user = getAuthDataFromRequest(req).user;
 
@@ -110,7 +118,7 @@ app.post("/api/template-workouts", requireAuth, async (req, res) => {
 });
 
 // Update template workout
-app.put("/api/template-workouts/:workoutId", requireAuth, async (req, res) => {
+app.put(routes.templateWorkout, requireAuth, async (req, res) => {
   const { workoutId } = req.params;
   const { name } = req.body;
   const user = getAuthDataFromRequest(req).user;
@@ -136,7 +144,7 @@ app.put("/api/template-workouts/:workoutId", requireAuth, async (req, res) => {
 
 // Delete template workout and its template exercises
 app.delete(
-  "/api/template-workouts/:workoutId",
+  routes.templateWorkout,
   requireAuth,
   async (req, res) => {
     const { workoutId } = req.params;
@@ -166,7 +174,7 @@ app.delete(
 
 // Create template exercise under a template workout
 app.post(
-  "/api/template-workouts/:workoutId/exercises",
+  routes.templateExercises,
   requireAuth,
   async (req, res) => {
     const { workoutId } = req.params;
@@ -200,7 +208,7 @@ app.post(
 
 // Update specific template exercise
 app.put(
-  "/api/template-workouts/:workoutId/exercises/:exerciseId",
+  routes.templateExercise,
   requireAuth,
   async (req, res) => {
     const { exerciseId } = req.params;
@@ -228,7 +236,7 @@ app.put(
 
 // Delete specific template exercise
 app.delete(
-  "/api/template-workouts/:workoutId/exercises/:exerciseId",
+  routes.templateExercise,
   requireAuth,
   async (req, res) => {
     const { exerciseId } = req.params;

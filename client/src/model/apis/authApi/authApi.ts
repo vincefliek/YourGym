@@ -120,14 +120,6 @@ export const createAuthApi: ApiFactory<
         credentials: 'include',
       });
 
-      const session = data.session;
-
-      tokenStorage.saveToken({
-        access_token: session.access_token,
-        refresh_token: session.refresh_token,
-        expires_in: session.expires_in,
-      });
-
       store.auth = {
         user: data.user,
         isAuthenticated: !!data.user,

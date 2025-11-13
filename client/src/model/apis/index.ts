@@ -21,6 +21,7 @@ export const createAPIs = (tools: ApiTools) => {
   };
 
   const httpClientAPI = createHttpClientAPI({
+    tools,
     baseUrl: process.env.NODE_ENV === 'production'
       ? 'https://yourgym.onrender.com'
       : 'http://localhost:3100',

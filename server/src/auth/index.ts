@@ -68,7 +68,10 @@ function clearSessionCookies(res: Response) {
 }
 
 const assignAuthDataToRequest = (req: Request, data: AuthResponse['data']) => {
-  (req as any).auth = { user: data.user };
+  (req as any).auth = { user: data.user, session: data.session };
+};
+const clearAuthDataFromRequest = (req: Request) => {
+  assignAuthDataToRequest(req, { user: null, session: null });
 };
 export const getAuthDataFromRequest = (req: Request): AuthResponse['data'] => {
   return (req as any).auth ?? {};
@@ -80,11 +83,57 @@ export const getAuthDataFromRequest = (req: Request): AuthResponse['data'] => {
  * - if access token expired, tries to refresh using refresh token.
  * - if refresh successful, rotates tokens and continues.
  */
+// const createRequireAuthMiddleware = (supabase: () => SupabaseClient) => {
+//   async function requireAuth(req: Request, res: Response, next: NextFunction) {
+//     try {
+//       const accessToken = req.cookies[ACCESS_TOKEN_COOKIE] as string | undefined;
+//       const refreshToken = req.cookies[REFRESH_TOKEN_COOKIE] as string | undefined;
+
+//       if (!accessToken) {
+//         return res.status(401).json({ error: 'Missing access token' });
+//       }
+
+//       // Try to get user using current access token
+//       const { data: userData, error: userErr } = await supabase().auth.getUser(accessToken);
+
+//       if (userErr) {
+//         // If token expired / invalid, try refresh path
+//         if (refreshToken) {
+//           const { data: refreshData, error: refreshErr } = await supabase().auth.refreshSession({
+//             refresh_token: refreshToken,
+//           });
+
+//           if (refreshErr || !refreshData?.session) {
+//             clearSessionCookies(res);
+//             return res.status(401).json({ error: 'Failed to refresh session' });
+//           }
+
+//           // rotate: set new cookies
+//           setSessionCookies(res, refreshData.session);
+
+//           // attach user to req and continue
+//           assignAuthDataToRequest(req, refreshData);
+
+//           return next();
+//         } else {
+//           return res.status(401).json({ error: 'Access token invalid and no refresh token' });
+//         }
+//       }
+
+//       // success: attach user
+//       assignAuthDataToRequest(req, { user: userData.user, session: null });
+
+//       next();
+//     } catch (err) {
+//       return res.status(500).json({ error: 'Internal auth error' });
+//     }
+//   }
+//   return requireAuth;
+// };
 const createRequireAuthMiddleware = (supabase: () => SupabaseClient) => {
   async function requireAuth(req: Request, res: Response, next: NextFunction) {
     try {
-      const accessToken = req.cookies[ACCESS_TOKEN_COOKIE] as string | undefined;
-      const refreshToken = req.cookies[REFRESH_TOKEN_COOKIE] as string | undefined;
+      const accessToken = req.headers['authorization']?.split(' ')[1];
 
       if (!accessToken) {
         return res.status(401).json({ error: 'Missing access token' });
@@ -93,32 +142,19 @@ const createRequireAuthMiddleware = (supabase: () => SupabaseClient) => {
       // Try to get user using current access token
       const { data: userData, error: userErr } = await supabase().auth.getUser(accessToken);
 
-      if (userErr) {
-        // If token expired / invalid, try refresh path
-        if (refreshToken) {
-          const { data: refreshData, error: refreshErr } = await supabase().auth.refreshSession({
-            refresh_token: refreshToken,
-          });
-
-          if (refreshErr || !refreshData?.session) {
-            clearSessionCookies(res);
-            return res.status(401).json({ error: 'Failed to refresh session' });
-          }
-
-          // rotate: set new cookies
-          setSessionCookies(res, refreshData.session);
-
-          // attach user to req and continue
-          assignAuthDataToRequest(req, refreshData);
-
-          return next();
-        } else {
-          return res.status(401).json({ error: 'Access token invalid and no refresh token' });
-        }
+      // If token expired / invalid
+      if (userErr || !userData.user) {
+        clearAuthDataFromRequest(req);
+        return res
+          .status(401)
+          .json({ error: 'Access token is invalid' });
       }
 
-      // success: attach user
-      assignAuthDataToRequest(req, { user: userData.user, session: null });
+      // attach user to req and continue
+      assignAuthDataToRequest(req, {
+        user: userData.user,
+        session: null,
+      });
 
       next();
     } catch (err) {
@@ -200,12 +236,35 @@ const registerAuthRoutes = (app: Express, supabase: () => SupabaseClient) => {
   });
 
   /**
+   * Logout
+   * - clears cookies. If you want to fully revoke sessions server-side, you'd use admin API (service_role).
+   *   We intentionally avoid that here per your request.
+   */
+  app.post(routes.logout, authLimiter, async (req: Request, res: Response) => {
+    try {
+      const { error } = await supabase().auth.signOut();
+
+      if (error) {
+        return res
+          .status(400)
+          .json({ error: error.message });
+      }
+
+      clearSessionCookies(res);
+
+      return res.status(200).json({ message: 'Logged out' });
+    } catch (err) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  /**
    * Refresh endpoint (explicit)
    * - uses refresh token from cookie, refreshes session, sets rotated cookies
    */
   app.post(routes.refreshSession, authLimiter, async (req: Request, res: Response) => {
     try {
-      const refreshToken = req.cookies[REFRESH_TOKEN_COOKIE] as string | undefined;
+      const refreshToken = req.body.refreshToken as string | undefined;
 
       if (!refreshToken) {
         return res.status(401).json({ error: 'Missing refresh token' });
@@ -229,49 +288,6 @@ const registerAuthRoutes = (app: Express, supabase: () => SupabaseClient) => {
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error' });
     }
-  });
-
-  /**
-   * Logout
-   * - clears cookies. If you want to fully revoke sessions server-side, you'd use admin API (service_role).
-   *   We intentionally avoid that here per your request.
-   */
-  app.post(routes.logout, authLimiter, async (req: Request, res: Response) => {
-    try {
-      const { error } = await supabase().auth.signOut();
-
-      if (error) {
-        return res
-          .status(400)
-          .json({ error: error.message });
-      }
-
-      clearSessionCookies(res);
-
-      return res.status(200).json({ message: 'Logged out' });
-    } catch (err) {
-      return res.status(500).json({ error: 'Internal server error' });
-    }
-  });
-
-  app.get(routes.session, authLimiter, async (req, res) => {
-    const accessToken = req.cookies[ACCESS_TOKEN_COOKIE] as string | undefined;
-
-    if (!accessToken) {
-      return res
-        .status(401)
-        .json({ error: 'No access token provided' });
-    }
-
-    const { data, error } = await supabase().auth.getUser(accessToken);
-
-    if (error) {
-      return res
-        .status(401)
-        .json({ error: error.message });
-    }
-
-    res.json({ user: data.user });
   });
 };
 

@@ -1,27 +1,18 @@
 import { createAuthApi } from '../authApi';
 import { Store } from '../../../store';
 import { Validator } from '../../../validation';
-import { mockFetch } from './utils';
-import { createHttpClientAPI } from '../../httpClientApi';
-import { tokenStorage } from './mockData';
+import { createApi, mockFetch } from './utils';
+import { Store as StoreType } from '../../../types';
 
 describe.skip('refreshToken', () => {
-  let store: Store;
+  let store: StoreType;
   let validator: Validator;
   let authApi: ReturnType<typeof createAuthApi>;
 
   beforeEach(() => {
     store = new Store();
     validator = new Validator();
-    authApi = createAuthApi(
-      { store, validator },
-      { httpClientAPI: createHttpClientAPI({
-        baseUrl: '',
-        tokenStorage,
-        refreshEndpoint: '/refresh',
-      }) },
-      tokenStorage,
-    );
+    authApi = createApi(store, validator);
     mockFetch({ success: true });
   });
 

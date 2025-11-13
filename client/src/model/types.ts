@@ -153,23 +153,23 @@ export interface AuthApi {
 }
 
 export interface HttpClientAPI {
-  get<TResponse = Response>(url: string, options?: RequestInit & { headers?: Record<string, string> }): Promise<TResponse>;
-  post<TResponse = Response, TBody = any>(
+  get<TResponse>(url: string, options?: RequestInit & { headers?: Record<string, string> }): Promise<TResponse>;
+  post<TResponse, TBody = any>(
     url: string,
     body?: TBody,
     options?: RequestInit & { headers?: Record<string, string> }
   ): Promise<TResponse>;
-  put<TResponse = Response, TBody = any>(
+  put<TResponse, TBody = any>(
     url: string,
     body?: TBody,
     options?: RequestInit & { headers?: Record<string, string> }
   ): Promise<TResponse>;
-  patch<TResponse = Response, TBody = any>(
+  patch<TResponse, TBody = any>(
     url: string,
     body?: TBody,
     options?: RequestInit & { headers?: Record<string, string> }
   ): Promise<TResponse>;
-  delete<TResponse = Response>(url: string, options?: RequestInit & { headers?: Record<string, string> }): Promise<TResponse>;
+  delete<TResponse>(url: string, options?: RequestInit & { headers?: Record<string, string> }): Promise<TResponse>;
 }
 
 export interface TokenPair {

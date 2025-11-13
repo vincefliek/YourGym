@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Button, Layout, Navbar, NavbarContainer } from '../../components';
 import { connect } from '../../utils';
@@ -11,16 +11,34 @@ import style from './style.module.scss';
 
 interface Props {
   data: Training[];
-  onAdd: () => void;
+  onAdd: () => void; 
   onDelete: (id: string) => void;
   onOpen: (id: string) => void;
+  getTemplateTrainings: () => Promise<any[]>;
 }
 
 type Controller = ReturnType<typeof controller>;
 
-class PureTrainings extends React.Component<Props> {
-  renderAddFirstTraining = () => {
-    const { onAdd } = this.props;
+const PureTrainings: React.FC<Props> = (props) => {
+  const {
+    data,
+    getTemplateTrainings,
+  } = props;
+
+  const [templateTrainings, seTemplateTrainings] = useState<any[]>([]);
+
+  const isData = data.length;
+
+  useEffect(() => {
+    getTemplateTrainings()
+      .then(data => {
+        seTemplateTrainings(data);
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const renderAddFirstTraining = () => {
+    const { onAdd } = props;
     return (
       <Button
         skin="primary"
@@ -33,8 +51,8 @@ class PureTrainings extends React.Component<Props> {
     );
   };
 
-  renderTrainings = () => {
-    const { data, onDelete, onOpen } = this.props;
+  const renderTrainings = () => {
+    const { data, onDelete, onOpen } = props;
     return (
       <ul className={style.trainings}>
         {data.map(training => {
@@ -64,8 +82,8 @@ class PureTrainings extends React.Component<Props> {
     );
   };
 
-  renderTopBar = () => {
-    const { onAdd } = this.props;
+  const renderTopBar = () => {
+    const { onAdd } = props;
     return (
       <NavbarContainer className={style.navbarContainer}>
         <Button
@@ -79,40 +97,49 @@ class PureTrainings extends React.Component<Props> {
     );
   };
 
-  render() {
-    const { data } = this.props;
-
-    const isData = data.length;
-
-    if (!isData) {
-      return (
-        <Layout
-          bottomBar={<Navbar />}
-        >
-          <div className={style.screenAddNew}>
-            {this.renderAddFirstTraining()}
-          </div>
-        </Layout>
-      );
-    }
-
+  if (!isData) {
     return (
       <Layout
-        topBar={this.renderTopBar()}
         bottomBar={<Navbar />}
       >
-        <div className={style.screen}>
-          {this.renderTrainings()}
+        {templateTrainings.map(it => (
+          <div key={it.id}>
+            <h3>{it.name}</h3>
+            <div>Exercices:</div>
+            <ul style={{ margin: 0 }}>
+              {it.exercises.map((ex: any) => (
+                <li key={ex.id}>
+                  {ex.type} - {ex.reps} - {ex.weight}
+                </li>
+              ))}
+            </ul>
+            ________________________
+          </div>
+        ))}
+        <div className={style.screenAddNew}>
+          {renderAddFirstTraining()}
         </div>
       </Layout>
     );
   }
-}
+
+  return (
+    <Layout
+      topBar={renderTopBar()}
+      bottomBar={<Navbar />}
+    >
+      <div className={style.screen}>
+        {renderTrainings()}
+      </div>
+    </Layout>
+  );
+};
 
 export const Trainings = connect<Controller, Props>({
   controller,
 }, ctrl => ({
   data: ctrl.getTrainings(),
+  getTemplateTrainings: ctrl.getTemplateTrainings,
   onAdd: ctrl.onAddTraining,
   onDelete: ctrl.onDeleteTraining,
   onOpen: ctrl.onOpenTraining,

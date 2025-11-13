@@ -1,9 +1,8 @@
 import { createAuthApi } from '../authApi';
 import { Store } from '../../../store';
 import { Validator } from '../../../validation';
-import { mockUser, tokenStorage } from './mockData';
-import { mockFetch } from './utils';
-import { createHttpClientAPI } from '../../httpClientApi';
+import { mockUser } from './mockData';
+import { createApi, mockFetch } from './utils';
 
 describe.skip('getSession', () => {
   let store: Store;
@@ -13,15 +12,7 @@ describe.skip('getSession', () => {
   beforeEach(() => {
     store = new Store();
     validator = new Validator();
-    authApi = createAuthApi(
-      { store, validator },
-      { httpClientAPI: createHttpClientAPI({
-        baseUrl: '',
-        tokenStorage,
-        refreshEndpoint: '/refresh',
-      }) },
-      tokenStorage,
-    );
+    authApi = createApi(store, validator);
     mockFetch({ user: mockUser });
   });
 

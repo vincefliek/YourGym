@@ -1,8 +1,9 @@
-import { HttpClientAPI, TokenPair, TokenStorage } from '../../types';
+import { ApiTools, AuthResponseData, HttpClientAPI, TokenPair, TokenStorage } from '../../types';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 interface HttpClientOptions {
+  tools: ApiTools;
   baseUrl: string;
   tokenStorage: TokenStorage;
   refreshEndpoint: string; // e.g., '/api/refresh'
@@ -17,6 +18,7 @@ interface RequestOptions<Body = any> {
 
 export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
   const {
+    tools,
     baseUrl,
     tokenStorage,
     refreshEndpoint,
@@ -25,6 +27,7 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
       credentials: 'include',
     },
   } = options;
+  const { store } = tools;
 
   let refreshing = false;
   let refreshQueue: ((token: string) => void)[] = [];
@@ -48,7 +51,7 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
       const res = await fetch(`${baseUrl}${refreshEndpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...defaultHeaders },
-        body: JSON.stringify({ refresh_token: currentToken.refresh_token }),
+        body: JSON.stringify({ refreshToken: currentToken.refresh_token }),
       });
 
       if (!res.ok) {
@@ -56,11 +59,16 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
         return;
       }
 
-      newToken = await res.json() as TokenPair;
+      const refreshedSessionData = await res.json() as AuthResponseData;
+      const refreshedSession = refreshedSessionData.session;
+
+      newToken = {
+        access_token: refreshedSession.access_token,
+        refresh_token: refreshedSession.refresh_token,
+        expires_in: refreshedSession.expires_in,
+      };
 
       tokenStorage.saveToken(newToken);
-
-      return newToken.access_token;
     } finally {
       refreshing = false;
       if (newToken) {
@@ -94,10 +102,17 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
     });
 
     if (response.status === 401 && retry) {
-      const newToken = await performRefresh();
+      await performRefresh();
+
+      const newToken = tokenStorage.getToken();
 
       if (!newToken) {
-        throw new Error('Unauthorized. Token refresh failed.');
+        const errMsg = 'Unauthorized. Token refresh failed.';
+        store.auth = {
+          isAuthenticated: false,
+          authError: errMsg,
+        };
+        throw new Error(errMsg);
       }
 
       return request<TResponse, TBody>(url, reqOptions, false); // retry once
