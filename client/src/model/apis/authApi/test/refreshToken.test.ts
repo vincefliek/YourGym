@@ -2,6 +2,8 @@ import { createAuthApi } from '../authApi';
 import { Store } from '../../../store';
 import { Validator } from '../../../validation';
 import { mockFetch } from './utils';
+import { createHttpClientAPI } from '../../httpClientApi';
+import { tokenStorage } from './mockData';
 
 describe.skip('refreshToken', () => {
   let store: Store;
@@ -11,7 +13,15 @@ describe.skip('refreshToken', () => {
   beforeEach(() => {
     store = new Store();
     validator = new Validator();
-    authApi = createAuthApi({ store, validator });
+    authApi = createAuthApi(
+      { store, validator },
+      { httpClientAPI: createHttpClientAPI({
+        baseUrl: '',
+        tokenStorage,
+        refreshEndpoint: '/refresh',
+      }) },
+      tokenStorage,
+    );
     mockFetch({ success: true });
   });
 

@@ -63,6 +63,19 @@ export interface ApiTools {
   validator: Validator;
 }
 
+export interface AppAPIs {
+  navigationApi: NavigationApi;
+  trainingsApi: TrainingsApi;
+  authApi: AuthApi;
+  httpClientAPI: HttpClientAPI;
+}
+
+export type ApiFactory<T, D, M extends any[] = any[]> = (
+  tools: ApiTools,
+  dependencies: D,
+  ...args: M
+) => T;
+
 export interface NavigationApi {
   routes: {
     home: string;
@@ -125,10 +138,48 @@ export interface TrainingsApi {
   };
 }
 
+// TODO fix any
+export interface AuthResponseData {
+  session: any;
+  user: any;
+}
+
 export interface AuthApi {
   signin: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   signout: () => Promise<void>;
   getSession: () => Promise<void>;
   refreshToken: () => Promise<void>;
+}
+
+export interface HttpClientAPI {
+  get<TResponse = Response>(url: string, options?: RequestInit & { headers?: Record<string, string> }): Promise<TResponse>;
+  post<TResponse = Response, TBody = any>(
+    url: string,
+    body?: TBody,
+    options?: RequestInit & { headers?: Record<string, string> }
+  ): Promise<TResponse>;
+  put<TResponse = Response, TBody = any>(
+    url: string,
+    body?: TBody,
+    options?: RequestInit & { headers?: Record<string, string> }
+  ): Promise<TResponse>;
+  patch<TResponse = Response, TBody = any>(
+    url: string,
+    body?: TBody,
+    options?: RequestInit & { headers?: Record<string, string> }
+  ): Promise<TResponse>;
+  delete<TResponse = Response>(url: string, options?: RequestInit & { headers?: Record<string, string> }): Promise<TResponse>;
+}
+
+export interface TokenPair {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number; // seconds
+}
+
+export interface TokenStorage {
+  getToken(): TokenPair | undefined;
+  saveToken(tokenPair: TokenPair): void;
+  clearToken(): void;
 }

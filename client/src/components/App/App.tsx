@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import { initApp } from '../../model';
+import { AppAPIs } from '../../model/types';
 import {
   Trainings,
   Home,
@@ -20,7 +21,6 @@ import { AppContext } from '../../utils';
 import {
   AppProps,
   AppState,
-  AppAPIs,
   AppContext as IAppContext,
 } from '../../types';
 import style from './style.module.scss';

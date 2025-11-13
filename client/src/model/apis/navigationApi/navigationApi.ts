@@ -1,6 +1,6 @@
 import { generatePath, matchPath } from 'react-router-dom';
 import { waitForCondition } from '../../../utils';
-import { NavigationApi, Store } from '../../types';
+import { ApiFactory, NavigationApi, Store } from '../../types';
 
 interface Routes {
   home: string;
@@ -15,9 +15,12 @@ interface Routes {
   openExercise: string;
 }
 
-export const createNavigationApi = (
+export const createNavigationApi: ApiFactory<
+  NavigationApi,
+  {}
+> = (
   { store }: { store: Store },
-): NavigationApi => {
+) => {
   const routes: Routes = {
     home: '/',
     trainings: '/trainings',

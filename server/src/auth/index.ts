@@ -157,7 +157,10 @@ const registerAuthRoutes = (app: Express, supabase: () => SupabaseClient) => {
       // set cookies
       setSessionCookies(res, data.session);
 
-      return res.status(201).json({ user: data.user });
+      return res.status(201).json({
+        user: data.user,
+        session: data.session,
+      });
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error' });
     }
@@ -187,7 +190,10 @@ const registerAuthRoutes = (app: Express, supabase: () => SupabaseClient) => {
 
       setSessionCookies(res, data.session);
 
-      return res.status(200).json({ user: data.user });
+      return res.status(200).json({
+        user: data.user,
+        session: data.session,
+      });
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error' });
     }
@@ -216,7 +222,10 @@ const registerAuthRoutes = (app: Express, supabase: () => SupabaseClient) => {
 
       setSessionCookies(res, data.session);
 
-      return res.status(200).json({ user: data.user });
+      return res.status(200).json({
+        user: data.user,
+        session: data.session,
+      });
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error' });
     }

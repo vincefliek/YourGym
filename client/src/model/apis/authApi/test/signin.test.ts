@@ -1,8 +1,9 @@
 import { createAuthApi } from '../authApi';
 import { Store } from '../../../store';
 import { Validator } from '../../../validation';
-import { mockUser } from './mockData';
+import { mockUser, tokenStorage } from './mockData';
 import { mockFetch } from './utils';
+import { createHttpClientAPI } from '../../httpClientApi';
 
 describe('signin', () => {
   let store: Store;
@@ -12,7 +13,15 @@ describe('signin', () => {
   beforeEach(() => {
     store = new Store();
     validator = new Validator();
-    authApi = createAuthApi({ store, validator });
+    authApi = createAuthApi(
+      { store, validator },
+      { httpClientAPI: createHttpClientAPI({
+        baseUrl: '',
+        tokenStorage,
+        refreshEndpoint: '/refresh',
+      }) },
+      tokenStorage,
+    );
     mockFetch({ user: mockUser });
   });
 

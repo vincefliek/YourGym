@@ -1,15 +1,18 @@
-import type { AuthApi, Store } from '../../types';
+import type { ApiFactory, AppAPIs, AuthApi, AuthResponseData, Store, TokenStorage } from '../../types';
 import { Validator } from '../../validation';
 import { validateEmail, validatePassword } from './authValidation';
 
-const BASE_URL = process.env.NODE_ENV === 'production'
-  ? 'https://yourgym.onrender.com'
-  : 'http://localhost:3100';
-
-export const createAuthApi = (
+export const createAuthApi: ApiFactory<
+  AuthApi,
+  Pick<AppAPIs, 'httpClientAPI'>,
+  [TokenStorage]
+> = (
   tools: { store: Store, validator: Validator },
-): AuthApi => {
+  dependencies,
+  tokenStorage,
+) => {
   const { store } = tools;
+  const { httpClientAPI } = dependencies;
 
   async function signup(email: string, password: string) {
     if (!validateEmail(email)) {
@@ -22,19 +25,18 @@ export const createAuthApi = (
     store.auth = { authLoading: true };
 
     try {
-      const res = await fetch(`${BASE_URL}/api/signup`, {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+      const data = await httpClientAPI.post<AuthResponseData>('/api/signup', {
+        email,
+        password,
+      }, { credentials: 'include' });
+
+      const session = data.session;
+
+      tokenStorage.saveToken({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+        expires_in: session.expires_in,
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error);
-      }
-
       store.auth = {
         user: data.user,
         isAuthenticated: true,
@@ -57,18 +59,18 @@ export const createAuthApi = (
     store.auth = { authLoading: true };
 
     try {
-      const res = await fetch(`${BASE_URL}/api/signin`, {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+      const data = await httpClientAPI.post<AuthResponseData>('/api/signin', {
+        email,
+        password,
+      }, { credentials: 'include' });
+
+      const session = data.session;
+
+      tokenStorage.saveToken({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+        expires_in: session.expires_in,
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error);
-      }
 
       store.auth = {
         user: data.user,
@@ -88,15 +90,13 @@ export const createAuthApi = (
     store.auth = { authLoading: true };
 
     try {
-      const res = await fetch(`${BASE_URL}/api/logout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
+      await httpClientAPI.post(
+        '/api/logout',
+        {},
+        { credentials: 'include' },
+      );
 
-      if (!res.ok) {
-        throw new Error('Signout failed');
-      }
+      tokenStorage.clearToken();
 
       store.auth = {
         user: null,
@@ -116,16 +116,17 @@ export const createAuthApi = (
     store.auth = { authLoading: true };
 
     try {
-      const res = await fetch(`${BASE_URL}/api/session`, {
-        method: 'GET',
+      const data = await httpClientAPI.get<AuthResponseData>('/api/session', {
         credentials: 'include',
       });
 
-      const data = await res.json();
+      const session = data.session;
 
-      if (!res.ok) {
-        throw new Error(data.error);
-      }
+      tokenStorage.saveToken({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+        expires_in: session.expires_in,
+      });
 
       store.auth = {
         user: data.user,
@@ -133,29 +134,38 @@ export const createAuthApi = (
         authLoading: false,
         authError: null,
       };
-
-      return data;
     } catch (e: any) {
       store.auth = {
         authError: e.message,
         authLoading: false,
       };
-
-      return { error: e.message };
     }
   }
 
   async function refreshToken() {
     try {
-      const res = await fetch(`${BASE_URL}/api/refresh`, {
-        method: 'POST',
-        credentials: 'include',
+      const data = await httpClientAPI.post<AuthResponseData>(
+        '/api/refresh',
+        {},
+        { credentials: 'include' },
+      );
+
+      const session = data.session;
+
+      tokenStorage.saveToken({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+        expires_in: session.expires_in,
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      return data;
+
+      store.auth = {
+        user: data.user,
+        isAuthenticated: !!data.user,
+      };
     } catch (e: any) {
-      return { error: e.message };
+      store.auth = {
+        authError: e.message,
+      };
     }
   }
 

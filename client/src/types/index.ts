@@ -1,10 +1,4 @@
-import { Store, NavigationApi, TrainingsApi, AuthApi } from '../model/types';
-
-export interface AppAPIs {
-  navigationApi: NavigationApi;
-  trainingsApi: TrainingsApi;
-  authApi: AuthApi;
-}
+import { Store, AppAPIs } from '../model/types';
 
 export interface AppContext {
   serviceLocator: {

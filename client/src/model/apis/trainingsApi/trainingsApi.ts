@@ -6,6 +6,8 @@ import {
   Training,
   ApiTools,
   TrainingsApi,
+  ApiFactory,
+  AppAPIs,
 } from '../../types';
 import {
   allTrainingsSchema,
@@ -15,9 +17,12 @@ import {
   setsHistorySchema,
 } from './schemas';
 
-export const createTrainingsApi = (
+export const createTrainingsApi: ApiFactory<
+  TrainingsApi,
+  Pick<AppAPIs, 'httpClientAPI'>
+> = (
   { store, validator }: ApiTools,
-): TrainingsApi => {
+) => {
   validator.addSchema(allTrainingsSchema);
   validator.addSchema(trainingSchema);
   validator.addSchema(exerciseSchema);
