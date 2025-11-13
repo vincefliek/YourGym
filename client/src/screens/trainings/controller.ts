@@ -23,6 +23,19 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
         return [];
       }
     },
+    createNewTemplateTraining: async () => {
+      // TODO it's a temp code, should be moved into `trainingsApi`
+      try {
+        const data = await httpClientAPI.post<any>('/api/template-workouts', {
+          name: `Unique - ${Date.now()}`,
+        });
+        console.log('>>> createNewTemplateTraining', data);
+        return data;
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    },
     onAddTraining: () => {
       trainingsApi.create.newTraining();
       navigationApi.toCreateTraining();

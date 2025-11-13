@@ -15,6 +15,7 @@ interface Props {
   onDelete: (id: string) => void;
   onOpen: (id: string) => void;
   getTemplateTrainings: () => Promise<any[]>;
+  createNewTemplateTraining: () => Promise<any>;
 }
 
 type Controller = ReturnType<typeof controller>;
@@ -23,6 +24,7 @@ const PureTrainings: React.FC<Props> = (props) => {
   const {
     data,
     getTemplateTrainings,
+    createNewTemplateTraining,
   } = props;
 
   const [templateTrainings, seTemplateTrainings] = useState<any[]>([]);
@@ -102,6 +104,17 @@ const PureTrainings: React.FC<Props> = (props) => {
       <Layout
         bottomBar={<Navbar />}
       >
+        <div>
+          <Button
+            skin="text"
+            size="small"
+            onClick={createNewTemplateTraining}
+          >
+            Create template training
+          </Button>
+          <br/>
+          ________________________
+        </div>
         {templateTrainings.map(it => (
           <div key={it.id}>
             <h3>{it.name}</h3>
@@ -143,4 +156,5 @@ export const Trainings = connect<Controller, Props>({
   onAdd: ctrl.onAddTraining,
   onDelete: ctrl.onDeleteTraining,
   onOpen: ctrl.onOpenTraining,
+  createNewTemplateTraining: ctrl.createNewTemplateTraining,
 }))(PureTrainings);
