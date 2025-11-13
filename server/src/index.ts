@@ -5,7 +5,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 
-import { initSupabase } from './db';
+import { initSupabase as _initSupabase } from './db';
 import {
   registerAuthRoutes,
   createRequireAuthMiddleware,
@@ -25,6 +25,16 @@ app.use(helmet());
 app.use(cookieParser());
 
 const port = 3100;
+
+
+let initSupabase;
+
+if (process.env.NODE_ENV === 'development') {
+  initSupabase = () => _initSupabase();
+} else {
+  const supabaseInstance = _initSupabase();
+  initSupabase = () => supabaseInstance;
+}
 
 const requireAuth = createRequireAuthMiddleware(initSupabase);
 
