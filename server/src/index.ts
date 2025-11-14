@@ -20,14 +20,14 @@ if (process.env.NODE_ENV === 'development') {
 
 const port = 3100;
 
-let initSupabase = () => _initSupabase();
+let initSupabase;
 
-// if (process.env.NODE_ENV === 'development') {
-//   initSupabase = () => _initSupabase();
-// } else {
-//   const supabaseInstance = _initSupabase();
-//   initSupabase = () => supabaseInstance;
-// }
+if (process.env.NODE_ENV === 'development') {
+  initSupabase = () => _initSupabase();
+} else {
+  const supabaseInstance = _initSupabase();
+  initSupabase = () => supabaseInstance;
+}
 
 const requireAuth = createRequireAuthMiddleware(initSupabase);
 
