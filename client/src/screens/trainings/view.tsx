@@ -100,6 +100,7 @@ const PureTrainings: React.FC<Props> = (props) => {
   };
 
   if (!isData) {
+    const one = templateTrainings[0] ?? {};
     return (
       <Layout
         bottomBar={<Navbar />}
@@ -115,7 +116,13 @@ const PureTrainings: React.FC<Props> = (props) => {
           <br/>
           ________________________
         </div>
-        {templateTrainings.map(it => (
+        <div>
+          <h1>ONE</h1>
+          {'<'}{one.name}{'>'} - Exercices - {one.exercises?.length}
+          <br/>
+          ________________________
+        </div>
+        {templateTrainings.slice(1).map(it => (
           <div key={it.id}>
             <h3>{it.name}</h3>
             <div>Exercices:</div>

@@ -14,14 +14,28 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
     },
     getTemplateTrainings: async () => {
       // TODO it's a temp code, should be moved into `trainingsApi`
+      let data: any[] = [];
       try {
-        const data = await httpClientAPI.get<any[]>('/api/template-workouts');
+        const _data = await httpClientAPI.get<any[]>('/api/template-workouts');
         console.log('>>> getTemplateTrainings', data);
-        return data;
+        data = [...data, ..._data];
       } catch (error) {
         console.error(error);
-        return [];
       }
+
+      try {
+        const _data = await httpClientAPI.get<any[]>('/api/template-workouts');
+        console.log('>>> getTemplateTrainings', data);
+        const oneTraining = await httpClientAPI.get<any>(
+          '/api/template-workouts/6e70818b-2318-4c25-8612-3461a411670b',
+        );
+        console.log('>>> oneTraining', oneTraining);
+        data = [oneTraining, ..._data];
+      } catch (error) {
+        console.error(error);
+      }
+
+      return data;
     },
     createNewTemplateTraining: async () => {
       // TODO it's a temp code, should be moved into `trainingsApi`

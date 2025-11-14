@@ -40,6 +40,7 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
 
   async function performRefresh(): Promise<string | undefined> {
     if (refreshing) {
+      console.log('>> refreshing <<', refreshing);
       return new Promise(resolve => {
         refreshQueue.push(resolve);
       });
@@ -56,7 +57,7 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
 
       const res = await fetch(`${baseUrl}${refreshEndpoint}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...defaultHeaders },
+        headers: { ...defaultHeaders },
         body: JSON.stringify({ refreshToken: currentToken.refresh_token }),
       });
 
