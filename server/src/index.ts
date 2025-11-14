@@ -86,11 +86,13 @@ app.get(routes.templateWorkouts, requireAuth, async (req, res) => {
 
     if (!data || !data.length || error) {
       const userSaved = getAuthDataFromRequest(req).user;
-      const userDB = await supabase.auth.getUser();
+      const accessToken = req.headers['authorization']?.split(' ')[1];
+      const userDB = await supabase.auth.getUser(accessToken);
 
       console.log('>>>> EMPTY !!! <<<<', data, error);
       console.log('>>>> EMPTY !!! userSaved <<<<', JSON.stringify(userSaved));
       console.log('>>>> EMPTY !!! userDB <<<<', JSON.stringify(userDB));
+      console.log('>>>> EMPTY !!! accessToken <<<<', accessToken?.slice(0, 30));
     }
 
     if (error) throw error;
