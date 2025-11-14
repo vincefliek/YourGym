@@ -111,12 +111,14 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
 
     const updatedTokens = tokenStorage.getToken();
     const accessToken = updatedTokens?.access_token;
+    const refreshToken = updatedTokens?.refresh_token;
 
     const mergedHeaders: Record<string, string> = {
       ...defaultHeaders,
       ...headers,
       // TODO interpolate `token_type` instead of hardcoded "Bearer"
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      ...(refreshToken ? { 'x-ref-tok': refreshToken } : {}),
     };
 
     const response = await fetch(`${baseUrl}${url}`, {
