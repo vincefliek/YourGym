@@ -20,14 +20,14 @@ if (process.env.NODE_ENV === 'development') {
 
 const port = 3100;
 
-let initSupabase;
+let initSupabase = () => _initSupabase();
 
-if (process.env.NODE_ENV === 'development') {
-  initSupabase = () => _initSupabase();
-} else {
-  const supabaseInstance = _initSupabase();
-  initSupabase = () => supabaseInstance;
-}
+// if (process.env.NODE_ENV === 'development') {
+//   initSupabase = () => _initSupabase();
+// } else {
+//   const supabaseInstance = _initSupabase();
+//   initSupabase = () => supabaseInstance;
+// }
 
 const requireAuth = createRequireAuthMiddleware(initSupabase);
 
@@ -79,9 +79,19 @@ app.get(routes.session, requireAuth, async (req, res) => {
 // Get all template workouts with template exercises (single query)
 app.get(routes.templateWorkouts, requireAuth, async (req, res) => {
   try {
-    const { data, error } = await initSupabase()
+    const supabase = initSupabase();
+    const { data, error } = await supabase
       .from("template_workouts")
       .select("*, template_exercises(*)"); // relational fetch
+
+    if (!data || !data.length || error) {
+      const userSaved = getAuthDataFromRequest(req).user;
+      const userDB = await supabase.auth.getUser();
+
+      console.log('>>>> EMPTY !!! <<<<', data, error);
+      console.log('>>>> EMPTY !!! userSaved <<<<', JSON.stringify(userSaved));
+      console.log('>>>> EMPTY !!! userDB <<<<', JSON.stringify(userDB));
+    }
 
     if (error) throw error;
 
