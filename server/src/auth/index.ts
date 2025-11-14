@@ -130,13 +130,36 @@ export const getAuthDataFromRequest = (req: Request): AuthResponse['data'] => {
 //   }
 //   return requireAuth;
 // };
+
+let isFirstReqAfterServerInit = true;
+
 const createRequireAuthMiddleware = (supabase: () => SupabaseClient) => {
   async function requireAuth(req: Request, res: Response, next: NextFunction) {
     try {
       const accessToken = req.headers['authorization']?.split(' ')[1];
+      const refreshToken = req.headers['x-ref-tok'] as string | undefined;
 
-      if (!accessToken) {
+      if (!accessToken || !refreshToken) {
         return res.status(401).json({ error: 'Missing access token' });
+      }
+
+      if (isFirstReqAfterServerInit) {
+        console.log('>>>> FIRST <<<<');
+        const { data, error } = await supabase().auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+
+        if (error || !data.user) {
+          clearAuthDataFromRequest(req);
+          return res
+            .status(401)
+            .json({ error: 'Access token is invalid' });
+        }
+
+        console.log('>>>> FIRST - SUCCESS! <<<<');
+
+        isFirstReqAfterServerInit = false;
       }
 
       // Try to get user using current access token
@@ -157,8 +180,11 @@ const createRequireAuthMiddleware = (supabase: () => SupabaseClient) => {
       });
 
       next();
-    } catch (err) {
-      return res.status(500).json({ error: 'Internal auth error' });
+    } catch (err: any) {
+      return res.status(500).json({
+        error: 'Internal auth error',
+        message: err.message,
+      });
     }
   }
   return requireAuth;
