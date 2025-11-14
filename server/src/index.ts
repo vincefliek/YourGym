@@ -88,11 +88,14 @@ app.get(routes.templateWorkouts, requireAuth, async (req, res) => {
       const userSaved = getAuthDataFromRequest(req).user;
       const accessToken = req.headers['authorization']?.split(' ')[1];
       const userDB = await supabase.auth.getUser(accessToken);
+      const userClaims = await supabase.auth.getClaims(accessToken);
+      const session = await supabase.auth.getSession();
 
       console.log('>>>> EMPTY !!! <<<<', data, error);
       console.log('>>>> EMPTY !!! userSaved <<<<', JSON.stringify(userSaved));
       console.log('>>>> EMPTY !!! userDB <<<<', JSON.stringify(userDB));
-      console.log('>>>> EMPTY !!! accessToken <<<<', accessToken?.slice(0, 30));
+      console.log('>>>> EMPTY !!! userClaims <<<<', JSON.stringify(userClaims));
+      console.log('>>>> EMPTY !!! session <<<<', JSON.stringify(session));
     }
 
     if (error) throw error;
