@@ -12,4 +12,7 @@ export interface AppContext {
 
 export interface AppState {}
 
-export interface AppProps {}
+export interface AppProps {
+  apis: AppAPIs;
+  appContext: AppContext;
+}

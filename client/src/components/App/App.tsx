@@ -1,7 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-import { initApp } from '../../model';
 import { AppAPIs } from '../../model/types';
 import {
   Trainings,
@@ -32,7 +31,7 @@ export class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
 
-    const { apis, appContext } = initApp();
+    const { apis, appContext } = props;
 
     this.apis = apis as any;
     this.appContext = appContext as any;

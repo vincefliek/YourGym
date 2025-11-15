@@ -5,8 +5,6 @@ import {
   Exercise,
 } from '../types';
 
-import { get as idbGet, set as idbSet } from 'idb-keyval';
-
 interface State {
   nav: {
     route: string | undefined;
@@ -30,10 +28,6 @@ interface Subscribers {
 export class Store implements StoreInterface {
   private state: State;
   private subscribers: Subscribers;
-
-  // Persist options
-  private readonly IDB_PREFIX = 'app-store';
-  private _persistenceEnabled = true; // temporary disabled during hydration
 
   constructor() {
     this.state = {
@@ -65,109 +59,6 @@ export class Store implements StoreInterface {
     validateAllDataAccessorsDeclared(publicDataAccessors);
   }
 
-  // ---------------------
-  // IndexedDB helpers
-  // ---------------------
-  private _getIDBAccessorKey(accessor: string): string {
-    return `${this.IDB_PREFIX}:${accessor}`;
-  }
-
-  private async _persistIDBAccessorValue(accessor: string): Promise<void> {
-    if (!this._persistenceEnabled) return;
-
-    try {
-      const value = this._valueForIDBAccessor(accessor);
-      // Fire & forget: don't await in callers, but handle errors here
-      await idbSet(this._getIDBAccessorKey(accessor), value);
-    } catch (err) {
-      // swallow but surface developer-friendly error for debugging
-      // (no throw so writes remain fire & forget)
-      // eslint-disable-next-line no-console
-      console.error(`[Store] Failed to persist ${accessor} to IndexedDB:`, err);
-    }
-  }
-
-  private async _readIDBAccessorValue(accessor: string) {
-    try {
-      const v = await idbGet<State[keyof State]>(
-        this._getIDBAccessorKey(accessor),
-      );
-      return v;
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error(`[Store] Failed to read ${accessor} from IndexedDB:`, err);
-      return undefined;
-    }
-  }
-
-  private _valueForIDBAccessor(accessor: string): any {
-    switch (accessor) {
-    case 'route':
-      return this.state.nav.route;
-    case 'backRouteWithHistoryReplace':
-      return this.state.nav.backRouteWithHistoryReplace;
-    case 'trainings':
-      return this.state.trainings;
-    case 'newTraining':
-      return this.state.newTraining;
-    case 'newExercise':
-      return this.state.newExercise;
-    case 'auth':
-      return this.state.auth;
-    default:
-      return undefined;
-    }
-  }
-
-  // Public: call to hydrate local store from indexedDB (e.g. on window.onload)
-  async hydrateFromIndexedDB(): Promise<void> {
-    // Temporarily disable persistence to avoid re-writing values we just read.
-    this._persistenceEnabled = false;
-
-    try {
-      const promises = allPublicDataAccessors.map(async (accessor) => {
-        const persisted = await this._readIDBAccessorValue(accessor);
-
-        if (persisted === undefined) return;
-
-        // Apply persisted value to store WITHOUT triggering
-        // persistence (disabled above).
-        // use setters to keep notification flow intact
-        switch (accessor) {
-        case 'route':
-          this.route = persisted as unknown as string | undefined;
-          break;
-        case 'backRouteWithHistoryReplace':
-          this.backRouteWithHistoryReplace =
-            persisted as unknown as string | undefined;
-          break;
-        case 'trainings':
-          this.trainings = persisted as Training[];
-          break;
-        case 'newTraining':
-          this.newTraining = persisted as Training | null;
-          break;
-        case 'newExercise':
-          this.newExercise = persisted as Exercise | null;
-          break;
-        case 'auth':
-          this.auth = persisted as Partial<AuthState>;
-          break;
-        default:
-          break;
-        }
-      });
-
-      await Promise.all(promises);
-    } finally {
-      // Re-enable persistence afterwards
-      this._persistenceEnabled = true;
-    }
-  }
-
-  // ---------------------
-  // Existing internal logic (kept but extended to persist)
-  // ---------------------
   private _updateStoreData = (
     fn: (state: State) => Partial<State>,
     dataAccessorsToNotify: string[],
@@ -182,13 +73,6 @@ export class Store implements StoreInterface {
     };
 
     this._notify(dataAccessorsToNotify);
-
-    // Persist each accessor (fire & forget).
-    // Does not block original synchronous flow.
-    dataAccessorsToNotify.forEach((accessor) => {
-      // intentionally not awaited
-      void this._persistIDBAccessorValue(accessor);
-    });
   };
 
   private _notify = (dataAccessorsToNotify: string[]) => {
@@ -244,20 +128,17 @@ export class Store implements StoreInterface {
     };
   };
 
-  private getPublicDataAccessorsToDataMap = (state: State) => ({
-    route: state.nav.route,
-    backRouteWithHistoryReplace: state.nav.backRouteWithHistoryReplace,
-    trainings: state.trainings,
-    newTraining: state.newTraining,
-    newExercise: state.newExercise,
-    auth: state.auth,
-  } as const);
-
   getStoreData = (publicDataAccessors: string[]): { [key: string]: any } => {
     validateDataAccessors(publicDataAccessors);
 
-    const publicDataAccessorsToData =
-      this.getPublicDataAccessorsToDataMap(this.state);
+    const publicDataAccessorsToData = {
+      route: this.state.nav.route,
+      backRouteWithHistoryReplace: this.state.nav.backRouteWithHistoryReplace,
+      trainings: this.state.trainings,
+      newTraining: this.state.newTraining,
+      newExercise: this.state.newExercise,
+      auth: this.state.auth,
+    } as const;
 
     type DataKey = keyof typeof publicDataAccessorsToData;
 
