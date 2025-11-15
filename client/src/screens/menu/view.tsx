@@ -34,12 +34,6 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
                 : <div>⛔️</div>
             }
           </div>
-          {isLoading && (
-            <div className={style.twoColumns}>
-              <div>Loading:</div>
-              <div>{error}</div>
-            </div>
-          )}
           {error && (
             <div className={style.twoColumns}>
               <div>Error:</div>

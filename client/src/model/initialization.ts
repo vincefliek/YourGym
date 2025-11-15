@@ -22,6 +22,8 @@ export const initApp = async () => {
     },
   };
 
+  // window.document.addEventListener('visibilitychange', () => {}, false);
+
   if (process.env.NODE_ENV === 'development') {
     window._debugTools_ = {
       store,
