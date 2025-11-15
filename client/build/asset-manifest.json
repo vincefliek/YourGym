@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.882aa0dd.css",
-    "main.js": "/static/js/main.be743925.js",
+    "main.css": "/static/css/main.2912b992.css",
+    "main.js": "/static/js/main.3196b7fe.js",
     "static/media/dumbbell.svg": "/static/media/dumbbell.4e5599a7a523d08f8194cd37162ea795.svg",
     "static/media/edit.svg": "/static/media/edit.7066aabedc18f7c3c9ec0b4b4c50c32f.svg",
     "static/media/delete.svg": "/static/media/delete.752f51d61f0c9a3806781f4615379a13.svg",
@@ -12,11 +12,11 @@
     "static/media/backArrow.svg": "/static/media/backArrow.1970d4fb8e37b09088f0259488dd920b.svg",
     "static/media/arrowLeft.svg": "/static/media/arrowLeft.97f128a7cfd174d1d1263cf81c31a233.svg",
     "static/media/arrowRight.svg": "/static/media/arrowRight.a9f56333aff7c9c11674d7cefda5f1c9.svg",
-    "main.882aa0dd.css.map": "/static/css/main.882aa0dd.css.map",
-    "main.be743925.js.map": "/static/js/main.be743925.js.map"
+    "main.2912b992.css.map": "/static/css/main.2912b992.css.map",
+    "main.3196b7fe.js.map": "/static/js/main.3196b7fe.js.map"
   },
   "entrypoints": [
-    "static/css/main.882aa0dd.css",
-    "static/js/main.be743925.js"
+    "static/css/main.2912b992.css",
+    "static/js/main.3196b7fe.js"
   ]
 }
