@@ -1,15 +1,59 @@
 import React from 'react';
 
+import { connect } from '../../utils';
+import { controller } from './controller';
+import { MenuController } from './types';
+
 import { Layout, Navbar } from '../../components';
 
-export class Menu extends React.Component {
-  render() {
-    return (
-      <Layout bottomBar={<Navbar />}>
-        <div style={{ textAlign: 'center' }}>
-          Menu
-        </div>
-      </Layout>
-    );
-  }
+import style from './style.module.scss';
+
+interface PureMenuProps {
+  authData: ReturnType<MenuController['getAuthData']>
 }
+
+const PureMenu: React.FC<PureMenuProps> = (props) => {
+  const {
+    isAuthenticated,
+    isLoading,
+    error,
+  } = props.authData;
+
+  return (
+    <Layout bottomBar={<Navbar />}>
+      <div style={{ textAlign: 'center' }}>
+        Menu
+        <div className={style.authBox}>
+          <h4>Auth</h4>
+          <div className={style.twoColumns}>
+            <div>Status:</div>
+            {isAuthenticated
+              ? <div>✅</div>
+              : isLoading
+                ? <div>⏳ Loading...</div>
+                : <div>⛔️</div>
+            }
+          </div>
+          {isLoading && (
+            <div className={style.twoColumns}>
+              <div>Loading:</div>
+              <div>{error}</div>
+            </div>
+          )}
+          {error && (
+            <div className={style.twoColumns}>
+              <div>Error:</div>
+              <div>{error}</div>
+            </div>
+          )}
+        </div>
+      </div>
+    </Layout>
+  );
+}
+
+export const Menu = connect<MenuController, PureMenuProps>({
+  controller,
+}, ctrl => ({
+  authData: ctrl.getAuthData(),
+}))(PureMenu);
