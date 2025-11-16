@@ -9,6 +9,7 @@ window.addEventListener('load', async () => {
   console.log('>>> LOAD event <<<');
 
   const { apis, appContext } = await initApp();
+
   ReactDOM.render(
     <HashRouter>
       <App apis={apis} appContext={appContext} />

@@ -22,10 +22,17 @@ export const initApp = async () => {
     },
   };
 
+  const checkAuthStatus = () => {
+    if (document.visibilityState === 'visible') {
+      void apis.authApi.getSession();
+    }
+  };
+
+  checkAuthStatus();
+
   window.document.addEventListener('visibilitychange', (e) => {
     console.log('>>> VISIBILITYCHANGE event <<<', e);
-
-    void apis.authApi.getSession();
+    checkAuthStatus();
   }, false);
 
   if (process.env.NODE_ENV === 'development') {
