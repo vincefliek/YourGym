@@ -24,6 +24,8 @@ export const initApp = async () => {
 
   window.document.addEventListener('visibilitychange', (e) => {
     console.log('>>> VISIBILITYCHANGE event <<<', e);
+
+    void apis.authApi.getSession();
   }, false);
 
   if (process.env.NODE_ENV === 'development') {

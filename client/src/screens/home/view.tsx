@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Layout, Navbar } from '../../components';
 
 import { connect } from '../../utils';
@@ -51,13 +51,9 @@ const AuthForm = ({ title, onSubmit }: AuthFormProps) => {
 };
 
 const PureHome: React.FC<HomeProps> = (props) => {
-  const { isAuthenticated, signin, signup, signout, fetchAuthData } = props;
+  const { isAuthenticated, signin, signup, signout } = props;
 
   const [isLoginForm, setIsLoginForm] = React.useState(true);
-
-  useEffect(() => {
-    fetchAuthData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Layout bottomBar={<Navbar />}>
@@ -114,7 +110,6 @@ export const Home = connect<HomeController, HomeProps>({
   controller,
 }, ctrl => ({
   isAuthenticated: ctrl.isAuthenticated(),
-  fetchAuthData: ctrl.fetchAuthData,
   signin: ctrl.signin,
   signup: ctrl.signup,
   signout: ctrl.signout,

@@ -13,9 +13,6 @@ export const controller = (
     isAuthenticated: () => {
       return getStoreData().auth.isAuthenticated;
     },
-    fetchAuthData: async () => {
-      await authApi.getSession();
-    },
     signin: (email: string, password: string) => {
       authApi.signin(email, password);
     },
