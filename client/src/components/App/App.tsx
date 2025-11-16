@@ -14,6 +14,7 @@ import {
   Training,
   Exercise,
   EditExistingTraining,
+  AuthProtection,
 } from '../../screens';
 import { Navigator } from '../../components';
 import { AppContext } from '../../utils';
@@ -43,6 +44,12 @@ export class App extends React.Component<AppProps, AppState> {
         <div className={style.app}>
           <Navigator />
           <Routes>
+            <Route element={<AuthProtection />}>
+              <Route
+                path={this.apis.navigationApi.routes.menu}
+                element={<Menu />}
+              />
+            </Route>
             <Route
               path={this.apis.navigationApi.routes.home}
               element={<Home />}
@@ -50,10 +57,6 @@ export class App extends React.Component<AppProps, AppState> {
             <Route
               path={this.apis.navigationApi.routes.trainings}
               element={<Trainings />}
-            />
-            <Route
-              path={this.apis.navigationApi.routes.menu}
-              element={<Menu />}
             />
             <Route
               path={this.apis.navigationApi.routes.createTraining}

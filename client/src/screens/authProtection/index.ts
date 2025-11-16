@@ -1,0 +1,1 @@
+export { AuthProtection } from './view';
