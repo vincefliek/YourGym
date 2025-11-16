@@ -27,12 +27,11 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
           <h4>Auth</h4>
           <div className={style.twoColumns}>
             <div>Status:</div>
-            {isAuthenticated
-              ? <div>✅</div>
-              : isLoading
-                ? <div>⏳ Loading...</div>
-                : <div>⛔️</div>
-            }
+            {isLoading
+              ? <div>⏳ Loading...</div>
+              : isAuthenticated
+                ? <div>✅</div>
+                : <div>⛔️</div>}
           </div>
           {error && (
             <div className={style.twoColumns}>

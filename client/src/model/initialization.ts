@@ -22,7 +22,9 @@ export const initApp = async () => {
     },
   };
 
-  // window.document.addEventListener('visibilitychange', () => {}, false);
+  window.document.addEventListener('visibilitychange', (e) => {
+    console.log('>>> VISIBILITYCHANGE event <<<', e);
+  }, false);
 
   if (process.env.NODE_ENV === 'development') {
     window._debugTools_ = {
