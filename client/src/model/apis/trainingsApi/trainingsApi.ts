@@ -311,6 +311,18 @@ export const createTrainingsApi: ApiFactory<
     _update.allTrainings(trainings);
   };
 
+  const getTimestampWithTimeZone = (date: Date) => {
+    const offsetMinutes = -date.getTimezoneOffset();
+    const sign = offsetMinutes >= 0 ? '+' : '-';
+
+    const hours = String(Math.floor(
+      Math.abs(offsetMinutes) / 60),
+    ).padStart(2, '0');
+    const minutes = String(Math.abs(offsetMinutes) % 60).padStart(2, '0');
+
+    return date.toISOString().replace('Z', `${sign}${hours}:${minutes}`);
+  };
+
   const _create: TrainingsApi['create'] = {
     newTraining: () => {
       const data: Training = {
@@ -335,6 +347,7 @@ export const createTrainingsApi: ApiFactory<
       const data: CompletedTraining = {
         id: uuidv4(),
         name: templateTraining.name,
+        timestamptz: getTimestampWithTimeZone(new Date()),
         exercises: templateTraining.exercises.map(e => {
           return {
             id: uuidv4(),
@@ -444,7 +457,7 @@ export const createTrainingsApi: ApiFactory<
               id: uuidv4(),
               repetitions: set.repetitions,
               weight: set.weight,
-              time: set.time,
+              timestamptz: getTimestampWithTimeZone(new Date()),
             }),
           };
         }),

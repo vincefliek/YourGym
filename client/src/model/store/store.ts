@@ -14,7 +14,7 @@ interface State {
     backRouteWithHistoryReplace: string | undefined;
   };
   trainings: Training[];
-  completedTrainings: Training[];
+  completedTrainings: CompletedTraining[];
   activeTraining: CompletedTraining | null;
   newTraining: Training | null;
   newExercise: Exercise | null;
@@ -159,7 +159,7 @@ export class Store implements StoreInterface {
           this.trainings = persisted as Training[];
           break;
         case 'completedTrainings':
-          this.completedTrainings = persisted as Training[];
+          this.completedTrainings = persisted as CompletedTraining[];
           break;
         case 'activeTraining':
           this.activeTraining = persisted as CompletedTraining | null;
@@ -309,7 +309,7 @@ export class Store implements StoreInterface {
     return this.state.trainings;
   }
 
-  get completedTrainings(): Training[] {
+  get completedTrainings(): CompletedTraining[] {
     return this.state.completedTrainings;
   }
 
@@ -366,7 +366,7 @@ export class Store implements StoreInterface {
     this._updateStoreData(fn, ['trainings']);
   }
 
-  set completedTrainings(data: Training[]) {
+  set completedTrainings(data: CompletedTraining[]) {
     const fn = () => ({
       completedTrainings: data,
     });

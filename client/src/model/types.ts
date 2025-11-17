@@ -29,7 +29,14 @@ export interface Training {
   exercises: Exercise[];
 }
 
-export type CompletedSet = Omit<Set, 'done'>;
+export type CompletedSet = Omit<Set, 'done' | 'time'> & {
+  /**
+   * time stamp with time zone
+   * the same as in Postgres DB
+   * e.g. '2025-11-17T20:42:52.487+02:00'
+   */
+  timestamptz: string;
+};
 
 export interface CompletedTrainingExcercise
   extends Omit<Exercise, 'setsHistory' | 'setsPreview' | 'sets'> {
@@ -38,7 +45,14 @@ export interface CompletedTrainingExcercise
 
 export type CompletedTraining = Omit<Training, 'exercises'> & {
   exercises: CompletedTrainingExcercise[];
+  /**
+   * time stamp with time zone
+   * the same as in Postgres DB
+   * e.g. '2025-11-17T20:42:52.487+02:00'
+   */
+  timestamptz: string;
 }
+
 
 export interface Store {
   getStoreData: (publicDataAccessors: string[]) => { [key: string]: any };
