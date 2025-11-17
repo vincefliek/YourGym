@@ -22,7 +22,10 @@ export const controller = (
     signout: () => {
       authApi.signout();
     },
+    getCompletedTrainings: () => {
+      return getStoreData().completedTrainings;
+    },
   };
 };
 
-controller.storeDataAccessors = ['auth'] as string[];
+controller.storeDataAccessors = ['auth', 'completedTrainings'] as string[];

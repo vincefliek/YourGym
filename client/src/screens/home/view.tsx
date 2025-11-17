@@ -1,9 +1,11 @@
 import React from 'react';
-import { Layout, Navbar } from '../../components';
+import { Button, Layout, Navbar } from '../../components';
 
 import { connect } from '../../utils';
 import { controller } from './controller';
 import { HomeProps, HomeController } from './types';
+import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
+import style from './style.module.scss';
 
 interface AuthFormData {
   email: string;
@@ -55,12 +57,46 @@ const PureHome: React.FC<HomeProps> = (props) => {
 
   const [isLoginForm, setIsLoginForm] = React.useState(true);
 
+  const renderTrainings = () => {
+    const { completedTraining } = props;
+    return (
+      <>
+        <h3>Completed Trainings</h3>
+        <ul className={style.trainings}>
+          {completedTraining.map(training => {
+            return (
+              <li
+                key={training.id}
+                className={style.training}
+              >
+                <Button
+                  skin="icon"
+                  size="medium"
+                  className={style.trainingDelete}
+                  onClick={() => {}}
+                >
+                  <DeleteIcon />
+                </Button>
+                <div
+                  className={style.trainingBox}
+                  onClick={() => {}}
+                >
+                  {training.name}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    );
+  };
+
   return (
     <Layout bottomBar={<Navbar />}>
       <div style={{ textAlign: 'center' }}>
         Home
       </div>
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'center' }} className={style.screen}>
         {!isAuthenticated && (
           <>
             {isLoginForm ? (
@@ -101,6 +137,7 @@ const PureHome: React.FC<HomeProps> = (props) => {
             </div>
           </>
         )}
+        {isAuthenticated && renderTrainings()}
       </div>
     </Layout>
   );
@@ -110,6 +147,7 @@ export const Home = connect<HomeController, HomeProps>({
   controller,
 }, ctrl => ({
   isAuthenticated: ctrl.isAuthenticated(),
+  completedTraining: ctrl.getCompletedTrainings(),
   signin: ctrl.signin,
   signup: ctrl.signup,
   signout: ctrl.signout,
