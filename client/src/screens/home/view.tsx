@@ -53,17 +53,23 @@ const AuthForm = ({ title, onSubmit }: AuthFormProps) => {
 };
 
 const PureHome: React.FC<HomeProps> = (props) => {
-  const { isAuthenticated, signin, signup, signout } = props;
+  const {
+    isAuthenticated,
+    signin,
+    signup,
+    signout,
+    onDeleteCompletedTraining,
+  } = props;
 
   const [isLoginForm, setIsLoginForm] = React.useState(true);
 
   const renderTrainings = () => {
-    const { completedTraining } = props;
+    const { completedTrainings } = props;
     return (
       <>
         <h3>Completed Trainings</h3>
         <ul className={style.trainings}>
-          {completedTraining.map(training => {
+          {completedTrainings.map(training => {
             return (
               <li
                 key={training.id}
@@ -73,7 +79,7 @@ const PureHome: React.FC<HomeProps> = (props) => {
                   skin="icon"
                   size="medium"
                   className={style.trainingDelete}
-                  onClick={() => {}}
+                  onClick={() => onDeleteCompletedTraining(training.id)}
                 >
                   <DeleteIcon />
                 </Button>
@@ -147,7 +153,8 @@ export const Home = connect<HomeController, HomeProps>({
   controller,
 }, ctrl => ({
   isAuthenticated: ctrl.isAuthenticated(),
-  completedTraining: ctrl.getCompletedTrainings(),
+  completedTrainings: ctrl.getCompletedTrainings(),
+  onDeleteCompletedTraining: ctrl.onDeleteCompletedTraining,
   signin: ctrl.signin,
   signup: ctrl.signup,
   signout: ctrl.signout,

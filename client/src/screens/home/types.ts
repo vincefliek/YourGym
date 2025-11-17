@@ -2,10 +2,11 @@ import { CompletedTraining } from '../../model/types';
 
 export interface HomeProps {
   isAuthenticated: boolean;
-  completedTraining: CompletedTraining[];
+  completedTrainings: CompletedTraining[];
   signin: (email: string, password: string) => void;
   signup: (email: string, password: string) => void;
   signout: () => void;
+  onDeleteCompletedTraining: (trainingId: string) => void;
 }
 
 export interface HomeController {
@@ -14,4 +15,5 @@ export interface HomeController {
   signup: (email: string, password: string) => void;
   signout: () => void;
   getCompletedTrainings: () => CompletedTraining[];
+  onDeleteCompletedTraining: (trainingId: string) => void;
 }

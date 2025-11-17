@@ -550,6 +550,12 @@ export const createTrainingsApi: ApiFactory<
     training: (id: string) => {
       deleteTraining(id);
     },
+    completedTraining: (trainingId: string) => {
+      const data = getData().completedTrainings
+        .filter((tr: CompletedTraining) => tr.id !== trainingId);
+
+      _update.completedTrainings(data);
+    },
     newExercise: () => {
       deleteNewExercise();
     },

@@ -153,6 +153,7 @@ export interface TrainingsApi {
     newTraining: () => void;
     newExercise: () => void;
     training: (id: string) => void;
+    completedTraining: (trainingId: string) => void;
     exercise: (trainingId: string, exerciseId: string) => void;
     set: (trainingId: string, exerciseId: string, setId: string) => void;
   };
