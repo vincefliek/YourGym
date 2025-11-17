@@ -8,6 +8,8 @@ import {
   TrainingsApi,
   ApiFactory,
   AppAPIs,
+  CompletedTraining,
+  CompletedTrainingExcercise,
 } from '../../types';
 import {
   allTrainingsSchema,
@@ -15,6 +17,9 @@ import {
   exerciseSchema,
   setSchema,
   setsHistorySchema,
+  completedTrainingSchema,
+  completedTrainingsSchema,
+  completedExerciseSchema,
 } from './schemas';
 
 export const createTrainingsApi: ApiFactory<
@@ -29,6 +34,9 @@ export const createTrainingsApi: ApiFactory<
   validator.addSchema(exerciseSchema);
   validator.addSchema(setSchema);
   validator.addSchema(setsHistorySchema);
+  validator.addSchema(completedTrainingsSchema);
+  validator.addSchema(completedTrainingSchema);
+  validator.addSchema(completedExerciseSchema);
 
   const { httpClientAPI } = dependencies;
 
@@ -51,6 +59,8 @@ export const createTrainingsApi: ApiFactory<
 
   const getData = () => store.getStoreData([
     'trainings',
+    'completedTrainings',
+    'activeTraining',
     'newTraining',
     'newExercise',
   ]);
@@ -301,7 +311,7 @@ export const createTrainingsApi: ApiFactory<
     _update.allTrainings(trainings);
   };
 
-  const _create = {
+  const _create: TrainingsApi['create'] = {
     newTraining: () => {
       const data: Training = {
         id: uuidv4(),
@@ -312,6 +322,31 @@ export const createTrainingsApi: ApiFactory<
       validate(data, trainingSchema);
 
       store.newTraining = data;
+    },
+    newActiveTraining: (trainingId: string) => {
+      const templateTraining: Training | undefined = getData().trainings.find(
+        (tr: Training) => tr.id === trainingId,
+      );
+
+      if (!templateTraining) {
+        return;
+      }
+
+      const data: CompletedTraining = {
+        id: uuidv4(),
+        name: templateTraining.name,
+        exercises: templateTraining.exercises.map(e => {
+          return {
+            id: uuidv4(),
+            name: e.name,
+            sets: [],
+          };
+        }),
+      };
+
+      validate(data, completedTrainingSchema);
+
+      store.activeTraining = data;
     },
     newExercise: () => {
       const data: Exercise = {
@@ -330,6 +365,7 @@ export const createTrainingsApi: ApiFactory<
         id: uuidv4(),
         repetitions: 8,
         weight: 12,
+        done: false,
       };
 
       validate(data, setSchema);
@@ -350,10 +386,14 @@ export const createTrainingsApi: ApiFactory<
     },
   };
 
-  const _update = {
+  const _update: TrainingsApi['update'] = {
     allTrainings: (trainings: Training[]) => {
       validate(trainings, allTrainingsSchema);
       store.trainings = trainings;
+    },
+    completedTrainings: (trainings: CompletedTraining[]) => {
+      validate(trainings, completedTrainingsSchema);
+      store.completedTrainings = trainings;
     },
     newTraining: (input: Partial<Training>) => {
       const data = {
@@ -363,6 +403,56 @@ export const createTrainingsApi: ApiFactory<
 
       validate(data, trainingSchema);
       store.newTraining = data;
+    },
+    newActiveTraining: (
+      templateTrainingsId: string,
+      templateExerciseId: string,
+      set: Set,
+    ) => {
+      const activeTraining: CompletedTraining = getData().activeTraining;
+
+      if (!activeTraining) {
+        return;
+      }
+
+      const templateTraining: Training | undefined = getData().trainings.find(
+        (tr: Training) => tr.id === templateTrainingsId,
+      );
+
+      if (!templateTraining) {
+        return;
+      }
+
+      const templateExercise: Exercise | undefined =
+        templateTraining.exercises.find(
+          ex => ex.id === templateExerciseId,
+        );
+
+      if (!templateExercise) {
+        return;
+      }
+
+      const data: CompletedTraining = {
+        ...activeTraining,
+        exercises: activeTraining.exercises.map(ex => {
+          if (ex.name !== templateExercise.name) {
+            return ex;
+          }
+          return {
+            ...ex,
+            sets: ex.sets.concat({
+              id: uuidv4(),
+              repetitions: set.repetitions,
+              weight: set.weight,
+              time: set.time,
+            }),
+          };
+        }),
+      };
+
+      validate(data, completedTrainingSchema);
+
+      store.activeTraining = data;
     },
     newExercise: (input: Partial<Exercise>) => {
       const data = {
@@ -416,7 +506,7 @@ export const createTrainingsApi: ApiFactory<
     },
   };
 
-  const _save = {
+  const _save: TrainingsApi['save'] = {
     newTraining: () => {
       const data = getData().newTraining;
 
@@ -435,9 +525,25 @@ export const createTrainingsApi: ApiFactory<
         deleteNewExercise();
       }
     },
+    newActiveTraining: () => {
+      const data = getData().activeTraining;
+
+      if (data) {
+        validate(data, completedTrainingSchema);
+
+        const trainings = [
+          ...getData().completedTrainings,
+          data,
+        ];
+
+        _update.completedTrainings(trainings);
+
+        store.activeTraining = null;
+      }
+    },
   };
 
-  const _delete = {
+  const _delete: TrainingsApi['delete'] = {
     newTraining: () => {
       deleteNewTraining();
     },

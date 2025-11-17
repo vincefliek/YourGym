@@ -19,7 +19,42 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   };
   const toNumber = (value: string) => Number.parseInt(value, 10);
 
+  const changeSet = (exerciseId: string, setId: string, update: Partial<Set>) => {
+    const trainingId = findTraining()?.id;
+
+    if (!trainingId) return;
+
+    const trainings = getData().trainings.map((training: Training) => {
+      if (training.id === trainingId) {
+        return {
+          ...training,
+          exercises: training.exercises.map((exercise: Exercise) => {
+            if (exercise.id === exerciseId) {
+              return {
+                ...exercise,
+                sets: exercise.sets.map((set: Set) => {
+                  if (set.id === setId) {
+                    return {
+                      ...set,
+                      ...update,
+                    };
+                  }
+                  return set;
+                }),
+              };
+            }
+            return exercise;
+          }),
+        };
+      }
+      return training;
+    });
+
+    trainingsApi.update.allTrainings(trainings);
+  };
+
   return {
+    isInProgress: () => Boolean(getData().activeTraining),
     getTraining: () => findTraining(),
     getExercise: () => {
       const params = getParams();
@@ -36,72 +71,26 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
       return training.exercises.length;
     },
     onChangeRepetitions: (exerciseId: string, setId: string, value: string) => {
-      const trainingId = findTraining()?.id;
-      if (!trainingId) return;
-
-      const trainings = getData().trainings.map((training: Training) => {
-        if (training.id === trainingId) {
-          return {
-            ...training,
-            exercises: training.exercises.map((exercise: Exercise) => {
-              if (exercise.id === exerciseId) {
-                return {
-                  ...exercise,
-                  sets: exercise.sets.map((set: Set) => {
-                    if (set.id === setId) {
-                      return {
-                        ...set,
-                        repetitions: toNumber(value),
-                      };
-                    }
-                    return set;
-                  }),
-                };
-              }
-              return exercise;
-            }),
-          };
-        }
-        return training;
-      });
-
-      trainingsApi.update.allTrainings(trainings);
+      changeSet(
+        exerciseId,
+        setId,
+        { repetitions: toNumber(value) },
+      );
     },
     onChangeWeight: (exerciseId: string, setId: string, value: string) => {
-      const trainingId = findTraining()?.id;
-      if (!trainingId) return;
-
-      const trainings = getData().trainings.map((training: Training) => {
-        if (training.id === trainingId) {
-          return {
-            ...training,
-            exercises: training.exercises.map((exercise: Exercise) => {
-              if (exercise.id === exerciseId) {
-                return {
-                  ...exercise,
-                  sets: exercise.sets.map((set: Set) => {
-                    if (set.id === setId) {
-                      return {
-                        ...set,
-                        weight: toNumber(value),
-                      };
-                    }
-                    return set;
-                  }),
-                };
-              }
-              return exercise;
-            }),
-          };
-        }
-        return training;
-      });
-
-      trainingsApi.update.allTrainings(trainings);
+      changeSet(
+        exerciseId,
+        setId,
+        { weight: toNumber(value) },
+      );
     },
     onDoneSet: async (trainingId: string, exerciseId: string, set: Set) => {
-      await trainingsApi.create.setsHistory(trainingId, exerciseId, set);
-      trainingsApi.delete.set(trainingId, exerciseId, set.id);
+      trainingsApi.update.newActiveTraining(trainingId, exerciseId, set);
+      changeSet(
+        exerciseId,
+        set.id,
+        { done: true },
+      );
     },
     onExerciseNext: async (training: Training, exercise: Exercise) => {
       const currentExerciseIndex = training.exercises.indexOf(exercise);
@@ -138,4 +127,4 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   };
 };
 
-controller.storeDataAccessors = ['trainings'];
+controller.storeDataAccessors = ['trainings', 'activeTraining'];

@@ -3,6 +3,7 @@ import {
   AuthState,
   Training,
   Exercise,
+  CompletedTraining,
 } from '../types';
 
 import { get as idbGet, set as idbSet } from 'idb-keyval';
@@ -13,6 +14,8 @@ interface State {
     backRouteWithHistoryReplace: string | undefined;
   };
   trainings: Training[];
+  completedTrainings: Training[];
+  activeTraining: CompletedTraining | null;
   newTraining: Training | null;
   newExercise: Exercise | null;
   auth: AuthState;
@@ -25,6 +28,8 @@ interface Subscribers {
   newTraining: Array<() => void>;
   newExercise: Array<() => void>;
   auth: Array<() => void>;
+  completedTrainings: Array<() => void>;
+  activeTraining: Array<() => void>;
 }
 
 export class Store implements StoreInterface {
@@ -33,7 +38,8 @@ export class Store implements StoreInterface {
 
   // Persist options
   private readonly IDB_PREFIX = 'app-store';
-  private _persistenceEnabled = true; // temporary disabled during hydration
+  // temporary disabled during hydration
+  private _persistenceEnabled = true;
 
   constructor() {
     this.state = {
@@ -42,6 +48,8 @@ export class Store implements StoreInterface {
         backRouteWithHistoryReplace: undefined,
       },
       trainings: [],
+      completedTrainings: [],
+      activeTraining: null,
       newTraining: null,
       newExercise: null,
       auth: {
@@ -55,6 +63,8 @@ export class Store implements StoreInterface {
       route: [],
       backRouteWithHistoryReplace: [],
       trainings: [],
+      completedTrainings: [],
+      activeTraining: [],
       newTraining: [],
       newExercise: [],
       auth: [],
@@ -108,6 +118,10 @@ export class Store implements StoreInterface {
       return this.state.nav.backRouteWithHistoryReplace;
     case 'trainings':
       return this.state.trainings;
+    case 'completedTrainings':
+      return this.state.completedTrainings;
+    case 'activeTraining':
+      return this.state.activeTraining;
     case 'newTraining':
       return this.state.newTraining;
     case 'newExercise':
@@ -143,6 +157,12 @@ export class Store implements StoreInterface {
           break;
         case 'trainings':
           this.trainings = persisted as Training[];
+          break;
+        case 'completedTrainings':
+          this.completedTrainings = persisted as Training[];
+          break;
+        case 'activeTraining':
+          this.activeTraining = persisted as CompletedTraining | null;
           break;
         case 'newTraining':
           this.newTraining = persisted as Training | null;
@@ -248,6 +268,8 @@ export class Store implements StoreInterface {
     route: state.nav.route,
     backRouteWithHistoryReplace: state.nav.backRouteWithHistoryReplace,
     trainings: state.trainings,
+    completedTrainings: state.completedTrainings,
+    activeTraining: state.activeTraining,
     newTraining: state.newTraining,
     newExercise: state.newExercise,
     auth: state.auth,
@@ -285,6 +307,14 @@ export class Store implements StoreInterface {
 
   get trainings(): Training[] {
     return this.state.trainings;
+  }
+
+  get completedTrainings(): Training[] {
+    return this.state.completedTrainings;
+  }
+
+  get activeTraining(): CompletedTraining | null {
+    return this.state.activeTraining;
   }
 
   get newTraining(): Training | null {
@@ -336,6 +366,22 @@ export class Store implements StoreInterface {
     this._updateStoreData(fn, ['trainings']);
   }
 
+  set completedTrainings(data: Training[]) {
+    const fn = () => ({
+      completedTrainings: data,
+    });
+
+    this._updateStoreData(fn, ['completedTrainings']);
+  }
+
+  set activeTraining(data) {
+    const fn = () => ({
+      activeTraining: data,
+    });
+
+    this._updateStoreData(fn, ['activeTraining']);
+  }
+
   set newTraining(data: Training | null) {
     const fn = () => ({
       newTraining: data,
@@ -357,6 +403,8 @@ const allPublicDataAccessors = [
   'route',
   'backRouteWithHistoryReplace',
   'trainings',
+  'completedTrainings',
+  'activeTraining',
   'newTraining',
   'newExercise',
   'auth',

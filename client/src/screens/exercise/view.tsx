@@ -12,44 +12,21 @@ import { ReactComponent as BackIcon } from '../../assets/backArrow.svg';
 import { ReactComponent as ArrowLeft } from '../../assets/arrowLeft.svg';
 import { ReactComponent as ArrowRight } from '../../assets/arrowRight.svg';
 import { ReactComponent as DoneIcon } from '../../assets/done.svg';
+import { Exercise as ExerciseType, Set, Training } from '../../model/types';
 
 import style from './style.module.scss';
-import { Controller } from '../../utils/HOCs/types';
-
-interface Set {
-  id: string;
-  repetitions: number;
-  weight: number;
-  time?: string;
-}
-
-interface SetsByDate {
-  date: string;
-  sets: Set[];
-}
-
-interface Exercise {
-  id: string;
-  name: string;
-  sets: Set[];
-  setsHistory: SetsByDate[];
-}
-
-interface Training {
-  id: string;
-  exercises: Exercise[];
-}
 
 interface Props {
   training: Training;
-  exercise: Exercise;
-  getCurrentExercise: (training: Training, exercise: Exercise) => number;
+  exercise: ExerciseType;
+  isInProgress: boolean;
+  getCurrentExercise: (training: Training, exercise: ExerciseType) => number;
   getTotalExercises: (training: Training) => number;
   onChangeRepetitions: (exerciseId: string, setId: string, value: number) => void;
   onChangeWeight: (exerciseId: string, setId: string, value: number) => void;
   onDoneSet: (trainingId: string, exerciseId: string, set: Set) => void;
-  onExerciseNext: (training: Training, exercise: Exercise) => void;
-  onExercisePrev: (training: Training, exercise: Exercise) => void;
+  onExerciseNext: (training: Training, exercise: ExerciseType) => void;
+  onExercisePrev: (training: Training, exercise: ExerciseType) => void;
   onNoData: () => void;
   onBack: () => void;
 }
@@ -68,6 +45,7 @@ class PureExercise extends React.Component<Props> {
     const {
       training,
       exercise,
+      isInProgress,
       getCurrentExercise,
       getTotalExercises,
       onBack,
@@ -83,7 +61,7 @@ class PureExercise extends React.Component<Props> {
         >
           <BackIcon />
         </Button>
-        <div className={style.switch}>
+        {isInProgress && <div className={style.switch}>
           <Button
             skin="icon"
             size="large"
@@ -103,7 +81,7 @@ class PureExercise extends React.Component<Props> {
           >
             <ArrowRight />
           </Button>
-        </div>
+        </div>}
       </NavbarContainer>
     );
   };
@@ -112,13 +90,17 @@ class PureExercise extends React.Component<Props> {
     const {
       training,
       exercise,
+      isInProgress,
       onDoneSet,
       onChangeRepetitions,
       onChangeWeight,
     } = this.props;
+
     return (
       <ul className={style.sets}>
         {exercise.sets.map((set) => {
+          const isDisabledInput = set.done || !isInProgress;
+
           return (
             <li
               key={set.id}
@@ -128,6 +110,7 @@ class PureExercise extends React.Component<Props> {
                 <div className={style.setRepetitions}>
                   <Input
                     type="number"
+                    disabled={isDisabledInput}
                     value={set.repetitions}
                     onBlur={value =>
                       onChangeRepetitions(exercise.id, set.id, Number(value))
@@ -138,21 +121,36 @@ class PureExercise extends React.Component<Props> {
                 <div className={style.setWeight}>
                   <Input
                     type="number"
+                    disabled={isDisabledInput}
                     value={set.weight}
-                    onBlur={value => onChangeWeight(exercise.id, set.id, Number(value))}
+                    onBlur={value =>
+                      onChangeWeight(exercise.id, set.id, Number(value))
+                    }
                   />
                 </div>
-                <div >
+                <div>
                 kg
                 </div>
-                <Button
-                  skin="icon"
-                  size="large"
-                  className={style.setDone}
-                  onClick={() => onDoneSet(training.id, exercise.id, set)}
-                >
-                  <DoneIcon />
-                </Button>
+                {isInProgress ? (
+                  set.done ? (
+                    <Button
+                      skin="text"
+                      size="large"
+                      font="indieFlower"
+                    >
+                      done
+                    </Button>
+                  ) : (
+                    <Button
+                      skin="icon"
+                      size="large"
+                      className={style.setDone}
+                      onClick={() => onDoneSet(training.id, exercise.id, set)}
+                    >
+                      <DoneIcon />
+                    </Button>
+                  )
+                ) : null}
               </div>
             </li>
           );
@@ -235,6 +233,7 @@ export const Exercise = connect<any, Props>({
 }, ctrl => ({
   training: ctrl.getTraining(),
   exercise: ctrl.getExercise(),
+  isInProgress: ctrl.isInProgress(),
   getCurrentExercise: ctrl.getCurrentExerciseIntoNavbar,
   getTotalExercises: ctrl.getTotalExercisesIntoNavbar,
   onChangeRepetitions: ctrl.onChangeRepetitions,

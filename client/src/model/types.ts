@@ -4,6 +4,7 @@ export interface Set {
   id: string;
   repetitions: number;
   weight: number;
+  done: boolean;
   time?: string;
 }
 
@@ -18,6 +19,7 @@ export interface Exercise {
   name: string;
   sets: Set[];
   setsHistory: SetsByDate[];
+  /** @deprecated - calculate on the fly */
   setsPreview?: string;
 }
 
@@ -25,6 +27,17 @@ export interface Training {
   id: string;
   name: string;
   exercises: Exercise[];
+}
+
+export type CompletedSet = Omit<Set, 'done'>;
+
+export interface CompletedTrainingExcercise
+  extends Omit<Exercise, 'setsHistory' | 'setsPreview' | 'sets'> {
+    sets: CompletedSet[];
+  }
+
+export type CompletedTraining = Omit<Training, 'exercises'> & {
+  exercises: CompletedTrainingExcercise[];
 }
 
 export interface Store {
@@ -36,6 +49,10 @@ export interface Store {
   set backRouteWithHistoryReplace(value: string | undefined);
   get trainings(): Training[];
   set trainings(value: Training[]);
+  get completedTrainings(): CompletedTraining[];
+  set completedTrainings(value: CompletedTraining[]);
+  get activeTraining(): CompletedTraining | null;
+  set activeTraining(value: CompletedTraining | null);
   get newTraining(): Training | null;
   set newTraining(value: Training | null);
   get newExercise(): Exercise | null;
@@ -113,17 +130,24 @@ export interface NavigationApi {
 export interface TrainingsApi {
   create: {
     newTraining: () => void;
+    newActiveTraining: (trainingId: string) => void;
     newExercise: () => void;
     set: (trainingId: string, exerciseId: string) => void;
-    setsHistory: (trainingId: string, exerciseId: string, set: Set) => Promise<void>;
+    setsHistory: (trainingId: string, exerciseId: string, set: Set) => void;
     setsPreview: (sets: Set[]) => string;
   };
   update: {
     newTraining: (input: Partial<Training>) => void;
     newExercise: (input: Partial<Exercise>) => void;
+    newActiveTraining: (
+      templateTrainingsId: string,
+      templateExerciseId: string,
+      set: Set,
+    ) => void;
     training: (trainingId: string, input: Partial<Training>) => void;
     exercise: (trainingId: string, exerciseId: string, input: Partial<Exercise>) => void;
     allTrainings: (trainings: Training[]) => void;
+    completedTrainings: (trainings: CompletedTraining[]) => void;
   };
   delete: {
     newTraining: () => void;
@@ -135,6 +159,7 @@ export interface TrainingsApi {
   save: {
     newTraining: () => void;
     newExercise: (trainingId: string) => void;
+    newActiveTraining: () => void;
   };
 }
 

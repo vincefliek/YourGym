@@ -1,5 +1,5 @@
 import { AppContext } from '../../types';
-import { Training, Exercise } from '../../model/types';
+import { Training, Exercise, Set } from '../../model/types';
 import { Controller } from '../../utils/HOCs/types';
 
 export const controller: Controller = (
@@ -12,13 +12,19 @@ export const controller: Controller = (
   const getParams = () => navigationApi.getPathParams(
     navigationApi.routes.openTraining,
   );
+  const findTraining = () => {
+    const params = getParams();
+    const trainings: Training[] = getData().trainings;
+    const training = trainings.find((training: Training) =>
+      training.id === params.training);
+
+    return training;
+  };
 
   return {
+    isInProgress: () => Boolean(getData().activeTraining),
     getTraining: () => {
-      const params = getParams();
-      const trainings = getData().trainings;
-      const training = trainings.find((training: Training) =>
-        training.id === params.training);
+      const training = findTraining();
 
       if (training !== undefined) {
         training.exercises = training.exercises.map((exercise: Exercise) => ({
@@ -33,16 +39,60 @@ export const controller: Controller = (
       navigationApi.toTrainings();
     },
     onStart: () => {
-      window.alert('You will be able to preview very soon :)');
+      const training = findTraining();
+
+      if (training) {
+        if (!training.exercises.length) {
+          window.alert('Start denied - training has ZERO exercises!');
+          return;
+        }
+
+        trainingsApi.create.newActiveTraining(training.id);
+
+        const firstExercise = training.exercises[0];
+        navigationApi.toExercise(training.id, firstExercise.id);
+      }
+    },
+    onFinish: () => {
+      const trainingId = findTraining()?.id;
+
+      if (trainingId) {
+        if (!getData().activeTraining) {
+          window.alert('Stop denied - your training was NOT started!');
+          return;
+        }
+
+        // iterate over all exercises => set `done: false` for all sets
+        const trainings = getData().trainings.map((training: Training) => {
+          if (training.id === trainingId) {
+            return {
+              ...training,
+              exercises: training.exercises.map((exercise: Exercise) => {
+                return {
+                  ...exercise,
+                  sets: exercise.sets.map((set: Set) => {
+                    return {
+                      ...set,
+                      done: false,
+                    };
+                  }),
+                };
+              }),
+            };
+          }
+          return training;
+        });
+
+        trainingsApi.update.allTrainings(trainings);
+
+        trainingsApi.save.newActiveTraining();
+      }
     },
     onBack: () => {
       navigationApi.toTrainings();
     },
     onEdit: () => {
-      const params = getParams();
-      const trainings = getData().trainings;
-      const training = trainings.find((training: Training) =>
-        training.id === params.training);
+      const training = findTraining();
 
       if (training) {
         navigationApi.toEditTraining(training.id);
@@ -54,4 +104,4 @@ export const controller: Controller = (
   };
 };
 
-controller.storeDataAccessors = ['trainings'];
+controller.storeDataAccessors = ['trainings', 'activeTraining'];

@@ -65,6 +65,9 @@ export const setSchema = {
     weight: {
       type: 'number',
     },
+    time: {
+      type: 'string',
+    },
   },
   required: ['id', 'repetitions', 'weight'],
 };
@@ -84,4 +87,52 @@ export const setsHistorySchema = {
     },
   },
   required: ['id', 'date', 'sets'],
+};
+
+export const completedTrainingsSchema = {
+  id: '/CompletedTrainingsSchema',
+  type: 'array',
+  items: {
+    $ref: '/CompletedTrainingSchema',
+  },
+};
+
+export const completedTrainingSchema = {
+  id: '/CompletedTrainingSchema',
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+    },
+    name: {
+      type: 'string',
+    },
+    exercises: {
+      type: 'array',
+      items: {
+        $ref: '/CompletedExerciseSchema',
+      },
+    },
+  },
+  required: ['id', 'name', 'exercises'],
+};
+
+export const completedExerciseSchema = {
+  id: '/CompletedExerciseSchema',
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+    },
+    name: {
+      type: 'string',
+    },
+    sets: {
+      type: 'array',
+      items: {
+        $ref: '/SetSchema',
+      },
+    },
+  },
+  required: ['id', 'name', 'sets'],
 };

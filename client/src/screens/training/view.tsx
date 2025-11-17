@@ -22,17 +22,21 @@ interface Training {
 
 interface Props {
   data: Training;
+  isInProgress: boolean;
   onNoData: () => void;
   onStart: () => void;
+  onFinish: () => void;
   onBack: () => void;
   onEdit: () => void;
   onOpenExercise: (training: Training, exercise: Exercise) => void;
 }
 
 interface Controller {
+  isInProgress: () => boolean;
   getTraining: () => Training;
   onNoData: () => void;
   onStart: () => void;
+  onFinish: () => void;
   onBack: () => void;
   onEdit: () => void;
   onOpenExercise: (training: Training, exercise: Exercise) => void;
@@ -96,7 +100,7 @@ class PureTraining extends React.Component<Props> {
   };
 
   render() {
-    const { data, onStart } = this.props;
+    const { data, isInProgress, onStart, onFinish } = this.props;
 
     const areExercises = Boolean(data.exercises.length);
 
@@ -109,14 +113,25 @@ class PureTraining extends React.Component<Props> {
           {areExercises && this.renderExercises()}
         </div>
         <div className={style.buttonScreen}>
-          <Button
-            skin="primary"
-            font="nunito"
-            className={style.button}
-            onClick={onStart}
-          >
-            Start
-          </Button>
+          {isInProgress ? (
+            <Button
+              skin="primary"
+              font="nunito"
+              className={style.button}
+              onClick={onFinish}
+            >
+              🏆 FINISH 🏆
+            </Button>
+          ) : (
+            <Button
+              skin="primary"
+              font="nunito"
+              className={style.button}
+              onClick={onStart}
+            >
+               Start
+            </Button>
+          )}
         </div>
       </Layout>
     );
@@ -127,8 +142,10 @@ export const Training = connect<Controller, Props>({
   controller,
 }, ctrl => ({
   data: ctrl.getTraining(),
+  isInProgress: ctrl.isInProgress(),
   onNoData: ctrl.onNoData,
   onStart: ctrl.onStart,
+  onFinish: ctrl.onFinish,
   onBack: ctrl.onBack,
   onEdit: ctrl.onEdit,
   onOpenExercise: ctrl.onOpenExercise,
