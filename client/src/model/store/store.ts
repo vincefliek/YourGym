@@ -4,8 +4,6 @@ import {
   Training,
   Exercise,
   CompletedTraining,
-  SetsByDate,
-  CompletedSet,
 } from '../types';
 
 import { get as idbGet, set as idbSet } from 'idb-keyval';
@@ -33,41 +31,6 @@ interface Subscribers {
   completedTrainings: Array<() => void>;
   activeTraining: Array<() => void>;
 }
-
-/**
- * Convert legacy:
- *   date = "Sat, 15/11/2025"
- *   time = "20:30"
- * into timestamptz:
- *   "2025-11-15T20:30:00.000+01:00"
- */
-export function legacyDateTimeToTimestamptz(
-  dateStr: string,
-  timeStr: string,
-): string {
-  // Example dateStr: "Sat, 15/11/2025"
-  // Remove weekday + split date
-  const [, dmy] = dateStr.split(',').map(s => s.trim());
-  const [day, month, year] = dmy.split('/');
-
-  // Example time: "20:30"
-  const [hours, minutes] = timeStr.split(':');
-
-  // Build ISO-like structure manually (ensures consistency)
-  const yyyy = year;
-  const MM = month.padStart(2, '0');
-  const dd = day.padStart(2, '0');
-  const HH = hours.padStart(2, '0');
-  const mm = minutes.padStart(2, '0');
-  const ss = '00';
-  const ms = '000';
-
-  // GMT+1
-  const offset = '+01:00';
-
-  return `${yyyy}-${MM}-${dd}T${HH}:${mm}:${ss}.${ms}${offset}`;
-}
-
 
 export class Store implements StoreInterface {
   private state: State;
@@ -216,150 +179,11 @@ export class Store implements StoreInterface {
       });
 
       await Promise.all(promises);
-
-      // ⚡ run migration after full hydration
-      this._migrateLegacyCompletedTrainings(this.state);
     } finally {
       // Re-enable persistence afterwards
       this._persistenceEnabled = true;
     }
   }
-
-  public migrateLegacyCompletedTrainingsForTests() {
-    this._migrateLegacyCompletedTrainings({
-      trainings: this.state.trainings,
-      completedTrainings: this.state.completedTrainings,
-    });
-  }
-
-  /**
-   * Migrate legacy trainings that still store completed sets
-   * inside setsHistory[].
-   * Creates CompletedTraining entries and removes setsHistory
-   * from the original trainings.
-   */
-  _migrateLegacyCompletedTrainings(
-    data: Pick<State, 'completedTrainings' | 'trainings'>,
-  ) {
-    const mutatedTrainings: Training[] = [];
-    const migratedCompleted: CompletedTraining[] =
-      [...data.completedTrainings];
-
-    for (const training of data.trainings) {
-      let requiresMutation = false;
-
-      interface SetsByDateExtended extends SetsByDate {
-        exerciseId: string;
-        exerciseName: string;
-      }
-
-      const collectedDates = new Map<
-        string,
-        SetsByDateExtended[]
-      >(); // group by date
-
-      // -----------------------------
-      // Group legacy setsHistory by date
-      // -----------------------------
-      for (const exercise of training.exercises) {
-        if (!exercise.setsHistory || exercise.setsHistory.length === 0) {
-          continue;
-        }
-
-        requiresMutation = true;
-
-        for (const history of exercise.setsHistory) {
-          if (!collectedDates.has(history.date)) {
-            collectedDates.set(history.date, []);
-          }
-          collectedDates.get(history.date)!.push({
-            ...history,
-            exerciseId: exercise.id,
-            exerciseName: exercise.name,
-          } as any);
-        }
-      }
-
-      // If no legacy data → keep training unchanged
-      if (!requiresMutation) {
-        mutatedTrainings.push(training);
-        continue;
-      }
-
-      // -----------------------------
-      // Build CompletedTraining entries
-      // -----------------------------
-      for (const [date, items] of collectedDates.entries()) {
-        const completedTraining: CompletedTraining = {
-          id: crypto.randomUUID(),
-          name: training.name,
-          timestamptz: legacyDateTimeToTimestamptz(
-            date,
-            items[0].sets[0]?.time ?? '00:00',
-          ),
-          exercises: [],
-        };
-
-        // Group by exercise
-        const byExercise = new Map<
-          string,
-          { id: string; name: string; sets: CompletedSet[] }
-        >();
-
-        for (const item of items) {
-          const exId = item.exerciseId;
-
-          if (!byExercise.has(exId)) {
-            byExercise.set(exId, {
-              id: exId,
-              name: item.exerciseName,
-              sets: [],
-            });
-          }
-
-          const legacyDate = item.date;
-          const convertedSets: CompletedSet[] = item.sets.map(s => ({
-            id: s.id,
-            repetitions: s.repetitions,
-            weight: s.weight,
-            timestamptz: legacyDateTimeToTimestamptz(
-              legacyDate,
-              s.time ?? '00:00',
-            ),
-          }));
-
-          byExercise.get(exId)!.sets.push(...convertedSets);
-        }
-
-        completedTraining.exercises = Array.from(byExercise.values());
-        migratedCompleted.push(completedTraining);
-      }
-
-      // -----------------------------
-      // Create cleaned training (no setsHistory)
-      // -----------------------------
-      const cleanedTraining: Training = {
-        ...training,
-        exercises: training.exercises.map(e => ({
-          ...e,
-          setsHistory: [],  // wipe legacy
-        })),
-      };
-
-      mutatedTrainings.push(cleanedTraining);
-    }
-
-    // -----------------------------
-    // Save results back to store
-    // -----------------------------
-    this.state.trainings = mutatedTrainings;
-    this.state.completedTrainings = migratedCompleted;
-
-    // Persist both
-    void this._persistIDBAccessorValue('trainings');
-    void this._persistIDBAccessorValue('completedTrainings');
-  }
-
 
   // ---------------------
   // Existing internal logic (kept but extended to persist)
