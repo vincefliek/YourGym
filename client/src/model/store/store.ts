@@ -218,7 +218,7 @@ export class Store implements StoreInterface {
       await Promise.all(promises);
 
       // ⚡ run migration after full hydration
-      // this._migrateLegacyCompletedTrainings();
+      this._migrateLegacyCompletedTrainings(this.state);
     } finally {
       // Re-enable persistence afterwards
       this._persistenceEnabled = true;
@@ -226,20 +226,10 @@ export class Store implements StoreInterface {
   }
 
   public migrateLegacyCompletedTrainingsForTests() {
-    const {
-      trainings,
-      completedTrainings,
-    } = this._migrateLegacyCompletedTrainings({
+    this._migrateLegacyCompletedTrainings({
       trainings: this.state.trainings,
       completedTrainings: this.state.completedTrainings,
     });
-
-    this.state.trainings = trainings;
-    this.state.completedTrainings = completedTrainings;
-
-    // Persist both
-    void this._persistIDBAccessorValue('trainings');
-    void this._persistIDBAccessorValue('completedTrainings');
   }
 
   /**
@@ -255,9 +245,6 @@ export class Store implements StoreInterface {
     const migratedCompleted: CompletedTraining[] =
       [...data.completedTrainings];
 
-    // fallback if no timestamp in history
-    const nowIso = () => new Date().toISOString();
-
     for (const training of data.trainings) {
       let requiresMutation = false;
 
@@ -266,10 +253,6 @@ export class Store implements StoreInterface {
         exerciseName: string;
       }
 
-      // const convertedExercises: Record<
-      //   string,
-      //   CompletedTraining['exercises'][number],
-      // > = {};
       const collectedDates = new Map<
         string,
         SetsByDateExtended[]
@@ -366,20 +349,15 @@ export class Store implements StoreInterface {
       mutatedTrainings.push(cleanedTraining);
     }
 
-    return {
-      trainings: mutatedTrainings,
-      completedTrainings: migratedCompleted,
-    };
-
     // -----------------------------
     // Save results back to store
     // -----------------------------
-    // this.state.trainings = mutatedTrainings;
-    // this.state.completedTrainings = migratedCompleted;
+    this.state.trainings = mutatedTrainings;
+    this.state.completedTrainings = migratedCompleted;
 
-    // // Persist both
-    // void this._persistIDBAccessorValue('trainings');
-    // void this._persistIDBAccessorValue('completedTrainings');
+    // Persist both
+    void this._persistIDBAccessorValue('trainings');
+    void this._persistIDBAccessorValue('completedTrainings');
   }
 
 
