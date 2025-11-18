@@ -34,6 +34,41 @@ interface Subscribers {
   activeTraining: Array<() => void>;
 }
 
+/**
+ * Convert legacy:
+ *   date = "Sat, 15/11/2025"
+ *   time = "20:30"
+ * into timestamptz:
+ *   "2025-11-15T20:30:00.000+01:00"
+ */
+export function legacyDateTimeToTimestamptz(
+  dateStr: string,
+  timeStr: string,
+): string {
+  // Example dateStr: "Sat, 15/11/2025"
+  // Remove weekday + split date
+  const [, dmy] = dateStr.split(',').map(s => s.trim());
+  const [day, month, year] = dmy.split('/');
+
+  // Example time: "20:30"
+  const [hours, minutes] = timeStr.split(':');
+
+  // Build ISO-like structure manually (ensures consistency)
+  const yyyy = year;
+  const MM = month.padStart(2, '0');
+  const dd = day.padStart(2, '0');
+  const HH = hours.padStart(2, '0');
+  const mm = minutes.padStart(2, '0');
+  const ss = '00';
+  const ms = '000';
+
+  // GMT+1
+  const offset = '+01:00';
+
+  return `${yyyy}-${MM}-${dd}T${HH}:${mm}:${ss}.${ms}${offset}`;
+}
+
+
 export class Store implements StoreInterface {
   private state: State;
   private subscribers: Subscribers;
@@ -275,8 +310,10 @@ export class Store implements StoreInterface {
         const completedTraining: CompletedTraining = {
           id: crypto.randomUUID(),
           name: training.name,
-          // TODO provide date example to chatgpt, and write converter
-          timestamptz: date || nowIso(),
+          timestamptz: legacyDateTimeToTimestamptz(
+            date,
+            items[0].sets[0]?.time ?? '00:00',
+          ),
           exercises: [],
         };
 
@@ -297,11 +334,15 @@ export class Store implements StoreInterface {
             });
           }
 
+          const legacyDate = item.date;
           const convertedSets: CompletedSet[] = item.sets.map(s => ({
             id: s.id,
             repetitions: s.repetitions,
             weight: s.weight,
-            timestamptz: date || nowIso(),
+            timestamptz: legacyDateTimeToTimestamptz(
+              legacyDate,
+              s.time ?? '00:00',
+            ),
           }));
 
           byExercise.get(exId)!.sets.push(...convertedSets);
