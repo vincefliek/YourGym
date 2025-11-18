@@ -35,13 +35,13 @@ export const initApp = async () => {
     checkAuthStatus();
   }, false);
 
-  if (process.env.NODE_ENV === 'development') {
-    window._debugTools_ = {
-      store,
-      validator,
-      apis,
-    };
-  }
+  // if (process.env.NODE_ENV === 'development') {
+  window._debugTools_ = {
+    store,
+    validator,
+    apis,
+  };
+  // }
 
   return {
     apis,
