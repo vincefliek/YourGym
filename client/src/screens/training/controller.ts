@@ -53,7 +53,7 @@ export const controller: Controller = (
         navigationApi.toExercise(training.id, firstExercise.id);
       }
     },
-    onFinish: () => {
+    onFinish: async () => {
       const trainingId = findTraining()?.id;
 
       if (trainingId) {
@@ -86,6 +86,8 @@ export const controller: Controller = (
         trainingsApi.update.allTrainings(trainings);
 
         trainingsApi.save.newActiveTraining();
+
+        await navigationApi.toHome();
       }
     },
     onBack: () => {

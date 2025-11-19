@@ -67,7 +67,9 @@ const PureHome: React.FC<HomeProps> = (props) => {
     const { completedTrainings, getDateAndTime } = props;
     return (
       <>
-        <h3 style={{ textAlign: 'center' }}>Completed Trainings</h3>
+        <h3 style={{ textAlign: 'center' }}>
+          Recent Trainings
+        </h3>
         <ul className={style.trainings}>
           {completedTrainings.map(training => {
             return (
@@ -132,6 +134,7 @@ const PureHome: React.FC<HomeProps> = (props) => {
               marginTop: '20px',
               border: '1px solid green',
               padding: '10px',
+              textAlign: 'center',
             }}>
               You are logged in!
             </div>
