@@ -47,7 +47,7 @@ export type CompletedTraining = Omit<Training, 'exercises'> & {
    * the same as in Postgres DB
    * e.g. '2025-11-17T20:42:52.487+02:00'
    */
-  timestamptz: string;
+  timestamptz: TimestampTZ;
 }
 
 

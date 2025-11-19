@@ -1,4 +1,9 @@
-import { CompletedTraining } from '../../model/types';
+import { CompletedTraining, TimestampTZ } from '../../model/types';
+
+interface DateAndTime {
+  date: string;
+  time: string;
+}
 
 export interface HomeProps {
   isAuthenticated: boolean;
@@ -7,6 +12,7 @@ export interface HomeProps {
   signup: (email: string, password: string) => void;
   signout: () => void;
   onDeleteCompletedTraining: (trainingId: string) => void;
+  getDateAndTime: (timestamptz: TimestampTZ) => DateAndTime;
 }
 
 export interface HomeController {
@@ -16,4 +22,5 @@ export interface HomeController {
   signout: () => void;
   getCompletedTrainings: () => CompletedTraining[];
   onDeleteCompletedTraining: (trainingId: string) => void;
+  getDateAndTime: (timestamptz: TimestampTZ) => DateAndTime;
 }

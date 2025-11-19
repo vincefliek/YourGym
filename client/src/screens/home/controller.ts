@@ -1,4 +1,4 @@
-import { CompletedTraining } from '../../model/types';
+import { CompletedTraining, TimestampTZ } from '../../model/types';
 import { AppContext } from '../../types';
 import { HomeController } from './types';
 
@@ -44,6 +44,12 @@ export const controller = (
       if (result) {
         trainingsApi.delete.completedTraining(training.id);
       }
+    },
+    getDateAndTime: (timestamptz: TimestampTZ) => {
+      return {
+        date: trainingsApi.create.datePreview(timestamptz),
+        time: trainingsApi.create.timePreview(timestamptz),
+      };
     },
   };
 };

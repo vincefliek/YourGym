@@ -64,10 +64,10 @@ const PureHome: React.FC<HomeProps> = (props) => {
   const [isLoginForm, setIsLoginForm] = React.useState(true);
 
   const renderTrainings = () => {
-    const { completedTrainings } = props;
+    const { completedTrainings, getDateAndTime } = props;
     return (
       <>
-        <h3>Completed Trainings</h3>
+        <h3 style={{ textAlign: 'center' }}>Completed Trainings</h3>
         <ul className={style.trainings}>
           {completedTrainings.map(training => {
             return (
@@ -75,19 +75,24 @@ const PureHome: React.FC<HomeProps> = (props) => {
                 key={training.id}
                 className={style.training}
               >
-                <Button
-                  skin="icon"
-                  size="medium"
-                  className={style.trainingDelete}
-                  onClick={() => onDeleteCompletedTraining(training.id)}
-                >
-                  <DeleteIcon />
-                </Button>
-                <div
-                  className={style.trainingBox}
-                  onClick={() => {}}
-                >
-                  {training.name}
+                <div className={style.trainingDate}>
+                  {getDateAndTime(training.timestamptz).date}
+                </div>
+                <div className={style.trainingBoxWrapper}>
+                  <Button
+                    skin="icon"
+                    size="medium"
+                    className={style.trainingDelete}
+                    onClick={() => onDeleteCompletedTraining(training.id)}
+                  >
+                    <DeleteIcon />
+                  </Button>
+                  <div
+                    className={style.trainingBox}
+                    onClick={() => {}}
+                  >
+                    {training.name}
+                  </div>
                 </div>
               </li>
             );
@@ -99,10 +104,7 @@ const PureHome: React.FC<HomeProps> = (props) => {
 
   return (
     <Layout bottomBar={<Navbar />}>
-      <div style={{ textAlign: 'center' }}>
-        Home
-      </div>
-      <div style={{ textAlign: 'center' }} className={style.screen}>
+      <div className={style.screen}>
         {!isAuthenticated && (
           <>
             {isLoginForm ? (
@@ -158,4 +160,5 @@ export const Home = connect<HomeController, HomeProps>({
   signin: ctrl.signin,
   signup: ctrl.signup,
   signout: ctrl.signout,
+  getDateAndTime: ctrl.getDateAndTime,
 }))(PureHome);
