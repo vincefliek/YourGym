@@ -30,8 +30,8 @@ export const controller = (
     getCompletedTrainings: () => {
       return getStoreData().completedTrainings.sort(
         (trA: CompletedTraining, trB: CompletedTraining) =>
-          new Date(trA.timestamptz).getTime()
-          - new Date(trB.timestamptz).getTime(),
+          new Date(trB.timestamptz).getTime()
+          - new Date(trA.timestamptz).getTime(),
       );
     },
     onDeleteCompletedTraining: (trainingId) => {
