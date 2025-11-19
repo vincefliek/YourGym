@@ -28,7 +28,11 @@ export const controller = (
       authApi.signout();
     },
     getCompletedTrainings: () => {
-      return getStoreData().completedTrainings;
+      return getStoreData().completedTrainings.sort(
+        (trA: CompletedTraining, trB: CompletedTraining) =>
+          new Date(trA.timestamptz).getTime()
+          - new Date(trB.timestamptz).getTime(),
+      );
     },
     onDeleteCompletedTraining: (trainingId) => {
       const training = getById(trainingId);
