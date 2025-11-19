@@ -43,7 +43,7 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
       </div>
     </Layout>
   );
-}
+};
 
 export const Menu = connect<MenuController, PureMenuProps>({
   controller,

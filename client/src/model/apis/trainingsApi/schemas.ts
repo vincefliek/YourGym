@@ -42,14 +42,8 @@ export const exerciseSchema = {
         $ref: '/SetSchema',
       },
     },
-    setsHistory: {
-      type: 'array',
-      items: {
-        $ref: '/SetsHistorySchema',
-      },
-    },
   },
-  required: ['id', 'name', 'sets', 'setsHistory'],
+  required: ['id', 'name', 'sets'],
 };
 
 export const setSchema = {
@@ -70,23 +64,6 @@ export const setSchema = {
     },
   },
   required: ['id', 'repetitions', 'weight'],
-};
-
-export const setsHistorySchema = {
-  id: '/SetsHistorySchema',
-  type: 'object',
-  properties: {
-    id: {
-      type: 'string',
-    },
-    date: {
-      type: 'string',
-    },
-    sets: {
-      type: 'array',
-    },
-  },
-  required: ['id', 'date', 'sets'],
 };
 
 export const completedTrainingsSchema = {

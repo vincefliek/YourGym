@@ -2,21 +2,19 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   Exercise,
   Set,
-  SetsByDate,
   Training,
   ApiTools,
   TrainingsApi,
   ApiFactory,
   AppAPIs,
   CompletedTraining,
-  CompletedTrainingExcercise,
+  TimestampTZ,
 } from '../../types';
 import {
   allTrainingsSchema,
   trainingSchema,
   exerciseSchema,
   setSchema,
-  setsHistorySchema,
   completedTrainingSchema,
   completedTrainingsSchema,
   completedExerciseSchema,
@@ -33,7 +31,6 @@ export const createTrainingsApi: ApiFactory<
   validator.addSchema(trainingSchema);
   validator.addSchema(exerciseSchema);
   validator.addSchema(setSchema);
-  validator.addSchema(setsHistorySchema);
   validator.addSchema(completedTrainingsSchema);
   validator.addSchema(completedTrainingSchema);
   validator.addSchema(completedExerciseSchema);
@@ -230,8 +227,8 @@ export const createTrainingsApi: ApiFactory<
     return setsPreview;
   };
 
-  const createCurrentDate = (): string => {
-    const date = new Date();
+  const createPreviewDate = (timestamptz: TimestampTZ): string => {
+    const date = new Date(timestamptz);
 
     const currentDate =
       date.toDateString().slice(0, 3) + ', ' +
@@ -240,8 +237,8 @@ export const createTrainingsApi: ApiFactory<
     return currentDate;
   };
 
-  const createCurrentTime = (): string => {
-    const date = new Date();
+  const createPreviewTime = (timestamptz: TimestampTZ): string => {
+    const date = new Date(timestamptz);
 
     const currentHours =
       date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
@@ -253,65 +250,7 @@ export const createTrainingsApi: ApiFactory<
     return currentTime;
   };
 
-  const addSetToHistory = (
-    trainingId: string,
-    exerciseId: string,
-    data: SetsByDate,
-    set: Set,
-  ) => {
-    const _addSetToHistory = (setsHistory: SetsByDate[]) => {
-      const setsByCurrentDate = setsHistory.find(
-        (setsByDate: SetsByDate) => setsByDate.date === data.date,
-      );
-
-      if (setsByCurrentDate) {
-        return setsHistory.map((setsByDate: SetsByDate) => {
-          if (setsByDate.date === data.date) {
-            return {
-              ...setsByDate,
-              sets: [{
-                ...set,
-                time: createCurrentTime(),
-              } as Set].concat(setsByDate.sets),
-            };
-          }
-
-          return setsByDate;
-        });
-      }
-      return [{
-        ...data,
-        sets: [{
-          ...set,
-          time: createCurrentTime(),
-        } as Set],
-      } as SetsByDate].concat(setsHistory);
-    };
-
-    const trainings = getData().trainings.map((training: Training) => {
-      if (training.id === trainingId) {
-        return {
-          ...training,
-          exercises: training.exercises.map((exercise: Exercise) => {
-            if (exercise.id === exerciseId) {
-              return {
-                ...exercise,
-                setsHistory: _addSetToHistory(exercise.setsHistory),
-              };
-            }
-
-            return exercise;
-          }),
-        };
-      }
-
-      return training;
-    });
-
-    _update.allTrainings(trainings);
-  };
-
-  const getTimestampWithTimeZone = (date: Date) => {
+  const getTimestampWithTimeZone = (date: Date): TimestampTZ => {
     const offsetMinutes = -date.getTimezoneOffset();
     const sign = offsetMinutes >= 0 ? '+' : '-';
 
@@ -320,7 +259,9 @@ export const createTrainingsApi: ApiFactory<
     ).padStart(2, '0');
     const minutes = String(Math.abs(offsetMinutes) % 60).padStart(2, '0');
 
-    return date.toISOString().replace('Z', `${sign}${hours}:${minutes}`);
+    return date
+      .toISOString()
+      .replace('Z', `${sign}${hours}:${minutes}`) as TimestampTZ;
   };
 
   const _create: TrainingsApi['create'] = {
@@ -366,7 +307,6 @@ export const createTrainingsApi: ApiFactory<
         id: uuidv4(),
         name: 'New Exercise',
         sets: [],
-        setsHistory: [],
       };
 
       validate(data, exerciseSchema);
@@ -384,19 +324,11 @@ export const createTrainingsApi: ApiFactory<
       validate(data, setSchema);
       addSet(trainingId, exerciseId, data);
     },
-    setsHistory: async (trainingId: string, exerciseId: string, set: Set) => {
-      const data: SetsByDate = {
-        id: uuidv4(),
-        date: createCurrentDate(),
-        sets: [],
-      };
-
-      validate(data, setsHistorySchema);
-      addSetToHistory(trainingId, exerciseId, data, set);
-    },
     setsPreview: (sets: Set[]): string => {
       return createSetsPreview(sets);
     },
+    datePreview: createPreviewDate,
+    timePreview: createPreviewTime,
   };
 
   const _update: TrainingsApi['update'] = {

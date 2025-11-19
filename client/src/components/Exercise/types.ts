@@ -1,26 +1,7 @@
-export interface Set {
-  id: string;
-  repetitions: number;
-  weight: number;
-  time?: string;
-}
-
-export interface SetsByDate {
-  id: string;
-  date: string;
-  sets: Set[];
-}
-
-export interface ExerciseData {
-  id: string;
-  name: string;
-  sets: Set[];
-  setsHistory?: SetsByDate[];
-  setsPreview?: string;
-}
+import { Exercise } from '../../model/types';
 
 export interface ExerciseProps {
-  data: ExerciseData;
+  data: Exercise;
   onChangeName: (value: string) => void;
   onDeleteSet: (setId: string) => void;
   onChangeRepetitions: (setId: string, value: string) => void;

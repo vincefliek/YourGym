@@ -3,11 +3,10 @@ import React from 'react';
 import { Exercise } from '../../components';
 import { connect, requireData } from '../../utils';
 import { controller } from './controller';
-import { ExerciseData } from '../../components/Exercise/types';
 import { Exercise as ExerciseType } from '../../model/types';
 
 interface Props {
-  data: ExerciseData;
+  data: ExerciseType;
   onNoData: () => void;
   onChangeName: (exerciseId: string, name: string) => void;
   onChangeWeight: (exercise: ExerciseType, setId: string, value: string) => void;

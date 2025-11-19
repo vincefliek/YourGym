@@ -1,24 +1,21 @@
 import { Validator } from 'jsonschema';
 
+export type TimestampTZ =
+  `${string}-${string}-${string}T${string}:${string}:${string}+${string}:${string}`;
+
+
 export interface Set {
   id: string;
   repetitions: number;
   weight: number;
   done: boolean;
-  time?: string;
-}
-
-export interface SetsByDate {
-  id: string;
-  date: string;
-  sets: Set[];
+  time?: TimestampTZ;
 }
 
 export interface Exercise {
   id: string;
   name: string;
   sets: Set[];
-  setsHistory: SetsByDate[];
   /** @deprecated - calculate on the fly */
   setsPreview?: string;
 }
@@ -35,11 +32,11 @@ export type CompletedSet = Omit<Set, 'done' | 'time'> & {
    * the same as in Postgres DB
    * e.g. '2025-11-17T20:42:52.487+02:00'
    */
-  timestamptz: string;
+  timestamptz: TimestampTZ;
 };
 
 export interface CompletedTrainingExcercise
-  extends Omit<Exercise, 'setsHistory' | 'setsPreview' | 'sets'> {
+  extends Omit<Exercise, 'setsPreview' | 'sets'> {
     sets: CompletedSet[];
   }
 
@@ -147,8 +144,9 @@ export interface TrainingsApi {
     newActiveTraining: (trainingId: string) => void;
     newExercise: () => void;
     set: (trainingId: string, exerciseId: string) => void;
-    setsHistory: (trainingId: string, exerciseId: string, set: Set) => void;
     setsPreview: (sets: Set[]) => string;
+    datePreview: (timestamptz: TimestampTZ) => string;
+    timePreview: (timestamptz: TimestampTZ) => string;
   };
   update: {
     newTraining: (input: Partial<Training>) => void;

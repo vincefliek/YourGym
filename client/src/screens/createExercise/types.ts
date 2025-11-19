@@ -1,7 +1,7 @@
-import { ExerciseData } from '../../components/Exercise/types';
+import { Exercise } from '../../model/types';
 
 export interface CreateExerciseProps {
-  data: ExerciseData;
+  data: Exercise;
   onChangeName: (name: string) => void;
   onChangeRepetitions: (setId: string, value: string) => void;
   onChangeWeight: (setId: string, value: string) => void;

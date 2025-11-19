@@ -19,6 +19,8 @@ import style from './style.module.scss';
 interface Props {
   training: Training;
   exercise: ExerciseType;
+  // TODO implement
+  setsHistory: any[];
   isInProgress: boolean;
   getCurrentExercise: (training: Training, exercise: ExerciseType) => number;
   getTotalExercises: (training: Training) => number;
@@ -159,15 +161,16 @@ class PureExercise extends React.Component<Props> {
     );
   };
 
+  // TODO implement the other way
   renderSetsHistory = () => {
-    const { exercise } = this.props;
+    const { setsHistory } = this.props;
     return (
       <div className={style.history}>
         <div className={style.historyUnit}>
           History
         </div>
         <ul className={style.setsHistoryBox}>
-          {exercise.setsHistory.map(setsByDate => {
+          {setsHistory.map((setsByDate: any) => {
             return (
               <li
                 key={setsByDate.date}
@@ -180,7 +183,7 @@ class PureExercise extends React.Component<Props> {
                     </b>
                   </div>
 
-                  {setsByDate.sets.map((set, index) => {
+                  {setsByDate.sets.map((set: any, index: any) => {
                     return (
                       <li
                         key={set.id}
@@ -208,10 +211,10 @@ class PureExercise extends React.Component<Props> {
   };
 
   render() {
-    const { exercise } = this.props;
+    const { exercise, setsHistory } = this.props;
 
     const areSets = Boolean(exercise.sets.length);
-    const areSetsHistory = Boolean(exercise.setsHistory.length);
+    const areSetsHistory = Boolean(setsHistory.length);
 
     return (
       <Layout
@@ -233,6 +236,8 @@ export const Exercise = connect<any, Props>({
 }, ctrl => ({
   training: ctrl.getTraining(),
   exercise: ctrl.getExercise(),
+  // TODO implement
+  setsHistory: [],
   isInProgress: ctrl.isInProgress(),
   getCurrentExercise: ctrl.getCurrentExerciseIntoNavbar,
   getTotalExercises: ctrl.getTotalExercisesIntoNavbar,
