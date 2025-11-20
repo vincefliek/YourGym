@@ -96,6 +96,7 @@ export interface AppAPIs {
   trainingsApi: TrainingsApi;
   authApi: AuthApi;
   httpClientAPI: HttpClientAPI;
+  trainingsServerApi: TrainingsServerApi;
 }
 
 export type ApiFactory<T, D, M extends any[] = any[]> = (
@@ -221,4 +222,9 @@ export interface TokenStorage {
   getToken(): TokenPair | undefined;
   saveToken(tokenPair: TokenPair): void;
   clearToken(): void;
+}
+
+export interface TrainingsServerApi {
+  // TODO fix any
+  getCompletedTrainings: () => Promise<any[]>;
 }

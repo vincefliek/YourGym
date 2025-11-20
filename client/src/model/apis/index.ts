@@ -3,6 +3,7 @@ import { createNavigationApi } from './navigationApi';
 import { createTrainingsApi } from './trainingsApi';
 import { createAuthApi } from './authApi';
 import { createHttpClientAPI } from './httpClientApi';
+import { createTrainingsServerApi } from './trainingsServerApi';
 
 export const createAPIs = (tools: ApiTools) => {
   const accessTokenKey = '__yg_at_rt';
@@ -34,5 +35,6 @@ export const createAPIs = (tools: ApiTools) => {
     trainingsApi: createTrainingsApi(tools, { httpClientAPI }),
     authApi: createAuthApi(tools, { httpClientAPI }, tokenStorage),
     httpClientAPI,
+    trainingsServerApi: createTrainingsServerApi(tools, { httpClientAPI }),
   };
 };
