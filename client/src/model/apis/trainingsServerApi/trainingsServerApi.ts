@@ -31,7 +31,7 @@ export const createTrainingsServerApi: ApiFactory<
         '[ERROR_DATA] Validation for Server Training failed!',
         validationResult.errors,
       );
-      throw new Error('Validation for Training failed!');
+      throw new Error('Validation for Server Training failed!');
     }
   };
 
@@ -40,6 +40,7 @@ export const createTrainingsServerApi: ApiFactory<
 
     try {
       data = await httpClientAPI.get<any[]>('/api/workouts');
+      validate(data, completedTrainingsServerSchema);
       console.log('=== getCompletedTrainings ===', data);
 
       // const oneTraining = await httpClientAPI.get<any>(

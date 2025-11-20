@@ -26,7 +26,7 @@ export const completedTrainingServerSchema = {
       type: 'string',
     },
     updated_at: {
-      type: 'string',
+      type: ['string', 'null'],
     },
     user_id: {
       type: 'string',
@@ -66,7 +66,7 @@ export const completedExerciseServerSchema = {
       type: 'string',
     },
     updated_at: {
-      type: 'string',
+      type: ['string', 'null'],
     },
     user_id: {
       type: 'string',
