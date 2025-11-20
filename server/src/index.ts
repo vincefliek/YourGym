@@ -84,20 +84,6 @@ app.get(routes.templateWorkouts, requireAuth, async (req, res) => {
       .from("template_workouts")
       .select("*, template_exercises(*)"); // relational fetch
 
-    if (!data || !data.length || error) {
-      const userSaved = getAuthDataFromRequest(req).user;
-      const accessToken = req.headers['authorization']?.split(' ')[1];
-      const userDB = await supabase.auth.getUser(accessToken);
-      const userClaims = await supabase.auth.getClaims(accessToken);
-      const session = await supabase.auth.getSession();
-
-      console.log('>>>> EMPTY !!! <<<<', data, error);
-      console.log('>>>> EMPTY !!! userSaved <<<<', JSON.stringify(userSaved));
-      console.log('>>>> EMPTY !!! userDB <<<<', JSON.stringify(userDB));
-      console.log('>>>> EMPTY !!! userClaims <<<<', JSON.stringify(userClaims));
-      console.log('>>>> EMPTY !!! session <<<<', JSON.stringify(session));
-    }
-
     if (error) throw error;
 
     const workouts = data.map(w => {
@@ -307,33 +293,48 @@ app.delete(
 
 // Get all workouts
 app.get(routes.workouts, requireAuth, async (req, res) => {
-  const { data, error } = await initSupabase()
-    .from('completed_exercises')
-    .select('*')
-    .order('date', { ascending: false })
+  try {
+    const supabase = initSupabase();
+    const { data, error } = await supabase
+      .from("completed_workouts")
+      .select("*, completed_exercises(*)") // relational fetch
+      .order('date', { ascending: false });
 
-  if (error) {
-    return res.status(400).json({ error: error.message });
+    if (error) throw error;
+
+    const workouts = data.map(w => {
+      let newWorkout = {
+        ...w,
+        exercises: w.completed_exercises || [],
+      };
+      delete newWorkout.completed_exercises;
+      return newWorkout;
+    });
+
+    res.json(workouts);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
-
-  res.json(data)
 });
 
+// Bulk update
 app.post(routes.workouts, requireAuth, async (req, res) => {
-  const { type, reps, weight, date } = req.body;
-  const user = getAuthDataFromRequest(req).user;
+  // const { type, reps, weight, date } = req.body;
+  // const user = getAuthDataFromRequest(req).user;
 
-  const { data, error } = await initSupabase()
-    .from('completed_exercises')
-    .insert([{ type, reps, weight, date, user_id: user?.id }])
-    .select();
+  // const { data, error } = await initSupabase()
+  //   .from('completed_workouts')
+  //   .insert([{ type, reps, weight, date, user_id: user?.id }])
+  //   .select();
 
-  if (error) {
-    return res.status(400).json({ error: error.message });
-  }
+  // if (error) {
+  //   return res.status(400).json({ error: error.message });
+  // }
 
-  res.json(data);
+  // res.json(data);
 });
+
+/* ------------------ PROFILE ------------------ */
 
 app.get(routes.profile, requireAuth, async (req, res) => {
   const userData = getAuthDataFromRequest(req).user;
