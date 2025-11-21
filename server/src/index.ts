@@ -319,19 +319,66 @@ app.get(routes.workouts, requireAuth, async (req, res) => {
 
 // Bulk update
 app.post(routes.workouts, requireAuth, async (req, res) => {
-  // const { type, reps, weight, date } = req.body;
-  // const user = getAuthDataFromRequest(req).user;
+  const { workouts } = req.body;
+  const user = getAuthDataFromRequest(req).user;
 
-  // const { data, error } = await initSupabase()
-  //   .from('completed_workouts')
-  //   .insert([{ type, reps, weight, date, user_id: user?.id }])
-  //   .select();
+  console.log('>> workouts <<', JSON.stringify(workouts));
 
-  // if (error) {
-  //   return res.status(400).json({ error: error.message });
-  // }
+  try {
+    const supabase = initSupabase();
 
-  // res.json(data);
+    const preparedData = workouts.map((w: any) => {
+      const newW = {
+        ...w,
+        user_id: user?.id,
+        completed_exercises: w.exercises.map((ex: any) => ({
+          ...ex,
+          user_id: user?.id,
+        })),
+      };
+      delete newW.tempId;
+      delete newW.exercises;
+      return newW;
+    });
+
+    let { data: trainings, error: trainingsError } = await supabase
+      .from("completed_workouts")
+      .insert(preparedData.map((w: any) => {
+        const newW = { ...w };
+        delete newW.completed_exercises;
+        return newW;
+      }))
+      .select();
+
+    if (trainingsError) throw trainingsError;
+    if (!trainings) throw new Error('NO trainings!!!');
+
+    const exerciseForInsert = trainings.flatMap((tr, index) => {
+      return preparedData[index].completed_exercises.map((ex: any) => ({
+        ...ex,
+        workout_id: tr.id,
+      }))
+    });
+
+    if (!exerciseForInsert) throw new Error('NO EXERCISES!!!');
+
+    let { data: exercises, error: exercisesError } = await supabase
+      .from("completed_exercises")
+      .insert(exerciseForInsert)
+      .select();
+
+    if (exercisesError) throw exercisesError;
+    if (!exercises) throw new Error('NO exercises!!!');
+
+    const result = trainings.map((tr) => ({
+      ...tr,
+      exercises: exercises.filter(e => e.workout_id === tr.id),
+    }));
+
+    res.json(result);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 /* ------------------ PROFILE ------------------ */
