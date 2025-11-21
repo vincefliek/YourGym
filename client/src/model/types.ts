@@ -224,7 +224,57 @@ export interface TokenStorage {
   clearToken(): void;
 }
 
+export namespace ServerRead {
+  export interface sr_CompletedTraining {
+    id: string;
+    user_id: string;
+    name: string;
+    created_at: TimestampTZ;
+    updated_at: TimestampTZ | null;
+    date: TimestampTZ;
+    exercises: sr_CompletedExcercise[];
+  }
+
+  export interface sr_CompletedExcercise {
+    id: string;
+    workout_id: string;
+    user_id: string;
+    name: string;
+    created_at: TimestampTZ;
+    updated_at: TimestampTZ | null;
+    date: TimestampTZ;
+    // TODO create all types of exercises and delete "custom"
+    type: 'custom' | string;
+    reps: number;
+    weight: number;
+  }
+}
+
+export namespace ServerWrite {
+  export interface sw_CompletedTraining {
+    tempId: string;
+    name: string;
+    date: TimestampTZ;
+    exercises: sw_CompletedExcercise[];
+  }
+
+  export interface sw_CompletedExcercise {
+    name: string;
+    date: TimestampTZ;
+    // TODO create all types of exercises and delete "custom"
+    type: 'custom' | string;
+    reps: number;
+    weight: number;
+  }
+}
+
 export interface TrainingsServerApi {
-  // TODO fix any
-  getCompletedTrainings: () => Promise<any[]>;
+  get: {
+    completedTrainings: () => Promise<ServerRead.sr_CompletedTraining[]>;
+  },
+  create: {
+    completedTrainings: (data: CompletedTraining[]) => Promise<void>;
+  },
+  update: {},
+  delete: {},
 }

@@ -3,11 +3,13 @@ import {
   ApiFactory,
   AppAPIs,
   TrainingsServerApi,
+  CompletedTraining,
+  CompletedTrainingExcercise,
+  ServerWrite,
 } from '../../types';
 import {
-  completedTrainingsServerSchema,
-  completedTrainingServerSchema,
-  completedExerciseServerSchema,
+  ServerReadSchemas,
+  ServerWriteSchemas,
 } from './schemas';
 
 export const createTrainingsServerApi: ApiFactory<
@@ -17,9 +19,12 @@ export const createTrainingsServerApi: ApiFactory<
   { store, validator }: ApiTools,
   dependencies,
 ) => {
-  validator.addSchema(completedTrainingsServerSchema);
-  validator.addSchema(completedTrainingServerSchema);
-  validator.addSchema(completedExerciseServerSchema);
+  validator.addSchema(ServerReadSchemas.completedTrainings);
+  validator.addSchema(ServerReadSchemas.completedTraining);
+  validator.addSchema(ServerReadSchemas.completedExercise);
+  validator.addSchema(ServerWriteSchemas.completedTrainings);
+  validator.addSchema(ServerWriteSchemas.completedTraining);
+  validator.addSchema(ServerWriteSchemas.completedExercise);
 
   const { httpClientAPI } = dependencies;
 
@@ -40,7 +45,9 @@ export const createTrainingsServerApi: ApiFactory<
 
     try {
       data = await httpClientAPI.get<any[]>('/api/workouts');
-      validate(data, completedTrainingsServerSchema);
+
+      validate(data, ServerReadSchemas.completedTrainings);
+
       console.log('=== getCompletedTrainings ===', data);
 
       // const oneTraining = await httpClientAPI.get<any>(
@@ -55,7 +62,65 @@ export const createTrainingsServerApi: ApiFactory<
     }
   };
 
+  const completedExerciseToServerWriteType = (
+    item: CompletedTrainingExcercise,
+  ): ServerWrite.sw_CompletedExcercise[] => {
+    return item.sets.map(set => {
+      return {
+        name: item.name,
+        date: set.timestamptz,
+        type: 'custom',
+        reps: set.repetitions,
+        weight: set.weight,
+      };
+    });
+  };
+
+  const completedTrainingToServerWriteType = (
+    item: CompletedTraining,
+  ): ServerWrite.sw_CompletedTraining => {
+    return {
+      tempId: item.id,
+      name: item.name,
+      date: item.timestamptz,
+      exercises: item.exercises.flatMap(completedExerciseToServerWriteType),
+    };
+  };
+
+  const createCompletedTrainings = async (data: CompletedTraining[]) => {
+    try {
+      const workouts = data.map(completedTrainingToServerWriteType);
+
+      console.log('=== createCompletedTrainings ===', workouts);
+
+      validate(workouts, ServerWriteSchemas.completedTrainings);
+
+      data = await httpClientAPI.post<any, {
+        workouts: ServerWrite.sw_CompletedTraining[];
+      }>('/api/workouts', {
+        workouts,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const _get: TrainingsServerApi['get'] = {
+    completedTrainings: getCompletedTrainings,
+  };
+
+  const _create: TrainingsServerApi['create'] = {
+    completedTrainings: createCompletedTrainings,
+  };
+
+  const _update: TrainingsServerApi['update'] = {};
+
+  const _delete: TrainingsServerApi['delete'] = {};
+
   return {
-    getCompletedTrainings,
+    get: _get,
+    create: _create,
+    update: _update,
+    delete: _delete,
   };
 };
