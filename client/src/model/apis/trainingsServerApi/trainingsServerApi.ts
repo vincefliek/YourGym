@@ -95,11 +95,14 @@ export const createTrainingsServerApi: ApiFactory<
 
       validate(workouts, ServerWriteSchemas.completedTrainings);
 
-      data = await httpClientAPI.post<any, {
+      const result = await httpClientAPI.post<any, {
         workouts: ServerWrite.sw_CompletedTraining[];
       }>('/api/workouts', {
         workouts,
       });
+
+      // TODO avoid double insert
+      // TODO change tempIds to DB ids?
     } catch (error) {
       console.error(error);
     }
