@@ -27,6 +27,7 @@ interface Props {
   onChangeRepetitions: (exerciseId: string, setId: string, value: number) => void;
   onChangeWeight: (exerciseId: string, setId: string, value: number) => void;
   onDoneSet: (trainingId: string, exerciseId: string, set: Set) => void;
+  onResetDoneSet: (trainingId: string, exerciseId: string, set: Set) => void;
   onExerciseNext: (training: Training, exercise: ExerciseType) => void;
   onExercisePrev: (training: Training, exercise: ExerciseType) => void;
   onNoData: () => void;
@@ -94,6 +95,7 @@ class PureExercise extends React.Component<Props> {
       exercise,
       isInProgress,
       onDoneSet,
+      onResetDoneSet,
       onChangeRepetitions,
       onChangeWeight,
     } = this.props;
@@ -139,6 +141,8 @@ class PureExercise extends React.Component<Props> {
                       skin="text"
                       size="large"
                       font="indieFlower"
+                      onClick={() =>
+                        onResetDoneSet(training.id, exercise.id, set)}
                     >
                       done
                     </Button>
@@ -244,6 +248,7 @@ export const Exercise = connect<any, Props>({
   onChangeRepetitions: ctrl.onChangeRepetitions,
   onChangeWeight: ctrl.onChangeWeight,
   onDoneSet: ctrl.onDoneSet,
+  onResetDoneSet: ctrl.onResetDoneSet,
   onExerciseNext: ctrl.onExerciseNext,
   onExercisePrev: ctrl.onExercisePrev,
   onNoData: ctrl.onNoData,

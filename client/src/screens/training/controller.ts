@@ -71,6 +71,13 @@ export const controller: Controller = (
                 return {
                   ...exercise,
                   sets: exercise.sets.map((set: Set) => {
+                    if (set.done) {
+                      trainingsApi.update.newActiveTraining(
+                        trainingId,
+                        exercise.id,
+                        set,
+                      );
+                    }
                     return {
                       ...set,
                       done: false,

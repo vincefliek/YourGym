@@ -85,13 +85,20 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
       );
     },
     onDoneSet: async (trainingId: string, exerciseId: string, set: Set) => {
-      trainingsApi.update.newActiveTraining(trainingId, exerciseId, set);
       changeSet(
         exerciseId,
         set.id,
         { done: true },
       );
     },
+    onResetDoneSet:
+      async (trainingId: string, exerciseId: string, set: Set) => {
+        changeSet(
+          exerciseId,
+          set.id,
+          { done: false },
+        );
+      },
     onExerciseNext: async (training: Training, exercise: Exercise) => {
       const currentExerciseIndex = training.exercises.indexOf(exercise);
 
