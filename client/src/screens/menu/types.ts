@@ -4,4 +4,9 @@ export interface MenuController {
     isLoading: boolean;
     error: string | null;
   };
+  getSyncData: () => {
+    lastSyncAt: string | undefined;
+    isLoading: boolean;
+    error: string | undefined;
+  };
 }

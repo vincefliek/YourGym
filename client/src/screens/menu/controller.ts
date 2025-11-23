@@ -17,7 +17,15 @@ export const controller = (
         error: auth.authError,
       };
     },
+    getSyncData: () => {
+      const sync = getStoreData().sync;
+      return {
+        lastSyncAt: sync.lastSyncAt,
+        isLoading: sync.isLoading,
+        error: sync.error,
+      };
+    },
   };
 };
 
-controller.storeDataAccessors = ['auth'] as string[];
+controller.storeDataAccessors = ['auth', 'sync'] as string[];

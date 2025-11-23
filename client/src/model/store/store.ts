@@ -4,6 +4,7 @@ import {
   Training,
   Exercise,
   CompletedTraining,
+  SyncWithServer,
 } from '../types';
 
 import { get as idbGet, set as idbSet } from 'idb-keyval';
@@ -19,6 +20,7 @@ interface State {
   newTraining: Training | null;
   newExercise: Exercise | null;
   auth: AuthState;
+  sync: SyncWithServer;
 }
 
 interface Subscribers {
@@ -30,6 +32,7 @@ interface Subscribers {
   auth: Array<() => void>;
   completedTrainings: Array<() => void>;
   activeTraining: Array<() => void>;
+  sync: Array<() => void>;
 }
 
 export class Store implements StoreInterface {
@@ -58,6 +61,11 @@ export class Store implements StoreInterface {
         authLoading: false,
         authError: null,
       },
+      sync: {
+        lastSyncAt: undefined,
+        isLoading: false,
+        error: undefined,
+      },
     };
     this.subscribers = {
       route: [],
@@ -68,6 +76,7 @@ export class Store implements StoreInterface {
       newTraining: [],
       newExercise: [],
       auth: [],
+      sync: [],
     };
 
     const publicDataAccessors = Object.keys(this.subscribers);
@@ -128,6 +137,8 @@ export class Store implements StoreInterface {
       return this.state.newExercise;
     case 'auth':
       return this.state.auth;
+    case 'sync':
+      return this.state.sync;
     default:
       return undefined;
     }
@@ -172,6 +183,9 @@ export class Store implements StoreInterface {
           break;
         case 'auth':
           this.auth = persisted as Partial<AuthState>;
+          break;
+        case 'sync':
+          this.sync = persisted as Partial<SyncWithServer>;
           break;
         default:
           break;
@@ -273,6 +287,7 @@ export class Store implements StoreInterface {
     newTraining: state.newTraining,
     newExercise: state.newExercise,
     auth: state.auth,
+    sync: state.sync,
   } as const);
 
   getStoreData = (publicDataAccessors: string[]): { [key: string]: any } => {
@@ -329,11 +344,22 @@ export class Store implements StoreInterface {
     return this.state.auth;
   }
 
+  get sync(): SyncWithServer {
+    return this.state.sync;
+  }
+
   set auth(data: Partial<AuthState>) {
     const fn = (state: State): Partial<State> => ({
       auth: { ...state.auth, ...data } as AuthState,
     });
     this._updateStoreData(fn, ['auth']);
+  }
+
+  set sync(data: Partial<SyncWithServer>) {
+    const fn = (state: State): Partial<State> => ({
+      sync: { ...state.sync, ...data } as SyncWithServer,
+    });
+    this._updateStoreData(fn, ['sync']);
   }
 
   set route(data: string | undefined) {
@@ -408,6 +434,7 @@ const allPublicDataAccessors = [
   'newTraining',
   'newExercise',
   'auth',
+  'sync',
 ];
 
 function validateDataAccessors(publicDataAccessors: string[]): void {

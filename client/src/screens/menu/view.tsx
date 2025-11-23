@@ -10,33 +10,49 @@ import style from './style.module.scss';
 
 interface PureMenuProps {
   authData: ReturnType<MenuController['getAuthData']>
+  syncData: ReturnType<MenuController['getSyncData']>
 }
 
 const PureMenu: React.FC<PureMenuProps> = (props) => {
   const {
-    isAuthenticated,
-    isLoading,
-    error,
-  } = props.authData;
+    authData,
+    syncData,
+  } = props;
 
   return (
     <Layout bottomBar={<Navbar />}>
-      <div style={{ textAlign: 'center' }}>
-        Menu
-        <div className={style.authBox}>
+      <div>
+        <div className={style.metadataBox}>
           <h4>Auth</h4>
           <div className={style.twoColumns}>
             <div>Status:</div>
-            {isLoading
+            {authData.isLoading
               ? <div>⏳ Loading...</div>
-              : isAuthenticated
+              : authData.isAuthenticated
                 ? <div>✅</div>
                 : <div>⛔️</div>}
           </div>
-          {error && (
+          {authData.error && (
             <div className={style.twoColumns}>
               <div>Error:</div>
-              <div>{error}</div>
+              <div>{authData.error}</div>
+            </div>
+          )}
+        </div>
+        <div className={style.metadataBox}>
+          <h4>Sync</h4>
+          <div className={style.twoColumns}>
+            <div>Last at:</div>
+            {syncData.isLoading
+              ? <div>⏳ Loading...</div>
+              : syncData.lastSyncAt
+                ? <div>{syncData.lastSyncAt}</div>
+                : <div>🏗️ TBD</div>}
+          </div>
+          {syncData.error && (
+            <div className={style.twoColumns}>
+              <div>Error:</div>
+              <div>{syncData.error}</div>
             </div>
           )}
         </div>
@@ -49,4 +65,5 @@ export const Menu = connect<MenuController, PureMenuProps>({
   controller,
 }, ctrl => ({
   authData: ctrl.getAuthData(),
+  syncData: ctrl.getSyncData(),
 }))(PureMenu);

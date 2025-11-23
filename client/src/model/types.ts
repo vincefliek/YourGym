@@ -72,6 +72,8 @@ export interface Store {
   set newExercise(value: Exercise | null);
   get auth(): AuthState;
   set auth(data: Partial<AuthState>);
+  get sync(): SyncWithServer;
+  set sync(data: Partial<SyncWithServer>);
 }
 
 export interface User {
@@ -86,6 +88,12 @@ export interface AuthState {
   isAuthenticated: boolean;
   authLoading: boolean;
   authError: string | null;
+}
+
+export interface SyncWithServer {
+  lastSyncAt: TimestampTZ | undefined;
+  isLoading: boolean;
+  error: string | undefined;
 }
 
 export interface ApiTools {
