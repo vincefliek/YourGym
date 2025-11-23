@@ -37,7 +37,7 @@ export const createTrainingsApi: ApiFactory<
   validator.addSchema(completedTrainingSchema);
   validator.addSchema(completedExerciseSchema);
 
-  const { httpClientAPI, trainingsServerApi } = dependencies;
+  const { trainingsServerApi } = dependencies;
 
   const validate = (data: any, schema: any) => {
     const validationResult = validator.validate(data, schema);
@@ -269,6 +269,26 @@ export const createTrainingsApi: ApiFactory<
       .toISOString()
       .replace('Z', `${sign}${hours}:${minutes}`) as TimestampTZ;
   };
+
+  const converUTCtoTimeZoned =
+    <T extends (string | TimestampTZ | undefined | null)>(date: T): T => {
+      if (!date) return date;
+
+      // Get browser/user timezone
+      const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      // Convert UTC → user timezone
+      const zoned = toZonedTime(date, userTz);
+
+      // Format
+      const formatted = format(
+        zoned,
+        `yyyy-MM-dd'T'HH:mm:ss.SSSXXX`,
+        { timeZone: userTz },
+      );
+
+      return formatted as T;
+    };
 
   const _create: TrainingsApi['create'] = {
     newTraining: () => {
@@ -504,25 +524,16 @@ export const createTrainingsApi: ApiFactory<
         .filter((tr: CompletedTraining) => !tr.createdInDbAt);
       const itemsIds = items.map(it => it.id);
 
-      const converUTCtoTimeZoned =
-        <T extends (string | TimestampTZ | undefined | null)>(data: T): T => {
-          if (!data) return data;
+      const newLastSyncAt = getTimestampWithTimeZone(new Date());
 
-          // Get browser/user timezone
-          const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-          // Convert UTC → user timezone
-          const zoned = toZonedTime(data, userTz);
-
-          // Format
-          const formatted = format(
-            zoned,
-            `yyyy-MM-dd'T'HH:mm:ss.SSSXXX`,
-            { timeZone: userTz },
-          );
-
-          return formatted as T;
+      if (!items.length) {
+        store.sync = {
+          lastSyncAt: newLastSyncAt,
         };
+        return;
+      }
+
+      store.sync = { isLoading: true };
 
       try {
         const result = await trainingsServerApi
@@ -556,8 +567,18 @@ export const createTrainingsApi: ApiFactory<
             .filter((tr: CompletedTraining) => !itemsIds.includes(tr.id)),
           ...savedItems,
         ]);
-      } catch (error) {
+
+        store.sync = {
+          lastSyncAt: newLastSyncAt,
+          isLoading: false,
+        };
+      } catch (error: any) {
         // TODO schedule a re-try
+
+        store.sync = {
+          isLoading: false,
+          error: error.message,
+        };
       }
     },
   };
@@ -570,10 +591,17 @@ export const createTrainingsApi: ApiFactory<
       deleteTraining(id);
     },
     completedTraining: (trainingId: string) => {
+      const training: CompletedTraining = getData().completedTrainings
+        .find((tr: CompletedTraining) => tr.id === trainingId);
+      const createdInDbAt = training?.createdInDbAt;
       const data = getData().completedTrainings
         .filter((tr: CompletedTraining) => tr.id !== trainingId);
 
       _update.completedTrainings(data);
+
+      if (createdInDbAt) {
+        void trainingsServerApi.delete.completedTraining(training);
+      }
     },
     newExercise: () => {
       deleteNewExercise();

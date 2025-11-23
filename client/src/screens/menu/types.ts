@@ -9,4 +9,5 @@ export interface MenuController {
     isLoading: boolean;
     error: string | undefined;
   };
+  sync: () => Promise<void>;
 }

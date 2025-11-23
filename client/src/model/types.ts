@@ -289,5 +289,7 @@ export interface TrainingsServerApi {
     >;
   },
   update: {},
-  delete: {},
+  delete: {
+    completedTraining: (data: CompletedTraining) => Promise<void>;
+  },
 }

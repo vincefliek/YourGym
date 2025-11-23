@@ -58,6 +58,16 @@ export const createTrainingsServerApi: ApiFactory<
     }
   };
 
+  const deleteCompletedTraining = async (data: CompletedTraining) => {
+    try {
+      const workoutId = data.id;
+      await httpClientAPI.delete<any>(`/api/workouts/${workoutId}`);
+    } catch (error) {
+      console.error('[TrainingsServerApi]', error);
+      throw error;
+    }
+  };
+
   const completedExerciseToServerWriteType = (
     item: CompletedTrainingExcercise,
   ): ServerWrite.sw_CompletedExcercise[] => {
@@ -113,7 +123,9 @@ export const createTrainingsServerApi: ApiFactory<
 
   const _update: TrainingsServerApi['update'] = {};
 
-  const _delete: TrainingsServerApi['delete'] = {};
+  const _delete: TrainingsServerApi['delete'] = {
+    completedTraining: deleteCompletedTraining,
+  };
 
   return {
     get: _get,

@@ -4,19 +4,21 @@ import { connect } from '../../utils';
 import { controller } from './controller';
 import { MenuController } from './types';
 
-import { Layout, Navbar } from '../../components';
+import { Button, Layout, Navbar } from '../../components';
 
 import style from './style.module.scss';
 
 interface PureMenuProps {
-  authData: ReturnType<MenuController['getAuthData']>
-  syncData: ReturnType<MenuController['getSyncData']>
+  authData: ReturnType<MenuController['getAuthData']>;
+  syncData: ReturnType<MenuController['getSyncData']>;
+  sync: MenuController['sync'];
 }
 
 const PureMenu: React.FC<PureMenuProps> = (props) => {
   const {
     authData,
     syncData,
+    sync,
   } = props;
 
   return (
@@ -55,6 +57,16 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
               <div>{syncData.error}</div>
             </div>
           )}
+          <br />
+          <Button
+            skin="primary"
+            font="nunito"
+            className={style.addNew}
+            onClick={sync}
+            style={{ width: '100%' }}
+          >
+            Sync
+          </Button>
         </div>
       </div>
     </Layout>
@@ -66,4 +78,5 @@ export const Menu = connect<MenuController, PureMenuProps>({
 }, ctrl => ({
   authData: ctrl.getAuthData(),
   syncData: ctrl.getSyncData(),
+  sync: ctrl.sync,
 }))(PureMenu);

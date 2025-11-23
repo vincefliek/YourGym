@@ -5,6 +5,7 @@ export const controller = (
   serviceLocator: AppContext['serviceLocator'],
 ): MenuController => {
   const store = serviceLocator.getStore();
+  const { trainingsApi } = serviceLocator.getAPIs();
 
   const getStoreData = () => store.getStoreData(controller.storeDataAccessors);
 
@@ -24,6 +25,9 @@ export const controller = (
         isLoading: sync.isLoading,
         error: sync.error,
       };
+    },
+    sync: async () => {
+      await trainingsApi.save.completedTrainings();
     },
   };
 };
