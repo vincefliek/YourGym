@@ -1,6 +1,6 @@
 export const routes = {
   workouts: '/api/workouts',
-  workout: '/api/workout',
+  workout: '/api/workouts/:workoutId',
   templateWorkouts: '/api/template-workouts',
   templateWorkout: '/api/template-workouts/:workoutId',
   templateExercises: '/api/template-workouts/:workoutId/exercises',

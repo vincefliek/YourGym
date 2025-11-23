@@ -381,6 +381,27 @@ app.post(routes.workouts, requireAuth, async (req, res) => {
   }
 });
 
+// Delete workout (its exercises will be deleted by the DB - cascading)
+app.delete(
+  routes.workout,
+  requireAuth,
+  async (req, res) => {
+    const { workoutId } = req.params;
+
+    try {
+      const { error: wrktError } = await initSupabase()
+        .from("completed_workouts")
+        .delete()
+        .eq("id", workoutId);
+
+      if (wrktError) throw wrktError;
+
+      res.json({ message: "Workout and exercises deleted" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
 /* ------------------ PROFILE ------------------ */
 
 app.get(routes.profile, requireAuth, async (req, res) => {
@@ -391,6 +412,40 @@ app.get(routes.profile, requireAuth, async (req, res) => {
   }
 
   res.json({ user });
+});
+
+/* ------------------ SYNC CHANGES ------------------ */
+
+app.get("/api/changes", requireAuth, async (req, res) => {
+  const since = req.query.since;
+
+  // TODO add pagination in the future
+
+  try {
+    const supabase = initSupabase();
+
+    const [completed_workouts, completed_exercises] = await Promise.all([
+      supabase
+        .from("completed_workouts")
+        .select("*")
+        .gt("updatedInDbAt", since)
+        /** order is a MUST for future pagination */
+        .order("updatedInDbAt", { ascending: true }),
+      supabase
+        .from("completed_exercises")
+        .select("*")
+        .gt("updatedInDbAt", since)
+        /** order is a MUST for future pagination */
+        .order("updatedInDbAt", { ascending: true }),
+    ]);
+
+    res.send({
+      completedTrainings: completed_workouts,
+      completedExercises: completed_exercises,
+    });
+  }  catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.listen(port, () => {
