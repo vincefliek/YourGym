@@ -30,11 +30,16 @@ export const createAPIs = (tools: ApiTools) => {
     refreshEndpoint: '/api/refresh',
   });
 
+  const trainingsServerApi = createTrainingsServerApi(tools, { httpClientAPI });
+
   return {
     navigationApi: createNavigationApi(tools, {}),
-    trainingsApi: createTrainingsApi(tools, { httpClientAPI }),
+    trainingsApi: createTrainingsApi(tools, {
+      httpClientAPI,
+      trainingsServerApi,
+    }),
     authApi: createAuthApi(tools, { httpClientAPI }, tokenStorage),
     httpClientAPI,
-    trainingsServerApi: createTrainingsServerApi(tools, { httpClientAPI }),
+    trainingsServerApi,
   };
 };

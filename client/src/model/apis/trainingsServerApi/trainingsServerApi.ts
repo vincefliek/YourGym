@@ -6,6 +6,7 @@ import {
   CompletedTraining,
   CompletedTrainingExcercise,
   ServerWrite,
+  ServerRead,
 } from '../../types';
 import {
   ServerReadSchemas,
@@ -50,15 +51,10 @@ export const createTrainingsServerApi: ApiFactory<
 
       console.log('=== getCompletedTrainings ===', data);
 
-      // const oneTraining = await httpClientAPI.get<any>(
-      //   '/api/template-workouts/6e70818b-2318-4c25-8612-3461a411670b',
-      // );
-      // console.log('>>> oneTraining', oneTraining);
-      // data = [oneTraining, ..._data];
-    } catch (error) {
-      console.error(error);
-    } finally {
       return data;
+    } catch (error) {
+      console.error('[TrainingsServerApi]', error);
+      throw error;
     }
   };
 
@@ -95,16 +91,15 @@ export const createTrainingsServerApi: ApiFactory<
 
       validate(workouts, ServerWriteSchemas.completedTrainings);
 
-      const result = await httpClientAPI.post<any, {
-        workouts: ServerWrite.sw_CompletedTraining[];
-      }>('/api/workouts', {
-        workouts,
-      });
+      const result = await httpClientAPI.post<
+        ServerRead.sr_CompletedTraining[],
+        { workouts: ServerWrite.sw_CompletedTraining[] }
+      >('/api/workouts', { workouts });
 
-      // TODO avoid double insert
-      // TODO change tempIds to DB ids?
+      return result;
     } catch (error) {
-      console.error(error);
+      console.error('[TrainingsServerApi]', error);
+      throw error;
     }
   };
 

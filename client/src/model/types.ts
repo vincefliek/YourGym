@@ -48,6 +48,8 @@ export type CompletedTraining = Omit<Training, 'exercises'> & {
    * e.g. '2025-11-17T20:42:52.487+02:00'
    */
   timestamptz: TimestampTZ;
+  createdInDbAt?: TimestampTZ | undefined;
+  updatedInDbAt?: TimestampTZ | undefined;
 }
 
 
@@ -174,6 +176,7 @@ export interface TrainingsApi {
     newTraining: () => void;
     newExercise: (trainingId: string) => void;
     newActiveTraining: () => void;
+    completedTrainings: () => Promise<void>;
   };
 }
 
@@ -273,7 +276,9 @@ export interface TrainingsServerApi {
     completedTrainings: () => Promise<ServerRead.sr_CompletedTraining[]>;
   },
   create: {
-    completedTrainings: (data: CompletedTraining[]) => Promise<void>;
+    completedTrainings: (data: CompletedTraining[]) => Promise<
+      ServerRead.sr_CompletedTraining[]
+    >;
   },
   update: {},
   delete: {},

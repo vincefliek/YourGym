@@ -90,6 +90,12 @@ export const completedTrainingSchema = {
         $ref: '/CompletedExerciseSchema',
       },
     },
+    createdInDbAt: {
+      type: 'string',
+    },
+    updatedInDbAt: {
+      type: 'string',
+    },
   },
   required: ['id', 'name', 'exercises'],
 };

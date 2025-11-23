@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { format, toZonedTime } from 'date-fns-tz';
 import {
   Exercise,
   Set,
@@ -9,6 +10,7 @@ import {
   AppAPIs,
   CompletedTraining,
   TimestampTZ,
+  CompletedTrainingExcercise,
 } from '../../types';
 import {
   allTrainingsSchema,
@@ -22,7 +24,7 @@ import {
 
 export const createTrainingsApi: ApiFactory<
   TrainingsApi,
-  Pick<AppAPIs, 'httpClientAPI'>
+  Pick<AppAPIs, 'httpClientAPI' | 'trainingsServerApi'>
 > = (
   { store, validator }: ApiTools,
   dependencies,
@@ -35,7 +37,7 @@ export const createTrainingsApi: ApiFactory<
   validator.addSchema(completedTrainingSchema);
   validator.addSchema(completedExerciseSchema);
 
-  const { httpClientAPI } = dependencies;
+  const { httpClientAPI, trainingsServerApi } = dependencies;
 
   const validate = (data: any, schema: any) => {
     const validationResult = validator.validate(data, schema);
@@ -215,7 +217,6 @@ export const createTrainingsApi: ApiFactory<
     _update.allTrainings(data);
   };
 
-  // TODO find better place for it
   const createSetsPreview = (sets: Set[]): string => {
     let setsPreview = '';
 
@@ -229,10 +230,15 @@ export const createTrainingsApi: ApiFactory<
 
   const createPreviewDate = (timestamptz: TimestampTZ): string => {
     const date = new Date(timestamptz);
+    const intlDateTimeOptions = Intl.DateTimeFormat().resolvedOptions();
+    const locale = 'en-GB';
+    const timeZone = intlDateTimeOptions.timeZone;
 
     const currentDate =
       date.toDateString().slice(0, 3) + ', ' +
-      date.toLocaleDateString();
+      date.toLocaleDateString(locale, {
+        timeZone,
+      });
 
     return currentDate;
   };
@@ -484,6 +490,74 @@ export const createTrainingsApi: ApiFactory<
         _update.completedTrainings(trainings);
 
         store.activeTraining = null;
+      }
+    },
+    /**
+     * Save on the server (insert into DB) all trainings
+     * that were not synced earlier.
+     * After that substitute local ones with the ones from
+     * the request result.
+     * Saved trainings will be marked with `createdInDbAt: ...`.
+     */
+    completedTrainings: async () => {
+      const items: CompletedTraining[] = getData().completedTrainings
+        .filter((tr: CompletedTraining) => !tr.createdInDbAt);
+      const itemsIds = items.map(it => it.id);
+
+      const converUTCtoTimeZoned =
+        <T extends (string | TimestampTZ | undefined | null)>(data: T): T => {
+          if (!data) return data;
+
+          // Get browser/user timezone
+          const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+          // Convert UTC → user timezone
+          const zoned = toZonedTime(data, userTz);
+
+          // Format
+          const formatted = format(
+            zoned,
+            `yyyy-MM-dd'T'HH:mm:ss.SSSXXX`,
+            { timeZone: userTz },
+          );
+
+          return formatted as T;
+        };
+
+      try {
+        const result = await trainingsServerApi
+          .create.completedTrainings(items);
+
+        const savedItems: CompletedTraining[] = result.map(tr => {
+          const grouped = Object.groupBy(tr.exercises, (it) => it.name);
+          const exercises = Object.values(grouped).map(gr => ({
+            /* "id" - only for client, not used on the server */
+            id: uuidv4(),
+            name: gr?.[0]?.name,
+            sets: gr?.map(it => ({
+              id: it.id,
+              repetitions: it.reps,
+              weight: it.weight,
+              timestamptz: converUTCtoTimeZoned(it.date),
+            })) ?? [],
+          })) as CompletedTrainingExcercise[];
+          return {
+            id: tr.id,
+            name: tr.name,
+            exercises,
+            timestamptz: converUTCtoTimeZoned(tr.date),
+            createdInDbAt: converUTCtoTimeZoned(tr.created_at),
+            updatedInDbAt: converUTCtoTimeZoned(tr.updated_at) ?? undefined,
+          };
+        });
+
+        _update.completedTrainings([
+          ...getData().completedTrainings
+            .filter((tr: CompletedTraining) => !itemsIds.includes(tr.id)),
+          ...savedItems,
+        ]);
+      } catch (error) {
+        // TODO schedule a re-try
       }
     },
   };
