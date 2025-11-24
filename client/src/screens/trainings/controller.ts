@@ -6,7 +6,6 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   const {
     navigationApi,
     trainingsApi,
-    httpClientAPI,
   } = serviceLocator.getAPIs();
 
   const getData = () => getStoreData(controller.storeDataAccessors);
@@ -16,44 +15,6 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   return {
     getTrainings: () => {
       return getData().trainings;
-    },
-    getTemplateTrainings: async () => {
-      // TODO it's a temp code, should be moved into `trainingsApi`
-      let data: any[] = [];
-      try {
-        const _data = await httpClientAPI.get<any[]>('/api/template-workouts');
-        console.log('>>> getTemplateTrainings', data);
-        data = [...data, ..._data];
-      } catch (error) {
-        console.error(error);
-      }
-
-      try {
-        const _data = await httpClientAPI.get<any[]>('/api/template-workouts');
-        console.log('>>> getTemplateTrainings', data);
-        const oneTraining = await httpClientAPI.get<any>(
-          '/api/template-workouts/6e70818b-2318-4c25-8612-3461a411670b',
-        );
-        console.log('>>> oneTraining', oneTraining);
-        data = [oneTraining, ..._data];
-      } catch (error) {
-        console.error(error);
-      }
-
-      return data;
-    },
-    createNewTemplateTraining: async () => {
-      // TODO it's a temp code, should be moved into `trainingsApi`
-      try {
-        const data = await httpClientAPI.post<any>('/api/template-workouts', {
-          name: `Unique - ${Date.now()}`,
-        });
-        console.log('>>> createNewTemplateTraining', data);
-        return data;
-      } catch (error) {
-        console.error(error);
-        return [];
-      }
     },
     onAddTraining: () => {
       trainingsApi.create.newTraining();

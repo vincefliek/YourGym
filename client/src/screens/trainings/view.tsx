@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { Button, Layout, Navbar, NavbarContainer } from '../../components';
 import { connect } from '../../utils';
@@ -14,8 +14,6 @@ interface Props {
   onAdd: () => void; 
   onDelete: (id: string) => void;
   onOpen: (id: string) => void;
-  getTemplateTrainings: () => Promise<any[]>;
-  createNewTemplateTraining: () => Promise<any>;
 }
 
 type Controller = ReturnType<typeof controller>;
@@ -23,21 +21,9 @@ type Controller = ReturnType<typeof controller>;
 const PureTrainings: React.FC<Props> = (props) => {
   const {
     data,
-    getTemplateTrainings,
-    createNewTemplateTraining,
   } = props;
 
-  const [templateTrainings, seTemplateTrainings] = useState<any[]>([]);
-
   const isData = data.length;
-
-  useEffect(() => {
-    getTemplateTrainings()
-      .then(data => {
-        seTemplateTrainings(data);
-      });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const renderAddFirstTraining = () => {
     const { onAdd } = props;
@@ -100,42 +86,10 @@ const PureTrainings: React.FC<Props> = (props) => {
   };
 
   if (!isData) {
-    const one = templateTrainings[0] ?? {};
     return (
       <Layout
         bottomBar={<Navbar />}
       >
-        <div>
-          <Button
-            skin="text"
-            size="small"
-            onClick={createNewTemplateTraining}
-          >
-            Create template training
-          </Button>
-          <br/>
-          ________________________
-        </div>
-        <div>
-          <h1>ONE</h1>
-          {'<'}{one.name}{'>'} - Exercices - {one.exercises?.length}
-          <br/>
-          ________________________
-        </div>
-        {templateTrainings.slice(1).map(it => (
-          <div key={it.id}>
-            <h3>{it.name}</h3>
-            <div>Exercices:</div>
-            <ul style={{ margin: 0 }}>
-              {it.exercises.map((ex: any) => (
-                <li key={ex.id}>
-                  {ex.type} - {ex.reps} - {ex.weight}
-                </li>
-              ))}
-            </ul>
-            ________________________
-          </div>
-        ))}
         <div className={style.screenAddNew}>
           {renderAddFirstTraining()}
         </div>
@@ -159,9 +113,7 @@ export const Trainings = connect<Controller, Props>({
   controller,
 }, ctrl => ({
   data: ctrl.getTrainings(),
-  getTemplateTrainings: ctrl.getTemplateTrainings,
   onAdd: ctrl.onAddTraining,
   onDelete: ctrl.onDeleteTraining,
   onOpen: ctrl.onOpenTraining,
-  createNewTemplateTraining: ctrl.createNewTemplateTraining,
 }))(PureTrainings);
