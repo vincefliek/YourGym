@@ -7,6 +7,7 @@ export interface MenuController {
   getSyncData: () => {
     lastSyncAt: string | undefined;
     isLoading: boolean;
+    serverHasChanges: boolean;
     error: string | undefined;
   };
   sync: () => Promise<void>;

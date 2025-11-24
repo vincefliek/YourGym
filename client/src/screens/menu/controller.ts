@@ -23,6 +23,7 @@ export const controller = (
       return {
         lastSyncAt: sync.lastSyncAt,
         isLoading: sync.isLoading,
+        serverHasChanges: sync.serverHasChanges,
         error: sync.error,
       };
     },

@@ -132,5 +132,29 @@ export const createTrainingsServerApi: ApiFactory<
     create: _create,
     update: _update,
     delete: _delete,
+    _test: {
+      hasServerChanges: async () => {
+        try {
+          const quereParams = new URLSearchParams({
+            since: store.getStoreData(['sync']).sync.lastSyncAt,
+          });
+          const url = `/api/changes?${quereParams.toString()}`;
+
+          const result = await httpClientAPI.get<any>(url);
+
+          const serverHasChanges = Boolean(
+            result.completedTrainings.data.length ||
+            result.completedExercises.data.length,
+          );
+
+          store.sync = {
+            serverHasChanges,
+          };
+        } catch (error) {
+          console.error('[TrainingsServerApi] hasServerChanges', error);
+          throw error;
+        }
+      },
+    },
   };
 };

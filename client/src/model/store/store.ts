@@ -64,6 +64,7 @@ export class Store implements StoreInterface {
       sync: {
         lastSyncAt: undefined,
         isLoading: false,
+        serverHasChanges: false,
         error: undefined,
       },
     };

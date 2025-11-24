@@ -1,6 +1,7 @@
 import { Store } from './store';
 import { createAPIs } from './apis';
 import { Validator } from './validation';
+import { initGlobalTasks } from './globalTasks';
 
 export const initApp = async () => {
   const store = new Store();
@@ -12,6 +13,7 @@ export const initApp = async () => {
     store,
     validator,
   });
+
   const appContext = {
     serviceLocator: {
       getStore: () => ({
@@ -22,18 +24,7 @@ export const initApp = async () => {
     },
   };
 
-  const checkAuthStatus = () => {
-    if (document.visibilityState === 'visible') {
-      void apis.authApi.getSession();
-    }
-  };
-
-  checkAuthStatus();
-
-  window.document.addEventListener('visibilitychange', (e) => {
-    console.log('>>> VISIBILITYCHANGE event <<<', e);
-    checkAuthStatus();
-  }, false);
+  initGlobalTasks(store, apis);
 
   // if (process.env.NODE_ENV === 'development') {
   window._debugTools_ = {

@@ -51,6 +51,12 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
                 ? <div>{syncData.lastSyncAt}</div>
                 : <div>🏗️ TBD</div>}
           </div>
+          <div className={style.twoColumns}>
+            <div>Status:</div>
+            {syncData.serverHasChanges
+              ? <div>⚠️ Server has changes ⚠️</div>
+              : <div>✅</div>}
+          </div>
           {syncData.error && (
             <div className={style.twoColumns}>
               <div>Error:</div>

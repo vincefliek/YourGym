@@ -93,6 +93,7 @@ export interface AuthState {
 export interface SyncWithServer {
   lastSyncAt: TimestampTZ | undefined;
   isLoading: boolean;
+  serverHasChanges: boolean;
   error: string | undefined;
 }
 
