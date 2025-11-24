@@ -428,15 +428,15 @@ app.get("/api/changes", requireAuth, async (req, res) => {
       supabase
         .from("completed_workouts")
         .select("*")
-        .gt("updatedInDbAt", since)
+        .gt("updated_at", since)
         /** order is a MUST for future pagination */
-        .order("updatedInDbAt", { ascending: true }),
+        .order("updated_at", { ascending: true }),
       supabase
         .from("completed_exercises")
         .select("*")
-        .gt("updatedInDbAt", since)
+        .gt("updated_at", since)
         /** order is a MUST for future pagination */
-        .order("updatedInDbAt", { ascending: true }),
+        .order("updated_at", { ascending: true }),
     ]);
 
     res.send({
