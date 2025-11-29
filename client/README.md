@@ -1,13 +1,5 @@
 ### Run app: `nvm use && npm i && npm start`
 
-### Steps to deploy the app:
-- git checkout main
-- git pull origin main
-- git checkout gh-pages
-- git rebase main
-- git push --force origin gh-pages
-- `nvm use && npm run deploy`
-
 ### - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 ## Getting Started with Create React App

@@ -6,7 +6,6 @@
   "dependencies": {
     "classnames": "^2.3.1",
     "date-fns-tz": "^3.2.0",
-    "gh-pages": "^3.2.3",
     "idb-keyval": "^6.2.2",
     "jsonschema": "^1.4.0",
     "prop-types": "^15.8.1",
@@ -35,7 +34,6 @@
     "husky": "^7.0.4"
   },
   "scripts": {
-    "install": "echo '❌ Use npm ci instead of npm install' && exit 1",
     "start": "git add .husky/pre-commit && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
