@@ -34,6 +34,7 @@
     "husky": "^7.0.4"
   },
   "scripts": {
+    "prepare": "cd .. && husky install client/.husky",
     "start": "git add .husky/pre-commit && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -41,7 +42,6 @@
     "lint:fix": "eslint --fix --ext .ts,.tsx ./src",
     "safe-check": "./scripts/safe-check.sh",
     "pre-commit-hook": "npm run safe-check && npm run lint:fix",
-    "husky-prepare": "cd .. && husky install client/.husky",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
