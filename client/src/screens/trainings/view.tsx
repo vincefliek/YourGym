@@ -11,7 +11,7 @@ import style from './style.module.scss';
 
 interface Props {
   data: Training[];
-  onAdd: () => void; 
+  onAdd: () => void;
   onDelete: (id: string) => void;
   onOpen: (id: string) => void;
 }

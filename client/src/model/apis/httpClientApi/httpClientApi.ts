@@ -166,17 +166,17 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
     post: <TResponse, TBody = any>(
       url: string,
       body?: TBody,
-      options?: RequestInit & { headers?: Record<string, string> }
+      options?: RequestInit & { headers?: Record<string, string> },
     ) => request<TResponse, TBody>(url, { ...options, method: 'POST', body }),
     put: <TResponse, TBody = any>(
       url: string,
       body?: TBody,
-      options?: RequestInit & { headers?: Record<string, string> }
+      options?: RequestInit & { headers?: Record<string, string> },
     ) => request<TResponse, TBody>(url, { ...options, method: 'PUT', body }),
     patch: <TResponse, TBody = any>(
       url: string,
       body?: TBody,
-      options?: RequestInit & { headers?: Record<string, string> }
+      options?: RequestInit & { headers?: Record<string, string> },
     ) => request<TResponse, TBody>(url, { ...options, method: 'PATCH', body }),
     delete: <TResponse>(url: string, options?: RequestInit & { headers?: Record<string, string> }) =>
       request<TResponse>(url, { ...options, method: 'DELETE' }),
