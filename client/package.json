@@ -35,12 +35,14 @@
     "husky": "^7.0.4"
   },
   "scripts": {
+    "install": "echo '❌ Use npm ci instead of npm install' && exit 1",
     "start": "git add .husky/pre-commit && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint:fix": "eslint --fix --ext .ts,.tsx ./src",
-    "pre-commit-hook": "npm run lint:fix",
+    "safe-check": "./scripts/safe-check.sh",
+    "pre-commit-hook": "npm run safe-check && npm run lint:fix",
     "husky-prepare": "cd .. && husky install client/.husky",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
