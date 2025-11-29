@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@supabase/supabase-js": "^2.79.0",
-    "body-parser": "^2.2.0",
+    "body-parser": "^2.2.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
