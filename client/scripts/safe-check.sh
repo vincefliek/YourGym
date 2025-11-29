@@ -11,14 +11,27 @@ SAFE_PKGS=(
   # check version from package-lock.json
   # run `jq -r '.dependencies["core-js-pure"].version' package-lock.json`
   "core-js-pure@3.42.0"
+  "monorepo-symlink-test@0.0.0"
 )
 
 # Find all packages with postinstall scripts
-PACKAGES=$(find node_modules -maxdepth 2 -type f -name package.json \
-  -exec jq -r 'if (.scripts.postinstall? != null) then "\(.name)@\(.version)" else empty end' {} \;)
+PACKAGES=$(
+  find node_modules -type f -name package.json | while read pkg; do
+    if jq empty "$pkg" >/dev/null 2>&1; then
+      jq -r 'if (.scripts.postinstall? != null) then "\(.name)@\(.version)" else empty end' "$pkg"
+    fi
+  done
+)
 
-# Filter out whitelisted packages
-SUSPICIOUS=$(echo "$PACKAGES" | grep -v -F -f <(printf "%s\n" "${SAFE_PKGS[@]}"))
+# PACKAGES=$(find node_modules -maxdepth 5 -type f -name package.json \
+#   -exec jq -r 'if (.scripts.postinstall? != null) then "\(.name)@\(.version)" else empty end' {} \;)
+
+# Filter out whitelisted packages (only if whitelist not empty)
+if [ ${#SAFE_PKGS[@]} -gt 0 ]; then
+  SUSPICIOUS=$(echo "$PACKAGES" | grep -v -F -f <(printf "%s\n" "${SAFE_PKGS[@]}"))
+else
+  SUSPICIOUS="$PACKAGES"
+fi
 
 if [ -n "$SUSPICIOUS" ]; then
   echo "⚠️  Found packages with postinstall scripts (not whitelisted):"
