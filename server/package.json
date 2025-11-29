@@ -5,11 +5,14 @@
   "main": "dist/index.js",
   "type": "commonjs",
   "scripts": {
+    "prepare": "cd .. && husky install client/.husky",
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "NODE_ENV=development ts-node-dev --respawn --transpile-only src/index.ts",
     "startDB": "supabase start",
-    "stopDB": "supabase stop"
+    "stopDB": "supabase stop",
+    "pre-commit-hook": "npm run safe-check",
+    "safe-check": "./scripts/safe-check.sh"
   },
   "author": "",
   "license": "ISC",
@@ -28,6 +31,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/node": "^24.10.0",
+    "husky": "^9.1.7",
     "supabase": "^2.54.11",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
