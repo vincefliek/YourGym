@@ -13,6 +13,7 @@ export const Button: React.FC<ButtonProps> = ({
   size,
   className,
   children,
+  disabled,
   onClick,
   ...props
 }) => {
@@ -48,13 +49,15 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       type="button"
       {...props}
-      {...onClickIOSFix}
+      {...(disabled ? void 0 : onClickIOSFix)}
+      disabled={disabled}
       className={classnames(
         className,
         style.button,
         skinClassName,
         fontClassName,
         sizeClassName,
+        { [style.disabled]: disabled },
       )}
     >
       {children}

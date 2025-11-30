@@ -1,3 +1,5 @@
+@use "sass:color";
+
 @use "../common/_colors";
 @use "../common/_fonts";
 
@@ -50,6 +52,13 @@
 .text {
   color: colors.$regular;
   line-height: 1.4;
+}
+
+.disabled {
+  $disabledColor: color.adjust(colors.$regular, $alpha: -0.6);
+  color: $disabledColor;
+  border-color: $disabledColor;
+  cursor: not-allowed;
 }
 
 /* skins - end */

@@ -70,6 +70,7 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
             className={style.addNew}
             onClick={sync}
             style={{ width: '100%' }}
+            disabled={syncData.isLoading}
           >
             Sync
           </Button>
