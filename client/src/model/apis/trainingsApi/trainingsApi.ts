@@ -131,6 +131,33 @@ export const createTrainingsApi: ApiFactory<
     });
 
     _update.allTrainings(trainings);
+
+    // Keep `activeTraining` in sync when a new exercise is added to the
+    // template training that corresponds to the currently active one.
+    // Use `templateTrainingId` for a reliable match.
+    const activeTraining = getData().activeTraining;
+
+    if (activeTraining && activeTraining.templateTrainingId === trainingId) {
+      const updatedActive = {
+        ...activeTraining,
+        exercises: activeTraining.exercises.concat({
+          id: uuidv4(),
+          name: data.name,
+          sets: [],
+        }),
+      } as CompletedTraining;
+
+      try {
+        validate(updatedActive, completedTrainingSchema);
+        store.activeTraining = updatedActive;
+      } catch (err) {
+        if (process.env.NODE_ENV !== 'production') {
+          throw new Error(
+            '[activeTraining] Failed to append new exercise to activeTraining',
+          );
+        }
+      }
+    }
   };
 
   const addSet = (trainingId: string, exerciseId: string, data: Set) => {
@@ -499,9 +526,15 @@ export const createTrainingsApi: ApiFactory<
       }
     },
     newActiveTraining: () => {
-      const data = getData().activeTraining;
+      const _data = getData().activeTraining;
 
-      if (data) {
+      if (_data) {
+        const data: ActiveTraining = {
+          ..._data,
+        };
+
+        delete data.templateTrainingId;
+
         validate(data, completedTrainingSchema);
 
         const trainings = [

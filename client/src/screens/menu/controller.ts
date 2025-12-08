@@ -28,6 +28,7 @@ export const controller = (
       };
     },
     sync: async () => {
+      // TODO use `syncApi` when it will be created
       await trainingsApi.save.completedTrainings();
     },
   };
