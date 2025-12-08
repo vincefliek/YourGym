@@ -22,7 +22,17 @@ export const controller: Controller = (
   };
 
   return {
-    isInProgress: () => Boolean(getData().activeTraining),
+    isAnyTrainingInProgress: () => Boolean(getData().activeTraining),
+    isCurrentTrainingInProgress: () => {
+      const training = findTraining();
+      const activeTraining = getData().activeTraining;
+
+      if (training && activeTraining) {
+        return training.id === activeTraining.templateTrainingId;
+      }
+
+      return false;
+    },
     getTraining: () => {
       const training = findTraining();
 

@@ -22,7 +22,8 @@ interface Training {
 
 interface Props {
   data: Training;
-  isInProgress: boolean;
+  isAnyTrainingInProgress: boolean;
+  isCurrentTrainingInProgress: boolean;
   onNoData: () => void;
   onStart: () => void;
   onFinish: () => void;
@@ -32,7 +33,8 @@ interface Props {
 }
 
 interface Controller {
-  isInProgress: () => boolean;
+  isAnyTrainingInProgress: () => boolean;
+  isCurrentTrainingInProgress: () => boolean;
   getTraining: () => Training;
   onNoData: () => void;
   onStart: () => void;
@@ -100,7 +102,13 @@ class PureTraining extends React.Component<Props> {
   };
 
   render() {
-    const { data, isInProgress, onStart, onFinish } = this.props;
+    const {
+      data,
+      isAnyTrainingInProgress,
+      isCurrentTrainingInProgress,
+      onStart,
+      onFinish,
+    } = this.props;
 
     const areExercises = Boolean(data.exercises.length);
 
@@ -113,25 +121,27 @@ class PureTraining extends React.Component<Props> {
           {areExercises && this.renderExercises()}
         </div>
         <div className={style.buttonScreen}>
-          {isInProgress ? (
-            <Button
-              skin="primary"
-              font="nunito"
-              className={style.button}
-              onClick={onFinish}
-            >
-              🏆 FINISH 🏆
-            </Button>
-          ) : (
-            <Button
-              skin="primary"
-              font="nunito"
-              className={style.button}
-              onClick={onStart}
-            >
-               Start
-            </Button>
-          )}
+          {isCurrentTrainingInProgress
+            ? (
+              <Button
+                skin="primary"
+                font="nunito"
+                className={style.button}
+                onClick={onFinish}
+              >
+                🏆 FINISH 🏆
+              </Button>
+            ) : isAnyTrainingInProgress
+              ? null : (
+                <Button
+                  skin="primary"
+                  font="nunito"
+                  className={style.button}
+                  onClick={onStart}
+                >
+                    Start
+                </Button>
+              )}
         </div>
       </Layout>
     );
@@ -142,7 +152,8 @@ export const Training = connect<Controller, Props>({
   controller,
 }, ctrl => ({
   data: ctrl.getTraining(),
-  isInProgress: ctrl.isInProgress(),
+  isAnyTrainingInProgress: ctrl.isAnyTrainingInProgress(),
+  isCurrentTrainingInProgress: ctrl.isCurrentTrainingInProgress(),
   onNoData: ctrl.onNoData,
   onStart: ctrl.onStart,
   onFinish: ctrl.onFinish,
