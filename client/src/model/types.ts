@@ -52,6 +52,13 @@ export type CompletedTraining = Omit<Training, 'exercises'> & {
   updatedInDbAt?: TimestampTZ | undefined;
 }
 
+export type ActiveTraining = Pick<
+  CompletedTraining,
+  'id' | 'name' | 'exercises' | 'timestamptz'
+> & {
+  templateTrainingId?: string;
+};
+
 
 export interface Store {
   getStoreData: (publicDataAccessors: string[]) => { [key: string]: any };
@@ -64,8 +71,8 @@ export interface Store {
   set trainings(value: Training[]);
   get completedTrainings(): CompletedTraining[];
   set completedTrainings(value: CompletedTraining[]);
-  get activeTraining(): CompletedTraining | null;
-  set activeTraining(value: CompletedTraining | null);
+  get activeTraining(): ActiveTraining | null;
+  set activeTraining(value: ActiveTraining | null);
   get newTraining(): Training | null;
   set newTraining(value: Training | null);
   get newExercise(): Exercise | null;

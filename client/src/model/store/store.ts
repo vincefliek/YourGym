@@ -5,6 +5,7 @@ import {
   Exercise,
   CompletedTraining,
   SyncWithServer,
+  ActiveTraining,
 } from '../types';
 
 import { get as idbGet, set as idbSet } from 'idb-keyval';
@@ -16,7 +17,7 @@ interface State {
   };
   trainings: Training[];
   completedTrainings: CompletedTraining[];
-  activeTraining: CompletedTraining | null;
+  activeTraining: ActiveTraining | null;
   newTraining: Training | null;
   newExercise: Exercise | null;
   auth: AuthState;
@@ -174,7 +175,7 @@ export class Store implements StoreInterface {
           this.completedTrainings = persisted as CompletedTraining[];
           break;
         case 'activeTraining':
-          this.activeTraining = persisted as CompletedTraining | null;
+          this.activeTraining = persisted as ActiveTraining | null;
           break;
         case 'newTraining':
           this.newTraining = persisted as Training | null;
@@ -329,7 +330,7 @@ export class Store implements StoreInterface {
     return this.state.completedTrainings;
   }
 
-  get activeTraining(): CompletedTraining | null {
+  get activeTraining(): ActiveTraining | null {
     return this.state.activeTraining;
   }
 

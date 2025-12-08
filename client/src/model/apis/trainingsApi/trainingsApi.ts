@@ -11,6 +11,7 @@ import {
   CompletedTraining,
   TimestampTZ,
   CompletedTrainingExcercise,
+  ActiveTraining,
 } from '../../types';
 import {
   allTrainingsSchema,
@@ -311,10 +312,11 @@ export const createTrainingsApi: ApiFactory<
         return;
       }
 
-      const data: CompletedTraining = {
+      const data: ActiveTraining = {
         id: uuidv4(),
         name: templateTraining.name,
         timestamptz: getTimestampWithTimeZone(new Date()),
+        templateTrainingId: templateTraining.id,
         exercises: templateTraining.exercises.map(e => {
           return {
             id: uuidv4(),
