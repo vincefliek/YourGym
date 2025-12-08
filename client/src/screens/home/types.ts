@@ -1,4 +1,4 @@
-import { CompletedTraining, TimestampTZ } from '../../model/types';
+import { CompletedTraining, CompletedSet, TimestampTZ } from '../../model/types';
 
 interface DateAndTime {
   date: string;
@@ -13,6 +13,7 @@ export interface HomeProps {
   signout: () => void;
   onDeleteCompletedTraining: (trainingId: string) => void;
   getDateAndTime: (timestamptz: TimestampTZ) => DateAndTime;
+  createSetsPreview: (sets: CompletedSet[]) => string;
 }
 
 export interface HomeController {
@@ -23,4 +24,5 @@ export interface HomeController {
   getCompletedTrainings: () => CompletedTraining[];
   onDeleteCompletedTraining: (trainingId: string) => void;
   getDateAndTime: (timestamptz: TimestampTZ) => DateAndTime;
+  createSetsPreview: (sets: CompletedSet[]) => string;
 }

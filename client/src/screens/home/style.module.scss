@@ -36,8 +36,64 @@
   padding: 10px;
   border: 1px solid colors.$regular;
   border-radius: 4px;
+  background: #fff;
+  overflow: hidden;
+  transition: box-shadow 180ms ease;
+  &:focus-within {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
 }
 
 .trainingDelete {
   flex: 0 0 auto;
+}
+
+.trainingBoxHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.trainingName {
+  font-weight: 600;
+}
+
+.expandIndicator {
+  margin-left: 12px;
+  font-size: 18px;
+  transition: transform 220ms ease;
+}
+
+.exerciseList {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 320ms cubic-bezier(.2,.8,.2,1), opacity 220ms ease;
+}
+
+.exerciseList.expanded {
+  max-height: 1000px; /* large enough for content */
+  opacity: 1;
+}
+
+.exerciseRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px solid rgba(colors.$regular, 0.04);
+  font-size: 14px;
+  align-items: center;
+}
+
+.exerciseName {
+  color: rgba(colors.$regular, 0.8);
+}
+
+.exerciseSets {
+  color: rgba(colors.$regular, 0.6);
+  text-align: right;
 }

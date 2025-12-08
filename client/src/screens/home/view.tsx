@@ -6,6 +6,7 @@ import { controller } from './controller';
 import { HomeProps, HomeController } from './types';
 import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
 import style from './style.module.scss';
+import classNames from 'classnames';
 
 interface AuthFormData {
   email: string;
@@ -59,7 +60,14 @@ const PureHome: React.FC<HomeProps> = (props) => {
     signup,
     signout,
     onDeleteCompletedTraining,
+    createSetsPreview,
   } = props;
+
+  const [expandedTrainingId, setExpandedTrainingId] = React.useState<string | null>(null);
+
+  const toggleExpanded = (id: string) => {
+    setExpandedTrainingId(prev => (prev === id ? null : id));
+  };
 
   const [isLoginForm, setIsLoginForm] = React.useState(true);
 
@@ -72,6 +80,7 @@ const PureHome: React.FC<HomeProps> = (props) => {
         </h3>
         <ul className={style.trainings}>
           {completedTrainings.map(training => {
+            const isExpanded = expandedTrainingId === training.id;
             return (
               <li
                 key={training.id}
@@ -89,11 +98,43 @@ const PureHome: React.FC<HomeProps> = (props) => {
                   >
                     <DeleteIcon />
                   </Button>
-                  <div
-                    className={style.trainingBox}
-                    onClick={() => {}}
-                  >
-                    {training.name}
+                  <div className={style.trainingBox}>
+                    <Button
+                      className={style.trainingBoxHeader}
+                      skin="text"
+                      size="medium"
+                      onClick={() => toggleExpanded(training.id)}
+                      aria-expanded={isExpanded}
+                    >
+                      <div className={classNames({
+                        [style.trainingName]: isExpanded,
+                      })}>{training.name}</div>
+                      <div className={style.expandIndicator} aria-hidden>
+                        {isExpanded ? '📖' : '📗'}
+                      </div>
+                    </Button>
+                    <div className={classNames(style.exerciseList, {
+                      [style.expanded]: isExpanded,
+                      [style.collapsed]: !isExpanded,
+                    })}>
+                      {training.exercises.map(ex => {
+                        const setsPreview = ex.sets
+                          .map(s => {
+                            const weightPart = typeof s.weight === 'number' && s.weight > 0 ? `@${s.weight}kg` : '';
+                            return `${s.repetitions}${weightPart}`;
+                          })
+                          .join(', ');
+
+                        return (
+                          <div key={ex.id} className={style.exerciseRow}>
+                            <div className={style.exerciseName}>{ex.name}</div>
+                            <div className={style.exerciseSets}>
+                              {createSetsPreview(ex.sets)}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </li>
@@ -164,4 +205,5 @@ export const Home = connect<HomeController, HomeProps>({
   signup: ctrl.signup,
   signout: ctrl.signout,
   getDateAndTime: ctrl.getDateAndTime,
+  createSetsPreview: ctrl.createSetsPreview,
 }))(PureHome);

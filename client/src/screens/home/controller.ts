@@ -1,4 +1,4 @@
-import { CompletedTraining, TimestampTZ } from '../../model/types';
+import { CompletedSet, CompletedTraining, TimestampTZ } from '../../model/types';
 import { AppContext } from '../../types';
 import { HomeController } from './types';
 
@@ -54,6 +54,12 @@ export const controller = (
         date: trainingsApi.create.datePreview(timestamptz),
         time: trainingsApi.create.timePreview(timestamptz),
       };
+    },
+    createSetsPreview: (sets: CompletedSet[]) => {
+      return trainingsApi.create.setsPreview(sets.map(set => ({
+        ...set,
+        done: true,
+      })));
     },
   };
 };
