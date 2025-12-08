@@ -99,32 +99,28 @@ const PureHome: React.FC<HomeProps> = (props) => {
                     <DeleteIcon />
                   </Button>
                   <div className={style.trainingBox}>
-                    <Button
+                    <div
                       className={style.trainingBoxHeader}
-                      skin="text"
-                      size="medium"
-                      onClick={() => toggleExpanded(training.id)}
                       aria-expanded={isExpanded}
                     >
                       <div className={classNames({
                         [style.trainingName]: isExpanded,
                       })}>{training.name}</div>
-                      <div className={style.expandIndicator} aria-hidden>
+                      <Button
+                        className={style.expandIndicator}
+                        skin="text"
+                        size="medium"
+                        onClick={() => toggleExpanded(training.id)}
+                        aria-expanded={isExpanded}
+                      >
                         {isExpanded ? '📖' : '📗'}
-                      </div>
-                    </Button>
+                      </Button>
+                    </div>
                     <div className={classNames(style.exerciseList, {
                       [style.expanded]: isExpanded,
                       [style.collapsed]: !isExpanded,
                     })}>
                       {training.exercises.map(ex => {
-                        const setsPreview = ex.sets
-                          .map(s => {
-                            const weightPart = typeof s.weight === 'number' && s.weight > 0 ? `@${s.weight}kg` : '';
-                            return `${s.repetitions}${weightPart}`;
-                          })
-                          .join(', ');
-
                         return (
                           <div key={ex.id} className={style.exerciseRow}>
                             <div className={style.exerciseName}>{ex.name}</div>
