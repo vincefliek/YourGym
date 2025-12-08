@@ -50,7 +50,7 @@ class PureNavbar extends React.Component<NavbarProps, NavbarState> {
           skin="icon"
           size="large"
           className={classnames(style.burger, {
-            [style.active]: isBurgerActive,
+            [style.activeBurger]: isBurgerActive,
             [style.animationBurger]: isBurgerActive,
           })}
           onClick={onBurgerClick}

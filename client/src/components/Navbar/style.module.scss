@@ -4,17 +4,17 @@
   color: colors.$primary;
 }
 
-.activeBurger svg{
-  fill: colors.$primary;  
+.activeBurger svg {
+  fill: colors.$primary;
 }
 
 .burger {
-  fill: colors.$regular; 
+  fill: colors.$regular;
   overflow: hidden;
-  line-height: 30px; 
+  line-height: 30px;
 }
 
-.animationBurger svg{
+.animationBurger svg {
   animation: .3s linear .1s moveBurger forwards;
 }
 

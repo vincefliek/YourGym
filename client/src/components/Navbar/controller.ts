@@ -1,7 +1,9 @@
 import { AppContext } from '../../types';
 import { NavbarController } from './types';
 
-export const controller = (serviceLocator: AppContext['serviceLocator']): NavbarController => {
+export const controller = (
+  serviceLocator: AppContext['serviceLocator'],
+): NavbarController => {
   const { navigationApi } = serviceLocator.getAPIs();
 
   return {
