@@ -1,5 +1,5 @@
 import { AppContext } from '../../types';
-import { Exercise, Training, Set } from '../../model/types';
+import { Exercise, Training, Set, CompletedTraining } from '../../model/types';
 
 export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   const { getStoreData } = serviceLocator.getStore();
@@ -131,7 +131,40 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
         navigationApi.toTraining(trainingId);
       }
     },
+    getSetsHistory: () => {
+      const data = getData();
+      const params = getParams();
+      const training = findTraining();
+      const exercise = training?.exercises.find((ex: Exercise) =>
+        ex.id === params.exercise,
+      );
+
+      if (!exercise) return [];
+
+      const completed = [...(data.completedTrainings as CompletedTraining[])]
+        // sort by most recent first
+        .sort((a, b) =>
+          new Date(b.timestamptz).getTime() - new Date(a.timestamptz).getTime())
+        .map((tr) => {
+          // TODO must be selected by exercise "type", not "name"
+          const ex = tr.exercises.find((it: any) => it.name === exercise.name);
+          if (!ex || !ex.sets.length) return null;
+
+          return {
+            date: trainingsApi.create.datePreview(tr.timestamptz),
+            sets: ex.sets.map((set: any) => ({
+              id: set.id,
+              repetitions: set.repetitions,
+              weight: set.weight,
+              time: trainingsApi.create.timePreview(set.timestamptz),
+            })),
+          };
+        })
+        .filter(Boolean);
+
+      return completed;
+    },
   };
 };
 
-controller.storeDataAccessors = ['trainings', 'activeTraining'];
+controller.storeDataAccessors = ['trainings', 'activeTraining', 'completedTrainings'];

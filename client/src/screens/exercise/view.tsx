@@ -165,7 +165,6 @@ class PureExercise extends React.Component<Props> {
     );
   };
 
-  // TODO implement the other way
   renderSetsHistory = () => {
     const { setsHistory } = this.props;
     return (
@@ -195,7 +194,7 @@ class PureExercise extends React.Component<Props> {
                       >
                         <div className={style.setPreview}>
                           <div className={style.setUnit}>
-                            <b>№{setsByDate.sets.length - index}</b> {' '}
+                            <b>№{index + 1}</b> {' '}
                             {set.repetitions}x{set.weight}kg
                           </div>
                           <div className={style.setTime}>
@@ -240,8 +239,7 @@ export const Exercise = connect<any, Props>({
 }, ctrl => ({
   training: ctrl.getTraining(),
   exercise: ctrl.getExercise(),
-  // TODO implement
-  setsHistory: [],
+  setsHistory: ctrl.getSetsHistory(),
   isInProgress: ctrl.isInProgress(),
   getCurrentExercise: ctrl.getCurrentExerciseIntoNavbar,
   getTotalExercises: ctrl.getTotalExercisesIntoNavbar,
