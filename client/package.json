@@ -15,7 +15,6 @@
     "react-scripts": "5.0.0",
     "react-transition-group": "^4.4.5",
     "sass": "^1.49.9",
-    "typescript": "^4.5.5",
     "url": "^0.11.0",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.4"
@@ -31,7 +30,8 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-transition-group": "^4.4.12",
     "@types/uuid": "^10.0.0",
-    "husky": "^7.0.4"
+    "husky": "^7.0.4",
+    "typescript": "^5.9.3"
   },
   "scripts": {
     "prepare": "cd .. && husky install client/.husky",
@@ -39,6 +39,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "ts-check": "tsc --noEmit",
     "lint:fix": "eslint --fix --ext .ts,.tsx ./src",
     "safe-check": "./scripts/safe-check.sh",
     "pre-commit-hook": "npm run safe-check && npm run lint:fix",
