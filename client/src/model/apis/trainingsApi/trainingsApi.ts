@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import groupBy from 'lodash/groupBy';
 import { format, toZonedTime } from 'date-fns-tz';
 import {
   Exercise,
@@ -575,7 +576,7 @@ export const createTrainingsApi: ApiFactory<
           .create.completedTrainings(items);
 
         const savedItems: CompletedTraining[] = result.map(tr => {
-          const grouped = Object.groupBy(tr.exercises, (it) => it.name);
+          const grouped = groupBy(tr.exercises, (it) => it.name);
           const exercises = Object.values(grouped).map(gr => ({
             /* "id" - only for client, not used on the server */
             id: uuidv4(),
