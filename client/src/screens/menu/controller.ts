@@ -5,7 +5,7 @@ export const controller = (
   serviceLocator: AppContext['serviceLocator'],
 ): MenuController => {
   const store = serviceLocator.getStore();
-  const { trainingsApi } = serviceLocator.getAPIs();
+  const { syncApi } = serviceLocator.getAPIs();
 
   const getStoreData = () => store.getStoreData(controller.storeDataAccessors);
 
@@ -28,8 +28,7 @@ export const controller = (
       };
     },
     sync: async () => {
-      // TODO use `syncApi` when it will be created
-      await trainingsApi.save.completedTrainings();
+      await syncApi.sync();
     },
   };
 };

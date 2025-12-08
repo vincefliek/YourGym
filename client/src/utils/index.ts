@@ -5,3 +5,4 @@ export { waitForCondition } from './waitForCondition';
 export { isIOS } from './isIOS';
 export { createRAFInterval } from './rafinterval';
 export * as repsEstimators from './repsEstimators';
+export { getTimestampWithTimeZone } from './timestampWithTimeZone';

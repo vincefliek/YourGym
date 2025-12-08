@@ -115,6 +115,12 @@ export interface AppAPIs {
   authApi: AuthApi;
   httpClientAPI: HttpClientAPI;
   trainingsServerApi: TrainingsServerApi;
+  syncApi: SyncApi;
+}
+
+export interface SyncApi {
+  hasServerChanges: () => Promise<void>;
+  sync: () => Promise<void>;
 }
 
 export type ApiFactory<T, D, M extends any[] = any[]> = (
@@ -192,7 +198,6 @@ export interface TrainingsApi {
     newTraining: () => void;
     newExercise: (trainingId: string) => void;
     newActiveTraining: () => void;
-    completedTrainings: () => Promise<void>;
   };
 }
 

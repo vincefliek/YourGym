@@ -34,8 +34,7 @@ export const initGlobalTasks = (
   };
 
   function checkSyncStatus() {
-    // TODO should be: void apis.syncApi.hasServerChanges();
-    void (apis.trainingsServerApi as any)._test.hasServerChanges();
+    void apis.syncApi.hasServerChanges();
   };
 
   function stopPeriodicTasks() {
