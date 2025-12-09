@@ -1,3 +1,5 @@
+import toNumber from 'lodash/toNumber';
+
 import { AppContext } from '../../types';
 import { Set } from '../../model/types';
 
@@ -9,7 +11,6 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   const getParams = () => navigationApi.getPathParams(
     navigationApi.routes.createExercise,
   );
-  const toNumber = (value: string) => Number.parseInt(value, 10);
 
   return {
     getData: () => getData().newExercise,

@@ -1,3 +1,5 @@
+import toNumber from 'lodash/toNumber';
+
 import { AppContext } from '../../types';
 import { Exercise, Training, Set, CompletedTraining } from '../../model/types';
 
@@ -17,7 +19,6 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
 
     return training;
   };
-  const toNumber = (value: string) => Number.parseInt(value, 10);
 
   const changeSet = (exerciseId: string, setId: string, update: Partial<Set>) => {
     const trainingId = findTraining()?.id;
