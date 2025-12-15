@@ -24,7 +24,7 @@ import { getTimestampWithTimeZone } from '../../../utils';
 
 export const createTrainingsApi: ApiFactory<
   TrainingsApi,
-  Pick<AppAPIs, 'httpClientAPI' | 'trainingsServerApi'>
+  Pick<AppAPIs, 'httpClientAPI' | 'trainingsServerApi' | 'notificationsApi'>
 > = (
   { store, validator }: ApiTools,
   dependencies,
@@ -37,7 +37,7 @@ export const createTrainingsApi: ApiFactory<
   validator.addSchema(completedTrainingSchema);
   validator.addSchema(completedExerciseSchema);
 
-  const { trainingsServerApi } = dependencies;
+  const { trainingsServerApi, notificationsApi } = dependencies;
 
   const validate = (data: any, schema: any) => {
     const validationResult = validator.validate(data, schema);
@@ -540,6 +540,12 @@ export const createTrainingsApi: ApiFactory<
           ];
 
           _update.completedTrainings(restoredData);
+
+          notificationsApi.addNotification({
+            type: 'error',
+            message:
+              'Failed to delete training. It was restored.',
+          });
 
           throw error;
         }

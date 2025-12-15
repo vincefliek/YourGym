@@ -81,6 +81,19 @@ export interface Store {
   set auth(data: Partial<AuthState>);
   get sync(): SyncWithServer;
   set sync(data: Partial<SyncWithServer>);
+  get notifications(): Notification[];
+  set notifications(value: Notification[]);
+}
+
+export type NotificationType = 'error' | 'info' | 'success';
+
+export interface Notification {
+  id: string;
+  type: NotificationType;
+  message: string;
+  createdAt: TimestampTZ;
+  // optional free-form metadata
+  meta?: { [key: string]: any };
 }
 
 export interface User {
@@ -116,6 +129,13 @@ export interface AppAPIs {
   httpClientAPI: HttpClientAPI;
   trainingsServerApi: TrainingsServerApi;
   syncApi: SyncApi;
+  notificationsApi: NotificationsApi;
+}
+
+export interface NotificationsApi {
+  getNotifications: () => Notification[];
+  addNotification: (notification: Partial<Notification>) => string;
+  removeNotification: (id: string) => void;
 }
 
 export interface SyncApi {

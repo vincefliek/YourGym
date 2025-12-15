@@ -16,7 +16,7 @@ import {
   EditExistingTraining,
   AuthProtection,
 } from '../../screens';
-import { Navigator } from '../../components';
+import { Navigator, Notifications } from '../../components';
 import { AppContext } from '../../utils';
 import {
   AppProps,
@@ -43,6 +43,7 @@ export class App extends React.Component<AppProps, AppState> {
       <AppContext.Provider value={this.appContext}>
         <div className={style.app}>
           <Navigator />
+          <Notifications />
           <Routes>
             <Route element={<AuthProtection />}>
               <Route

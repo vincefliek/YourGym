@@ -6,6 +6,7 @@ import {
   CompletedTraining,
   SyncWithServer,
   ActiveTraining,
+  Notification,
 } from '../types';
 
 import { get as idbGet, set as idbSet } from 'idb-keyval';
@@ -22,6 +23,7 @@ interface State {
   newExercise: Exercise | null;
   auth: AuthState;
   sync: SyncWithServer;
+  notifications: Notification[];
 }
 
 interface Subscribers {
@@ -34,6 +36,7 @@ interface Subscribers {
   completedTrainings: Array<() => void>;
   activeTraining: Array<() => void>;
   sync: Array<() => void>;
+  notifications: Array<() => void>;
 }
 
 export class Store implements StoreInterface {
@@ -68,6 +71,7 @@ export class Store implements StoreInterface {
         serverHasChanges: false,
         error: undefined,
       },
+      notifications: [],
     };
     this.subscribers = {
       route: [],
@@ -79,6 +83,7 @@ export class Store implements StoreInterface {
       newExercise: [],
       auth: [],
       sync: [],
+      notifications: [],
     };
 
     const publicDataAccessors = Object.keys(this.subscribers);
@@ -141,6 +146,8 @@ export class Store implements StoreInterface {
       return this.state.auth;
     case 'sync':
       return this.state.sync;
+    case 'notifications':
+      return this.state.notifications;
     default:
       return undefined;
     }
@@ -188,6 +195,9 @@ export class Store implements StoreInterface {
           break;
         case 'sync':
           this.sync = persisted as Partial<SyncWithServer>;
+          break;
+        case 'notifications':
+          this.notifications = persisted as Notification[];
           break;
         default:
           break;
@@ -290,6 +300,7 @@ export class Store implements StoreInterface {
     newExercise: state.newExercise,
     auth: state.auth,
     sync: state.sync,
+    notifications: state.notifications,
   } as const);
 
   getStoreData = (publicDataAccessors: string[]): { [key: string]: any } => {
@@ -328,6 +339,10 @@ export class Store implements StoreInterface {
 
   get completedTrainings(): CompletedTraining[] {
     return this.state.completedTrainings;
+  }
+
+  get notifications(): Notification[] {
+    return this.state.notifications;
   }
 
   get activeTraining(): ActiveTraining | null {
@@ -425,6 +440,11 @@ export class Store implements StoreInterface {
 
     this._updateStoreData(fn, ['newExercise']);
   }
+
+  set notifications(data: Notification[]) {
+    const fn = () => ({ notifications: data });
+    this._updateStoreData(fn, ['notifications']);
+  }
 }
 
 const allPublicDataAccessors = [
@@ -437,6 +457,7 @@ const allPublicDataAccessors = [
   'newExercise',
   'auth',
   'sync',
+  'notifications',
 ];
 
 function validateDataAccessors(publicDataAccessors: string[]): void {

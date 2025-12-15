@@ -1,11 +1,15 @@
-import { CompletedSet, CompletedTraining, TimestampTZ } from '../../model/types';
+import {
+  CompletedSet,
+  CompletedTraining,
+  TimestampTZ,
+} from '../../model/types';
 import { AppContext } from '../../types';
 import { HomeController } from './types';
 
 export const controller = (
   serviceLocator: AppContext['serviceLocator'],
 ): HomeController => {
-  const { authApi, trainingsApi } = serviceLocator.getAPIs();
+  const { authApi, trainingsApi, notificationsApi } = serviceLocator.getAPIs();
   const store = serviceLocator.getStore();
 
   const getStoreData = () => store.getStoreData(controller.storeDataAccessors);
@@ -18,14 +22,35 @@ export const controller = (
     isAuthenticated: () => {
       return getStoreData().auth.isAuthenticated;
     },
-    signin: (email: string, password: string) => {
-      authApi.signin(email, password);
+    signin: async (email: string, password: string) => {
+      try {
+        await authApi.signin(email, password);
+      } catch (e: any) {
+        notificationsApi.addNotification({
+          type: 'error',
+          message: e.message || 'Sigin failed. Double check your credentials!',
+        });
+      }
     },
-    signup: (email: string, password: string) => {
-      authApi.signup(email, password);
+    signup: async (email: string, password: string) => {
+      try {
+        await authApi.signup(email, password);
+      } catch (e: any) {
+        notificationsApi.addNotification({
+          type: 'error',
+          message: e.message || 'Signup failed. Double check your credentials!',
+        });
+      }
     },
-    signout: () => {
-      authApi.signout();
+    signout: async () => {
+      try {
+        await authApi.signout();
+      } catch (e: any) {
+        notificationsApi.addNotification({
+          type: 'error',
+          message: `Sigout failed, details: ${e.message}`,
+        });
+      }
     },
     getCompletedTrainings: () => {
       return getStoreData().completedTrainings.sort(

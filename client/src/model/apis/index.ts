@@ -5,6 +5,7 @@ import { createAuthApi } from './authApi';
 import { createHttpClientAPI } from './httpClientApi';
 import { createTrainingsServerApi } from './trainingsServerApi';
 import { createSyncApi } from './syncApi';
+import { createNotificationsApi } from './notificationsApi';
 
 export const createAPIs = (tools: ApiTools) => {
   const accessTokenKey = '__yg_at_rt';
@@ -31,23 +32,31 @@ export const createAPIs = (tools: ApiTools) => {
     refreshEndpoint: '/api/refresh',
   });
 
+  const notificationsApi = createNotificationsApi(tools, {});
+
   const trainingsServerApi = createTrainingsServerApi(tools, { httpClientAPI });
   const trainingsApi = createTrainingsApi(tools, {
     httpClientAPI,
     trainingsServerApi,
+    notificationsApi,
   });
   const syncApi = createSyncApi(tools, {
     httpClientAPI,
     trainingsServerApi,
     trainingsApi,
+    notificationsApi,
   });
 
   return {
     navigationApi: createNavigationApi(tools, {}),
     trainingsApi,
-    authApi: createAuthApi(tools, { httpClientAPI }, tokenStorage),
+    authApi: createAuthApi(tools, {
+      httpClientAPI,
+      notificationsApi,
+    }, tokenStorage),
     httpClientAPI,
     trainingsServerApi,
     syncApi,
+    notificationsApi,
   };
 };

@@ -1,10 +1,17 @@
-import type { ApiFactory, AppAPIs, AuthApi, AuthResponseData, Store, TokenStorage } from '../../types';
+import type {
+  ApiFactory,
+  AppAPIs,
+  AuthApi,
+  AuthResponseData,
+  Store,
+  TokenStorage,
+} from '../../types';
 import { Validator } from '../../validation';
 import { validateEmail, validatePassword } from './authValidation';
 
 export const createAuthApi: ApiFactory<
   AuthApi,
-  Pick<AppAPIs, 'httpClientAPI'>,
+  Pick<AppAPIs, 'httpClientAPI' | 'notificationsApi'>,
   [TokenStorage]
 > = (
   tools: { store: Store, validator: Validator },
@@ -12,7 +19,7 @@ export const createAuthApi: ApiFactory<
   tokenStorage,
 ) => {
   const { store } = tools;
-  const { httpClientAPI } = dependencies;
+  const { httpClientAPI, notificationsApi } = dependencies;
 
   async function signup(email: string, password: string) {
     if (!validateEmail(email)) {
@@ -49,6 +56,10 @@ export const createAuthApi: ApiFactory<
         authError: e.message,
         authLoading: false,
       };
+      notificationsApi.addNotification({
+        type: 'error',
+        message: e.message || 'Signup failed',
+      });
     }
   }
 
@@ -85,6 +96,10 @@ export const createAuthApi: ApiFactory<
         authError: e.message,
         authLoading: false,
       };
+      notificationsApi.addNotification({
+        type: 'error',
+        message: e.message || 'Signin failed',
+      });
     }
   }
 
@@ -111,6 +126,10 @@ export const createAuthApi: ApiFactory<
         authError: e.message,
         authLoading: false,
       };
+      notificationsApi.addNotification({
+        type: 'error',
+        message: e.message || 'Signout failed',
+      });
     }
   }
 
@@ -133,6 +152,10 @@ export const createAuthApi: ApiFactory<
         authError: e.message,
         authLoading: false,
       };
+      notificationsApi.addNotification({
+        type: 'error',
+        message: e.message || 'Get session failed',
+      });
     }
   }
 
@@ -161,6 +184,10 @@ export const createAuthApi: ApiFactory<
       store.auth = {
         authError: e.message,
       };
+      notificationsApi.addNotification({
+        type: 'error',
+        message: e.message || 'Refresh token failed',
+      });
     }
   }
 

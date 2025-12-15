@@ -7,3 +7,4 @@ export { Button } from './Button';
 export { Input } from './Input';
 export { Exercise } from './Exercise';
 export { Training } from './Training';
+export { Notifications } from './Notifications';

@@ -23,7 +23,7 @@ export const createApi = (
       baseUrl: '',
       tokenStorage,
       refreshEndpoint: '/refresh',
-    }) },
+    }), notificationsApi: {} as any },
     tokenStorage,
   );
 };

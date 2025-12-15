@@ -15,12 +15,12 @@ import {
 
 export const createSyncApi: ApiFactory<
   SyncApi,
-  Pick<AppAPIs, 'httpClientAPI' | 'trainingsServerApi' | 'trainingsApi'>
+  Pick<AppAPIs, 'httpClientAPI' | 'trainingsServerApi' | 'trainingsApi' | 'notificationsApi'>
 > = (
   { store }: ApiTools,
   dependencies,
 ) => {
-  const { httpClientAPI, trainingsServerApi, trainingsApi } = dependencies;
+  const { httpClientAPI, trainingsServerApi, trainingsApi, notificationsApi } = dependencies;
   const getData = () => store.getStoreData(['completedTrainings', 'sync']);
 
   const hasServerChanges = async () => {
@@ -135,6 +135,10 @@ export const createSyncApi: ApiFactory<
         isLoading: false,
         error: error.message,
       };
+      notificationsApi.addNotification({
+        type: 'error',
+        message: error.message || 'Sync failed',
+      });
     }
   };
 
