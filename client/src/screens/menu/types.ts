@@ -11,4 +11,5 @@ export interface MenuController {
     error: string | undefined;
   };
   sync: () => Promise<void>;
+  signout: () => Promise<void>;
 }

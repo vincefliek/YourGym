@@ -6,6 +6,75 @@
   padding-bottom: 20px;
 }
 
+/* Auth form styles */
+.authForm {
+  box-sizing: border-box;
+  width: 90%;
+  margin: 20px auto;
+  padding: 18px;
+  border-radius: 8px;
+  background: linear-gradient(to bottom, #ffffff, #fbfbfd);
+  box-shadow: 0 8px 20px rgba(6, 16, 40, 0.06);
+  border: 1px solid rgba(colors.$regular, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.authFormHeader {
+  margin: 0;
+  font-size: 18px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.authField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.authLabel {
+  font-size: 13px;
+  color: rgba(colors.$regular, 0.7);
+}
+
+.authInput {
+  padding: 10px 12px;
+  border: 1px solid rgba(colors.$regular, 0.12);
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+  outline: none;
+  transition: box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.authInput:focus {
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
+  border-color: rgba(colors.$regular, 0.18);
+}
+
+.authActions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.authSubmit {
+  font-weight: 600;
+  box-shadow: 0 6px 14px rgba(0, 112, 243, 0.12);
+}
+
+.authToggleButton {
+  background: transparent;
+  border: none;
+  color: #0070f3;
+  cursor: pointer;
+  font-size: 14px;
+}
+
 .trainings {
   padding: 0 20px 0 8px;
   margin: 0;

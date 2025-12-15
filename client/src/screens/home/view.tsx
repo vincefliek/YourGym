@@ -28,27 +28,38 @@ const AuthForm = ({ title, onSubmit }: AuthFormProps) => {
   };
 
   return (
-    <form onSubmit={_onSubmit}>
-      <h3>{title}</h3>
-      <div>
-        <label htmlFor="email">Email:</label>
+    <form onSubmit={_onSubmit} className={style.authForm}>
+      <h3 className={style.authFormHeader}>{title}</h3>
+      <div className={style.authField}>
+        <label className={style.authLabel} htmlFor="email">Email:</label>
         <input
+          className={style.authInput}
           type="email"
           id="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
-      <div>
-        <label htmlFor="password">Password:</label>
+      <div className={style.authField}>
+        <label className={style.authLabel} htmlFor="password">Password:</label>
         <input
+          className={style.authInput}
           type="password"
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <button type="submit">Submit</button>
+      <div className={style.authActions}>
+        <Button
+          type="submit"
+          className={style.authSubmit}
+          skin="primary"
+          size="medium"
+        >
+          Submit
+        </Button>
+      </div>
     </form>
   );
 };
@@ -58,7 +69,6 @@ const PureHome: React.FC<HomeProps> = (props) => {
     isAuthenticated,
     signin,
     signup,
-    signout,
     onDeleteCompletedTraining,
     createSetsPreview,
   } = props;
@@ -157,32 +167,14 @@ const PureHome: React.FC<HomeProps> = (props) => {
                 onSubmit={({ email, password }) => signup(email, password)}
               />
             )}
-            <div>
-              <button onClick={() => setIsLoginForm(state => !state)}>
-                {isLoginForm ? 'Go to Sign Up' : 'Go to Sign In'}
-              </button>
-            </div>
-          </>
-        )}
-        {isAuthenticated && (
-          <>
-            <div style={{
-              color: 'green',
-              marginTop: '20px',
-              border: '1px solid green',
-              padding: '10px',
-              textAlign: 'center',
-            }}>
-              You are logged in!
-            </div>
-            <div style={{
-              marginTop: '20px',
-              textAlign: 'center',
-            }}>
-              <button onClick={() => signout()}>
-                Sign out
-              </button>
-            </div>
+            <Button
+              className={style.authToggleButton}
+              skin="text"
+              size="medium"
+              onClick={() => setIsLoginForm(state => !state)}
+            >
+              {isLoginForm ? 'Go to Sign Up' : 'Go to Sign In'}
+            </Button>
           </>
         )}
         {isAuthenticated && renderTrainings()}
@@ -199,7 +191,6 @@ export const Home = connect<HomeController, HomeProps>({
   onDeleteCompletedTraining: ctrl.onDeleteCompletedTraining,
   signin: ctrl.signin,
   signup: ctrl.signup,
-  signout: ctrl.signout,
   getDateAndTime: ctrl.getDateAndTime,
   createSetsPreview: ctrl.createSetsPreview,
 }))(PureHome);

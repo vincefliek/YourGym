@@ -5,7 +5,7 @@ export const controller = (
   serviceLocator: AppContext['serviceLocator'],
 ): MenuController => {
   const store = serviceLocator.getStore();
-  const { syncApi } = serviceLocator.getAPIs();
+  const { syncApi, authApi, notificationsApi } = serviceLocator.getAPIs();
 
   const getStoreData = () => store.getStoreData(controller.storeDataAccessors);
 
@@ -29,6 +29,16 @@ export const controller = (
     },
     sync: async () => {
       await syncApi.sync();
+    },
+    signout: async () => {
+      try {
+        await authApi.signout();
+      } catch (e: any) {
+        notificationsApi.addNotification({
+          type: 'error',
+          message: `Sigout failed, details: ${e.message}`,
+        });
+      }
     },
   };
 };

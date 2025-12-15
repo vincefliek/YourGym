@@ -10,7 +10,6 @@ export interface HomeProps {
   completedTrainings: CompletedTraining[];
   signin: (email: string, password: string) => void;
   signup: (email: string, password: string) => void;
-  signout: () => void;
   onDeleteCompletedTraining: (trainingId: string) => void;
   getDateAndTime: (timestamptz: TimestampTZ) => DateAndTime;
   createSetsPreview: (sets: CompletedSet[]) => string;
@@ -20,7 +19,6 @@ export interface HomeController {
   isAuthenticated: () => boolean;
   signin: (email: string, password: string) => void;
   signup: (email: string, password: string) => void;
-  signout: () => void;
   getCompletedTrainings: () => CompletedTraining[];
   onDeleteCompletedTraining: (trainingId: string) => void;
   getDateAndTime: (timestamptz: TimestampTZ) => DateAndTime;

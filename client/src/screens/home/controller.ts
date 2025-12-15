@@ -42,16 +42,6 @@ export const controller = (
         });
       }
     },
-    signout: async () => {
-      try {
-        await authApi.signout();
-      } catch (e: any) {
-        notificationsApi.addNotification({
-          type: 'error',
-          message: `Sigout failed, details: ${e.message}`,
-        });
-      }
-    },
     getCompletedTrainings: () => {
       return getStoreData().completedTrainings.sort(
         (trA: CompletedTraining, trB: CompletedTraining) =>

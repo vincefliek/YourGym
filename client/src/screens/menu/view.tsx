@@ -12,6 +12,7 @@ interface PureMenuProps {
   authData: ReturnType<MenuController['getAuthData']>;
   syncData: ReturnType<MenuController['getSyncData']>;
   sync: MenuController['sync'];
+  signout: MenuController['signout'];
 }
 
 const PureMenu: React.FC<PureMenuProps> = (props) => {
@@ -19,6 +20,7 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
     authData,
     syncData,
     sync,
+    signout,
   } = props;
 
   return (
@@ -40,6 +42,16 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
               <div>{authData.error}</div>
             </div>
           )}
+          <br />
+          <Button
+            skin="primary"
+            font="nunito"
+            onClick={() => signout()}
+            style={{ width: '100%' }}
+            disabled={authData.isLoading}
+          >
+            Sign out
+          </Button>
         </div>
         <div className={style.metadataBox}>
           <h4>Sync</h4>
@@ -67,7 +79,6 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
           <Button
             skin="primary"
             font="nunito"
-            className={style.addNew}
             onClick={sync}
             style={{ width: '100%' }}
             disabled={syncData.isLoading}
@@ -86,4 +97,5 @@ export const Menu = connect<MenuController, PureMenuProps>({
   authData: ctrl.getAuthData(),
   syncData: ctrl.getSyncData(),
   sync: ctrl.sync,
+  signout: ctrl.signout,
 }))(PureMenu);
