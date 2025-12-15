@@ -1,9 +1,9 @@
 @use "../../components/common/_colors";
 
 .screen {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  padding-bottom: 20px;
 }
 
 .trainings {
