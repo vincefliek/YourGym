@@ -521,7 +521,7 @@ export const createTrainingsApi: ApiFactory<
     training: (id: string) => {
       deleteTraining(id);
     },
-    completedTraining: (trainingId: string) => {
+    completedTraining: async (trainingId: string) => {
       const training: CompletedTraining = getData().completedTrainings
         .find((tr: CompletedTraining) => tr.id === trainingId);
       const createdInDbAt = training?.createdInDbAt;
@@ -531,7 +531,18 @@ export const createTrainingsApi: ApiFactory<
       _update.completedTrainings(data);
 
       if (createdInDbAt) {
-        void trainingsServerApi.delete.completedTraining(training);
+        try {
+          await trainingsServerApi.delete.completedTraining(training);
+        } catch (error) {
+          const restoredData = [
+            ...getData().completedTrainings,
+            training,
+          ];
+
+          _update.completedTrainings(restoredData);
+
+          throw error;
+        }
       }
     },
     newExercise: () => {

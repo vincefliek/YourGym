@@ -34,7 +34,7 @@ export const controller = (
           - new Date(trA.timestamptz).getTime(),
       );
     },
-    onDeleteCompletedTraining: (trainingId) => {
+    onDeleteCompletedTraining: async (trainingId) => {
       const training = getById(trainingId);
 
       if (!training) {
@@ -46,7 +46,7 @@ export const controller = (
       );
 
       if (result) {
-        trainingsApi.delete.completedTraining(training.id);
+        await trainingsApi.delete.completedTraining(training.id);
       }
     },
     getDateAndTime: (timestamptz: TimestampTZ) => {
