@@ -1,5 +1,5 @@
-@use "../../components/common/_colors";
-@use "../../components/common/_fonts";
+@use '../../components/common/_colors';
+@use '../../components/common/_fonts';
 
 .screen {
   height: auto;
@@ -43,7 +43,7 @@
 .setPreview {
   display: flex;
   justify-content: space-between;
-  
+
   align-items: center;
   padding: 0 10px;
   flex: 1 1 auto;

@@ -3,16 +3,13 @@ import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
-import prettierPlugin from "eslint-plugin-prettier";
-import prettierConfig from "eslint-config-prettier";
+import prettierPlugin from 'eslint-plugin-prettier';
+import prettierConfig from 'eslint-config-prettier';
 
 export default tseslint.config(
   { ignores: ['dist'] },
   {
-    extends: [
-      js.configs.recommended,
-      ...tseslint.configs.recommended,
-    ],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
@@ -35,26 +32,23 @@ export default tseslint.config(
       '@typescript-eslint/no-empty-object-type': [
         'error',
         {
-          "allowInterfaces": 'always',
-          "allowObjectTypes": 'always',
-        }
+          allowInterfaces: 'always',
+          allowObjectTypes: 'always',
+        },
       ],
       '@typescript-eslint/no-namespace': 'off',
-      "eol-last": [
-        "warn",
-        "always"
-      ],
-      "comma-dangle": [
-        "warn",
+      'eol-last': ['warn', 'always'],
+      'comma-dangle': [
+        'warn',
         {
-          "arrays": "always-multiline",
-          "objects": "always-multiline",
-          "imports": "always-multiline",
-          "exports": "always-multiline",
-          "functions": "always-multiline"
-        }
+          arrays: 'always-multiline',
+          objects: 'always-multiline',
+          imports: 'always-multiline',
+          exports: 'always-multiline',
+          functions: 'always-multiline',
+        },
       ],
-      "prettier/prettier": "error",
+      'prettier/prettier': 'error',
     },
-  }
+  },
 );

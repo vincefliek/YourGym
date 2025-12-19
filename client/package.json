@@ -55,62 +55,10 @@
     "test": "echo \"No tests configured. Use Vitest or Jest.\" && exit 0",
     "ts-check": "tsc --noEmit",
     "lint:fix": "eslint --fix --ext .ts,.tsx ./src",
+    "prettier:fix": "prettier --write \"src/**/*.{ts,tsx,scss,css}\"",
     "safe-check": "./scripts/safe-check.sh",
-    "pre-commit-hook": "npm run safe-check && npm run lint:fix",
+    "pre-commit-hook": "npm run safe-check && npm run lint:fix && npm run prettier:fix",
     "predeploy": "npm run build"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "rules": {
-      "indent": [
-        "warn",
-        2
-      ],
-      "eol-last": [
-        "warn",
-        "always"
-      ],
-      "quotes": [
-        "warn",
-        "single",
-        {
-          "allowTemplateLiterals": true
-        }
-      ],
-      "max-len": [
-        "warn",
-        {
-          "code": 80,
-          "tabWidth": 2
-        }
-      ],
-      "comma-dangle": [
-        "warn",
-        {
-          "arrays": "always-multiline",
-          "objects": "always-multiline",
-          "imports": "always-multiline",
-          "exports": "always-multiline",
-          "functions": "always-multiline"
-        }
-      ],
-      "semi": [
-        "warn",
-        "always"
-      ],
-      "no-unused-vars": [
-        "warn",
-        {
-          "vars": "all",
-          "args": "after-used",
-          "ignoreRestSiblings": false
-        }
-      ],
-      "no-trailing-spaces": "warn"
-    }
   },
   "browserslist": {
     "production": [

@@ -1,4 +1,4 @@
-@use "../../components/common/_colors";
+@use '../../components/common/_colors';
 
 .screen {
   height: 100%;
@@ -51,7 +51,7 @@
   padding: 10px;
   border: 1.5px dashed colors.$regular;
   border-radius: 4px;
-  
+
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -67,7 +67,7 @@
 
 .setActiveEnter {
   transform: translateX(0);
-  transition: all .25s ease-in;
+  transition: all 0.25s ease-in;
 }
 
 .setExit {
@@ -75,6 +75,6 @@
 }
 
 .setActiveExit {
-  transition: all .25s ease-in;
+  transition: all 0.25s ease-in;
   transform: translateX(-390px);
 }

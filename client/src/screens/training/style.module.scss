@@ -1,5 +1,5 @@
-@use "../../components/common/_colors";
-@use "../../components/common/_fonts";
+@use '../../components/common/_colors';
+@use '../../components/common/_fonts';
 
 .screen {
   height: 85%;
@@ -57,5 +57,5 @@
   border-radius: 4px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; 
+  text-overflow: ellipsis;
 }

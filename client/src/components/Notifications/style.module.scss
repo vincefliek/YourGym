@@ -1,5 +1,5 @@
-@use "../common/_colors";
-@use "../common/_fonts";
+@use '../common/_colors';
+@use '../common/_fonts';
 
 .notifications {
   position: fixed;
@@ -16,15 +16,21 @@
   padding: 12px 14px;
   border-radius: 8px;
   color: #fff;
-  box-shadow: 0 6px 18px rgba(colors.$regular,0.12);
+  box-shadow: 0 6px 18px rgba(colors.$regular, 0.12);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.toastInfo { background: #2d9cdb; }
-.toastSuccess { background: #2db34a; }
-.toastError { background: #d9534f; }
+.toastInfo {
+  background: #2d9cdb;
+}
+.toastSuccess {
+  background: #2db34a;
+}
+.toastError {
+  background: #d9534f;
+}
 
 .message {
   flex: 1;

@@ -1,4 +1,4 @@
-@use "../common/_colors";
+@use '../common/_colors';
 
 .active {
   color: colors.$primary;
@@ -15,7 +15,7 @@
 }
 
 .animationBurger svg {
-  animation: .3s linear .1s moveBurger forwards;
+  animation: 0.3s linear 0.1s moveBurger forwards;
 }
 
 @keyframes moveBurger {
