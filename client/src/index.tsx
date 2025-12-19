@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 
 import { App } from './components';
@@ -10,10 +10,13 @@ window.addEventListener('load', async () => {
 
   const { apis, appContext } = await initApp();
 
-  ReactDOM.render(
-    <HashRouter>
-      <App apis={apis} appContext={appContext} />
-    </HashRouter>,
-    document.getElementById('root'),
-  );
+  const rootEl = document.getElementById('root');
+  if (rootEl) {
+    const root = createRoot(rootEl);
+    root.render(
+      <HashRouter>
+        <App apis={apis} appContext={appContext} />
+      </HashRouter>,
+    );
+  }
 }, false);
