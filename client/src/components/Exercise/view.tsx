@@ -7,8 +7,8 @@ import {
   Layout,
   NavbarContainer,
 } from '../../components';
-import { ReactComponent as DoneIcon } from '../../assets/done.svg';
-import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
+import DoneIcon from '../../assets/done.svg?react';
+import DeleteIcon from '../../assets/delete.svg?react';
 import {
   CSSTransition,
   TransitionGroup,

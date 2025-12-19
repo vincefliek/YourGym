@@ -12,6 +12,7 @@ SAFE_PKGS=(
   # run `jq -r '.dependencies["core-js-pure"].version' package-lock.json`
   "core-js-pure@3.42.0"
   "monorepo-symlink-test@0.0.0"
+  "esbuild@0.21.5"
 )
 
 # Find all packages with postinstall scripts

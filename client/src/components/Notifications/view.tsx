@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import { connect } from '../../utils';
-import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
+import DeleteIcon from '../../assets/delete.svg?react';
 import { Notification } from '../../model/types';
 import { Button } from '../Button';
 import { controller } from './controller';

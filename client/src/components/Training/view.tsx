@@ -1,8 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
 import { Button, Input, Layout, NavbarContainer } from '../index';
-import { ReactComponent as DoneIcon } from '../../assets/done.svg';
-import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
+import DoneIcon from '../../assets/done.svg?react';
+import DeleteIcon from '../../assets/delete.svg?react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import style from './style.module.scss';
 import { TrainingProps } from './types';

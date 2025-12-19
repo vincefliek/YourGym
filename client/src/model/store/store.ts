@@ -108,7 +108,7 @@ export class Store implements StoreInterface {
     } catch (err) {
       // swallow but surface developer-friendly error for debugging
       // (no throw so writes remain fire & forget)
-      // eslint-disable-next-line no-console
+       
       console.error(`[Store] Failed to persist ${accessor} to IndexedDB:`, err);
     }
   }
@@ -120,7 +120,7 @@ export class Store implements StoreInterface {
       );
       return v;
     } catch (err) {
-      // eslint-disable-next-line no-console
+       
       console.error(`[Store] Failed to read ${accessor} from IndexedDB:`, err);
       return undefined;
     }

@@ -8,10 +8,10 @@ import {
 } from '../../components';
 import { connect, requireData } from '../../utils';
 import { controller } from './controller';
-import { ReactComponent as BackIcon } from '../../assets/backArrow.svg';
-import { ReactComponent as ArrowLeft } from '../../assets/arrowLeft.svg';
-import { ReactComponent as ArrowRight } from '../../assets/arrowRight.svg';
-import { ReactComponent as DoneIcon } from '../../assets/done.svg';
+import BackIcon from '../../assets/backArrow.svg?react';
+import ArrowLeft from '../../assets/arrowLeft.svg?react';
+import ArrowRight from '../../assets/arrowRight.svg?react';
+import DoneIcon from '../../assets/done.svg?react';
 import { Exercise as ExerciseType, Set, Training } from '../../model/types';
 
 import style from './style.module.scss';

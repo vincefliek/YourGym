@@ -4,7 +4,7 @@ import { Button, Layout, Navbar } from '../../components';
 import { connect } from '../../utils';
 import { controller } from './controller';
 import { HomeProps, HomeController } from './types';
-import { ReactComponent as DeleteIcon } from '../../assets/delete.svg';
+import DeleteIcon from '../../assets/delete.svg?react';
 import style from './style.module.scss';
 import classNames from 'classnames';
 

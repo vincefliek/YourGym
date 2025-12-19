@@ -17,7 +17,7 @@ export const createTrainingsServerApi: ApiFactory<
   TrainingsServerApi,
   Pick<AppAPIs, 'httpClientAPI'>
 >  = (
-  { store, validator }: ApiTools,
+  { validator }: ApiTools,
   dependencies,
 ) => {
   validator.addSchema(ServerReadSchemas.completedTrainings);

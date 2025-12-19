@@ -13,7 +13,8 @@ export const requireData = <P extends object>(getInfo: (props: P) => RequireData
 
   const info = getInfo({} as any);
   const infoExists = Boolean(
-    info.hasOwnProperty('isData') && info.hasOwnProperty('onNoData'),
+    Object.prototype.hasOwnProperty.call(info, 'isData') &&
+    Object.prototype.hasOwnProperty.call(info, 'onNoData'),
   );
 
   if (!infoExists) {

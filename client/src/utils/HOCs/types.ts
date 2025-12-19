@@ -1,4 +1,3 @@
-import { ComponentType } from 'react';
 import { AppContext } from '../../types';
 
 export interface Controller<T = any> {

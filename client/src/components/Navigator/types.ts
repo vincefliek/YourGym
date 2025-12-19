@@ -1,5 +1,3 @@
-import { AppContext } from '../../types';
-
 export interface NavigatorProps {
   route: string | null;
   replace: boolean;

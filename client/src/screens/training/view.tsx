@@ -3,8 +3,8 @@ import React from 'react';
 import { Button, Layout, NavbarContainer } from '../../components';
 import { connect, requireData } from '../../utils';
 import { controller } from './controller';
-import { ReactComponent as EditIcon } from '../../assets/edit.svg';
-import { ReactComponent as BackIcon } from '../../assets/backArrow.svg';
+import EditIcon from '../../assets/edit.svg?react';
+import BackIcon from '../../assets/backArrow.svg?react';
 
 import style from './style.module.scss';
 

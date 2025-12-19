@@ -13,7 +13,6 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "6",
-    "react-scripts": "5.0.0",
     "react-transition-group": "^4.4.5",
     "recharts": "^3.6.0",
     "sass": "^1.49.9",
@@ -33,21 +32,29 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-transition-group": "^4.4.12",
     "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.50.0",
+    "@typescript-eslint/parser": "^8.50.0",
+    "@vitejs/plugin-react": "^5.1.2",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.26",
     "husky": "^7.0.4",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "typescript-eslint": "^8.50.0",
+    "vite": "^5.4.21",
+    "vite-plugin-svgr": "^4.5.0"
   },
   "scripts": {
     "prepare": "cd .. && husky install client/.husky",
-    "start": "git add .husky/pre-commit && react-scripts start",
-    "build": "npm run ts-check && react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "git add .husky/pre-commit && vite",
+    "dev": "vite",
+    "build": "npm run ts-check && vite build",
+    "preview": "vite preview",
+    "test": "echo \"No tests configured. Use Vitest or Jest.\" && exit 0",
     "ts-check": "tsc --noEmit",
     "lint:fix": "eslint --fix --ext .ts,.tsx ./src",
     "safe-check": "./scripts/safe-check.sh",
     "pre-commit-hook": "npm run safe-check && npm run lint:fix",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "predeploy": "npm run build"
   },
   "eslintConfig": {
     "extends": [

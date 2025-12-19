@@ -102,8 +102,8 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
   ): Promise<TResponse> {
     const { method = 'GET', headers = {}, body, ...fetchOptions } = reqOptions;
 
-    let tokenPair = tokenStorage.getToken();
-    let expires_at = tokenPair?.expires_at;
+    const tokenPair = tokenStorage.getToken();
+    const expires_at = tokenPair?.expires_at;
 
     if (isExpireSoonFromNow(expires_at)) {
       await performRefresh();

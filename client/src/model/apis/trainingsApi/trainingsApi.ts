@@ -149,6 +149,7 @@ export const createTrainingsApi: ApiFactory<
       try {
         validate(updatedActive, completedTrainingSchema);
         store.activeTraining = updatedActive;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         if (process.env.NODE_ENV !== 'production') {
           throw new Error(
