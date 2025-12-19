@@ -15,12 +15,13 @@ import {
 
 export const createSyncApi: ApiFactory<
   SyncApi,
-  Pick<AppAPIs, 'httpClientAPI' | 'trainingsServerApi' | 'trainingsApi' | 'notificationsApi'>
-> = (
-  { store }: ApiTools,
-  dependencies,
-) => {
-  const { httpClientAPI, trainingsServerApi, trainingsApi, notificationsApi } = dependencies;
+  Pick<
+    AppAPIs,
+    'httpClientAPI' | 'trainingsServerApi' | 'trainingsApi' | 'notificationsApi'
+  >
+> = ({ store }: ApiTools, dependencies) => {
+  const { httpClientAPI, trainingsServerApi, trainingsApi, notificationsApi } =
+    dependencies;
   const getData = () => store.getStoreData(['completedTrainings', 'sync']);
 
   const hasServerChanges = async () => {
@@ -46,25 +47,26 @@ export const createSyncApi: ApiFactory<
     }
   };
 
-  const converUTCtoTimeZoned =
-    <T extends (string | TimestampTZ | undefined | null)>(date: T): T => {
-      if (!date) return date;
+  const converUTCtoTimeZoned = <
+    T extends string | TimestampTZ | undefined | null,
+  >(
+    date: T,
+  ): T => {
+    if (!date) return date;
 
-      // Get browser/user timezone
-      const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // Get browser/user timezone
+    const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-      // Convert UTC → user timezone
-      const zoned = toZonedTime(date, userTz);
+    // Convert UTC → user timezone
+    const zoned = toZonedTime(date, userTz);
 
-      // Format
-      const formatted = format(
-        zoned,
-        `yyyy-MM-dd'T'HH:mm:ss.SSSXXX`,
-        { timeZone: userTz },
-      );
+    // Format
+    const formatted = format(zoned, `yyyy-MM-dd'T'HH:mm:ss.SSSXXX`, {
+      timeZone: userTz,
+    });
 
-      return formatted as T;
-    };
+    return formatted as T;
+  };
 
   /**
    * Save on the server (insert into DB) all trainings
@@ -75,9 +77,10 @@ export const createSyncApi: ApiFactory<
    */
   const syncCompletedTrainings = async () => {
     try {
-      const items: CompletedTraining[] = getData().completedTrainings
-        .filter((tr: CompletedTraining) => !tr.createdInDbAt);
-      const itemsIds = items.map(it => it.id);
+      const items: CompletedTraining[] = getData().completedTrainings.filter(
+        (tr: CompletedTraining) => !tr.createdInDbAt,
+      );
+      const itemsIds = items.map((it) => it.id);
 
       if (!items.length) {
         return;
@@ -85,18 +88,19 @@ export const createSyncApi: ApiFactory<
 
       const result = await trainingsServerApi.create.completedTrainings(items);
 
-      const savedItems: CompletedTraining[] = result.map(tr => {
+      const savedItems: CompletedTraining[] = result.map((tr) => {
         const grouped = groupBy(tr.exercises, (it) => it.name);
-        const exercises = Object.values(grouped).map(gr => ({
+        const exercises = Object.values(grouped).map((gr) => ({
           /* "id" - only for client, not used on the server */
           id: uuidv4(),
           name: gr?.[0]?.name,
-          sets: gr?.map(it => ({
-            id: it.id,
-            repetitions: it.reps,
-            weight: it.weight,
-            timestamptz: converUTCtoTimeZoned(it.date),
-          })) ?? [],
+          sets:
+            gr?.map((it) => ({
+              id: it.id,
+              repetitions: it.reps,
+              weight: it.weight,
+              timestamptz: converUTCtoTimeZoned(it.date),
+            })) ?? [],
         })) as CompletedTrainingExcercise[];
         return {
           id: tr.id,
@@ -109,8 +113,9 @@ export const createSyncApi: ApiFactory<
       });
 
       trainingsApi.update.completedTrainings([
-        ...getData().completedTrainings
-          .filter((tr: CompletedTraining) => !itemsIds.includes(tr.id)),
+        ...getData().completedTrainings.filter(
+          (tr: CompletedTraining) => !itemsIds.includes(tr.id),
+        ),
         ...savedItems,
       ]);
     } catch (error: any) {

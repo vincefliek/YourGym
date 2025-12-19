@@ -25,9 +25,10 @@ export const createAPIs = (tools: ApiTools) => {
 
   const httpClientAPI = createHttpClientAPI({
     tools,
-    baseUrl: process.env.NODE_ENV === 'production'
-      ? 'https://yourgym.onrender.com'
-      : 'http://localhost:3100',
+    baseUrl:
+      process.env.NODE_ENV === 'production'
+        ? 'https://yourgym.onrender.com'
+        : 'http://localhost:3100',
     tokenStorage,
     refreshEndpoint: '/api/refresh',
   });
@@ -50,10 +51,14 @@ export const createAPIs = (tools: ApiTools) => {
   return {
     navigationApi: createNavigationApi(tools, {}),
     trainingsApi,
-    authApi: createAuthApi(tools, {
-      httpClientAPI,
-      notificationsApi,
-    }, tokenStorage),
+    authApi: createAuthApi(
+      tools,
+      {
+        httpClientAPI,
+        notificationsApi,
+      },
+      tokenStorage,
+    ),
     httpClientAPI,
     trainingsServerApi,
     syncApi,

@@ -14,7 +14,7 @@ export const createAuthApi: ApiFactory<
   Pick<AppAPIs, 'httpClientAPI' | 'notificationsApi'>,
   [TokenStorage]
 > = (
-  tools: { store: Store, validator: Validator },
+  tools: { store: Store; validator: Validator },
   dependencies,
   tokenStorage,
 ) => {
@@ -32,10 +32,14 @@ export const createAuthApi: ApiFactory<
     store.auth = { authLoading: true };
 
     try {
-      const data = await httpClientAPI.post<AuthResponseData>('/api/signup', {
-        email,
-        password,
-      }, { credentials: 'include' });
+      const data = await httpClientAPI.post<AuthResponseData>(
+        '/api/signup',
+        {
+          email,
+          password,
+        },
+        { credentials: 'include' },
+      );
 
       const session = data.session;
 
@@ -71,10 +75,14 @@ export const createAuthApi: ApiFactory<
     store.auth = { authLoading: true };
 
     try {
-      const data = await httpClientAPI.post<AuthResponseData>('/api/signin', {
-        email,
-        password,
-      }, { credentials: 'include' });
+      const data = await httpClientAPI.post<AuthResponseData>(
+        '/api/signin',
+        {
+          email,
+          password,
+        },
+        { credentials: 'include' },
+      );
 
       const session = data.session;
 
@@ -107,11 +115,7 @@ export const createAuthApi: ApiFactory<
     store.auth = { authLoading: true };
 
     try {
-      await httpClientAPI.post(
-        '/api/logout',
-        {},
-        { credentials: 'include' },
-      );
+      await httpClientAPI.post('/api/logout', {}, { credentials: 'include' });
 
       tokenStorage.clearToken();
 

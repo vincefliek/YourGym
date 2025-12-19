@@ -25,10 +25,7 @@ import { getTimestampWithTimeZone } from '../../../utils';
 export const createTrainingsApi: ApiFactory<
   TrainingsApi,
   Pick<AppAPIs, 'httpClientAPI' | 'trainingsServerApi' | 'notificationsApi'>
-> = (
-  { store, validator }: ApiTools,
-  dependencies,
-) => {
+> = ({ store, validator }: ApiTools, dependencies) => {
   validator.addSchema(allTrainingsSchema);
   validator.addSchema(trainingSchema);
   validator.addSchema(exerciseSchema);
@@ -56,13 +53,14 @@ export const createTrainingsApi: ApiFactory<
     }
   };
 
-  const getData = () => store.getStoreData([
-    'trainings',
-    'completedTrainings',
-    'activeTraining',
-    'newTraining',
-    'newExercise',
-  ]);
+  const getData = () =>
+    store.getStoreData([
+      'trainings',
+      'completedTrainings',
+      'activeTraining',
+      'newTraining',
+      'newExercise',
+    ]);
 
   const deleteNewTraining = () => {
     store.newTraining = null;
@@ -78,8 +76,9 @@ export const createTrainingsApi: ApiFactory<
     if (newTraining?.id === trainingId) {
       store.newTraining = {
         ...newTraining,
-        exercises: newTraining.exercises.filter((exercise: Exercise) =>
-          exercise.id !== exerciseId),
+        exercises: newTraining.exercises.filter(
+          (exercise: Exercise) => exercise.id !== exerciseId,
+        ),
       };
       return;
     }
@@ -88,8 +87,9 @@ export const createTrainingsApi: ApiFactory<
       if (training.id === trainingId) {
         return {
           ...training,
-          exercises: training.exercises.filter((exercise: Exercise) =>
-            exercise.id !== exerciseId),
+          exercises: training.exercises.filter(
+            (exercise: Exercise) => exercise.id !== exerciseId,
+          ),
         };
       }
 
@@ -100,10 +100,7 @@ export const createTrainingsApi: ApiFactory<
   };
 
   const addTraining = (training: Training) => {
-    const trainings = [
-      ...getData().trainings,
-      training,
-    ];
+    const trainings = [...getData().trainings, training];
 
     _update.allTrainings(trainings);
   };
@@ -164,16 +161,17 @@ export const createTrainingsApi: ApiFactory<
     const newExercise = getData().newExercise;
     const newTraining = getData().newTraining;
 
-    const _addSet = (exercises: Exercise[]) => exercises.map((ex: Exercise) => {
-      if (ex.id === exerciseId) {
-        return {
-          ...ex,
-          sets: ex.sets.concat(data),
-        };
-      }
+    const _addSet = (exercises: Exercise[]) =>
+      exercises.map((ex: Exercise) => {
+        if (ex.id === exerciseId) {
+          return {
+            ...ex,
+            sets: ex.sets.concat(data),
+          };
+        }
 
-      return ex;
-    });
+        return ex;
+      });
 
     if (newExercise?.id === exerciseId) {
       _update.newExercise({
@@ -202,18 +200,17 @@ export const createTrainingsApi: ApiFactory<
     const newTraining = getData().newTraining;
     const newExercise = getData().newExercise;
 
-    const _deleteSet = (
-      exercises: Exercise[],
-    ) => exercises.map((exercise: Exercise) => {
-      if (exercise.id === exerciseId) {
-        return {
-          ...exercise,
-          sets: exercise.sets.filter((set: Set) => set.id !== setId),
-        };
-      }
+    const _deleteSet = (exercises: Exercise[]) =>
+      exercises.map((exercise: Exercise) => {
+        if (exercise.id === exerciseId) {
+          return {
+            ...exercise,
+            sets: exercise.sets.filter((set: Set) => set.id !== setId),
+          };
+        }
 
-      return exercise;
-    });
+        return exercise;
+      });
 
     if (newExercise?.id === exerciseId) {
       _update.newExercise({
@@ -250,7 +247,7 @@ export const createTrainingsApi: ApiFactory<
 
     sets.forEach((set: Set, index: number) => {
       setsPreview += `${set.repetitions}x${set.weight}kg`;
-      if (index < (sets.length - 1)) setsPreview += ' - ';
+      if (index < sets.length - 1) setsPreview += ' - ';
     });
 
     return setsPreview;
@@ -263,7 +260,8 @@ export const createTrainingsApi: ApiFactory<
     const timeZone = intlDateTimeOptions.timeZone;
 
     const currentDate =
-      date.toDateString().slice(0, 3) + ', ' +
+      date.toDateString().slice(0, 3) +
+      ', ' +
       date.toLocaleDateString(locale, {
         timeZone,
       });
@@ -310,7 +308,7 @@ export const createTrainingsApi: ApiFactory<
         name: templateTraining.name,
         timestamptz: getTimestampWithTimeZone(new Date()),
         templateTrainingId: templateTraining.id,
-        exercises: templateTraining.exercises.map(e => {
+        exercises: templateTraining.exercises.map((e) => {
           return {
             id: uuidv4(),
             name: e.name,
@@ -390,9 +388,7 @@ export const createTrainingsApi: ApiFactory<
       }
 
       const templateExercise: Exercise | undefined =
-        templateTraining.exercises.find(
-          ex => ex.id === templateExerciseId,
-        );
+        templateTraining.exercises.find((ex) => ex.id === templateExerciseId);
 
       if (!templateExercise) {
         return;
@@ -400,7 +396,7 @@ export const createTrainingsApi: ApiFactory<
 
       const data: CompletedTraining = {
         ...activeTraining,
-        exercises: activeTraining.exercises.map(ex => {
+        exercises: activeTraining.exercises.map((ex) => {
           if (ex.name !== templateExercise.name) {
             return ex;
           }
@@ -503,10 +499,7 @@ export const createTrainingsApi: ApiFactory<
 
         validate(data, completedTrainingSchema);
 
-        const trainings = [
-          ...getData().completedTrainings,
-          data,
-        ];
+        const trainings = [...getData().completedTrainings, data];
 
         _update.completedTrainings(trainings);
 
@@ -523,11 +516,13 @@ export const createTrainingsApi: ApiFactory<
       deleteTraining(id);
     },
     completedTraining: async (trainingId: string) => {
-      const training: CompletedTraining = getData().completedTrainings
-        .find((tr: CompletedTraining) => tr.id === trainingId);
+      const training: CompletedTraining = getData().completedTrainings.find(
+        (tr: CompletedTraining) => tr.id === trainingId,
+      );
       const createdInDbAt = training?.createdInDbAt;
-      const data = getData().completedTrainings
-        .filter((tr: CompletedTraining) => tr.id !== trainingId);
+      const data = getData().completedTrainings.filter(
+        (tr: CompletedTraining) => tr.id !== trainingId,
+      );
 
       _update.completedTrainings(data);
 
@@ -535,17 +530,13 @@ export const createTrainingsApi: ApiFactory<
         try {
           await trainingsServerApi.delete.completedTraining(training);
         } catch (error) {
-          const restoredData = [
-            ...getData().completedTrainings,
-            training,
-          ];
+          const restoredData = [...getData().completedTrainings, training];
 
           _update.completedTrainings(restoredData);
 
           notificationsApi.addNotification({
             type: 'error',
-            message:
-              'Failed to delete training. It was restored.',
+            message: 'Failed to delete training. It was restored.',
           });
 
           throw error;

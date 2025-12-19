@@ -34,6 +34,6 @@ const PureDashboard: React.FC<any> = ({ aggregates }) => {
   );
 };
 
-export const Dashboard = connect({ controller }, ctrl => ({
+export const Dashboard = connect({ controller }, (ctrl) => ({
   aggregates: ctrl.getAggregates(),
 }))(PureDashboard);

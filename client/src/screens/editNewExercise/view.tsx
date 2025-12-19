@@ -9,8 +9,16 @@ interface Props {
   data: ExerciseType;
   onNoData: () => void;
   onChangeName: (exerciseId: string, name: string) => void;
-  onChangeWeight: (exercise: ExerciseType, setId: string, value: string) => void;
-  onChangeRepetitions: (exercise: ExerciseType, setId: string, value: string) => void;
+  onChangeWeight: (
+    exercise: ExerciseType,
+    setId: string,
+    value: string,
+  ) => void;
+  onChangeRepetitions: (
+    exercise: ExerciseType,
+    setId: string,
+    value: string,
+  ) => void;
   onAddSet: () => void;
   onDeleteSet: (exerciseId: string, setId: string) => void;
   onDelete: () => void;
@@ -39,12 +47,7 @@ class PureEditNewExercise extends React.Component<Props> {
   };
 
   render() {
-    const {
-      data,
-      onAddSet,
-      onDelete,
-      onSave,
-    } = this.props;
+    const { data, onAddSet, onDelete, onSave } = this.props;
 
     return (
       <Exercise
@@ -63,23 +66,24 @@ class PureEditNewExercise extends React.Component<Props> {
 
 type Controller = ReturnType<typeof controller>;
 
-export const EditNewExercise = connect<Controller, Props>({
-  controller,
-}, ctrl => ({
-  data: ctrl.getExercise(),
-  onNoData: ctrl.onNoData,
-  onChangeName: ctrl.onChangeName,
-  onChangeWeight: ctrl.onChangeWeight,
-  onChangeRepetitions: ctrl.onChangeRepetitions,
-  onAddSet: ctrl.onAddSet,
-  onDeleteSet: ctrl.onDeleteSet,
-  onDelete: ctrl.onDelete,
-  onSave: ctrl.onSave,
-}))(
-  requireData<Props>(props => ({
+export const EditNewExercise = connect<Controller, Props>(
+  {
+    controller,
+  },
+  (ctrl) => ({
+    data: ctrl.getExercise(),
+    onNoData: ctrl.onNoData,
+    onChangeName: ctrl.onChangeName,
+    onChangeWeight: ctrl.onChangeWeight,
+    onChangeRepetitions: ctrl.onChangeRepetitions,
+    onAddSet: ctrl.onAddSet,
+    onDeleteSet: ctrl.onDeleteSet,
+    onDelete: ctrl.onDelete,
+    onSave: ctrl.onSave,
+  }),
+)(
+  requireData<Props>((props) => ({
     isData: Boolean(props.data),
     onNoData: props.onNoData,
-  }))(
-    PureEditNewExercise,
-  ),
+  }))(PureEditNewExercise),
 );

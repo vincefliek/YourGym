@@ -7,20 +7,21 @@ export const AppContext = React.createContext<IAppContext>({
       getStoreData: () => ({}),
       subscribe: () => () => {},
     }),
-    getAPIs: () => ({
-      navigationApi: {
-        routes: {
-          home: '',
-          trainings: '',
-          menu: '',
-          createTraining: '',
-          createExercise: '',
-          editNewExercise: '',
-          editExistingExercise: '',
-          openTraining: '',
-          openExercise: '',
+    getAPIs: () =>
+      ({
+        navigationApi: {
+          routes: {
+            home: '',
+            trainings: '',
+            menu: '',
+            createTraining: '',
+            createExercise: '',
+            editNewExercise: '',
+            editExistingExercise: '',
+            openTraining: '',
+            openExercise: '',
+          },
         },
-      },
-    } as any),
+      }) as any,
   },
 });

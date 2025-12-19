@@ -20,7 +20,9 @@ const PureCard: React.FC<Props> = ({ last7, totals }) => {
         <h4>Progress</h4>
         <div className={style.actions}>
           <Link to="/dashboard">
-            <Button skin="primary" size="small">Open</Button>
+            <Button skin="primary" size="small">
+              Open
+            </Button>
           </Link>
         </div>
       </div>
@@ -43,7 +45,7 @@ const PureCard: React.FC<Props> = ({ last7, totals }) => {
   );
 };
 
-export const TrainingProgressCard = connect({ controller }, ctrl => ({
+export const TrainingProgressCard = connect({ controller }, (ctrl) => ({
   last7: ctrl.getLast7DaysAggregates(),
   totals: ctrl.getTotalsForLast7Days(),
 }))(PureCard);

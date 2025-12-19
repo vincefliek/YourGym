@@ -47,29 +47,17 @@ interface Controller {
 class PureTraining extends React.Component<Props> {
   renderTopBar = () => {
     const { data } = this.props;
-    return(
-      <div className={style.topBar}>
-        {data.name}
-      </div>
-    );
+    return <div className={style.topBar}>{data.name}</div>;
   };
 
   renderBottomBar = () => {
     const { onBack, onEdit } = this.props;
     return (
       <NavbarContainer className={style.navbarContainer}>
-        <Button
-          skin="icon"
-          size="large"
-          onClick={onBack}
-        >
+        <Button skin="icon" size="large" onClick={onBack}>
           <BackIcon />
         </Button>
-        <Button
-          skin="icon"
-          size="large"
-          onClick={onEdit}
-        >
+        <Button skin="icon" size="large" onClick={onEdit}>
           <EditIcon />
         </Button>
       </NavbarContainer>
@@ -80,18 +68,15 @@ class PureTraining extends React.Component<Props> {
     const { data, onOpenExercise } = this.props;
     return (
       <ul className={style.exercises}>
-        {data.exercises.map(exercise => {
+        {data.exercises.map((exercise) => {
           return (
-            <li
-              key={exercise.id}
-              className={style.exercise}
-            >
+            <li key={exercise.id} className={style.exercise}>
               <div
                 className={style.exerciseBox}
                 onClick={() => onOpenExercise(data, exercise)}
               >
                 {exercise.name}
-                <br/>
+                <br />
                 {exercise.setsPreview}
               </div>
             </li>
@@ -113,58 +98,54 @@ class PureTraining extends React.Component<Props> {
     const areExercises = Boolean(data.exercises.length);
 
     return (
-      <Layout
-        topBar={this.renderTopBar()}
-        bottomBar={this.renderBottomBar()}
-      >
+      <Layout topBar={this.renderTopBar()} bottomBar={this.renderBottomBar()}>
         <div className={style.screen}>
           {areExercises && this.renderExercises()}
         </div>
         <div className={style.buttonScreen}>
-          {isCurrentTrainingInProgress
-            ? (
-              <Button
-                skin="primary"
-                font="nunito"
-                className={style.button}
-                onClick={onFinish}
-              >
-                🏆 FINISH 🏆
-              </Button>
-            ) : isAnyTrainingInProgress
-              ? null : (
-                <Button
-                  skin="primary"
-                  font="nunito"
-                  className={style.button}
-                  onClick={onStart}
-                >
-                    Start
-                </Button>
-              )}
+          {isCurrentTrainingInProgress ? (
+            <Button
+              skin="primary"
+              font="nunito"
+              className={style.button}
+              onClick={onFinish}
+            >
+              🏆 FINISH 🏆
+            </Button>
+          ) : isAnyTrainingInProgress ? null : (
+            <Button
+              skin="primary"
+              font="nunito"
+              className={style.button}
+              onClick={onStart}
+            >
+              Start
+            </Button>
+          )}
         </div>
       </Layout>
     );
   }
 }
 
-export const Training = connect<Controller, Props>({
-  controller,
-}, ctrl => ({
-  data: ctrl.getTraining(),
-  isAnyTrainingInProgress: ctrl.isAnyTrainingInProgress(),
-  isCurrentTrainingInProgress: ctrl.isCurrentTrainingInProgress(),
-  onNoData: ctrl.onNoData,
-  onStart: ctrl.onStart,
-  onFinish: ctrl.onFinish,
-  onBack: ctrl.onBack,
-  onEdit: ctrl.onEdit,
-  onOpenExercise: ctrl.onOpenExercise,
-}))(
-  requireData<Props>(props => ({
+export const Training = connect<Controller, Props>(
+  {
+    controller,
+  },
+  (ctrl) => ({
+    data: ctrl.getTraining(),
+    isAnyTrainingInProgress: ctrl.isAnyTrainingInProgress(),
+    isCurrentTrainingInProgress: ctrl.isCurrentTrainingInProgress(),
+    onNoData: ctrl.onNoData,
+    onStart: ctrl.onStart,
+    onFinish: ctrl.onFinish,
+    onBack: ctrl.onBack,
+    onEdit: ctrl.onEdit,
+    onOpenExercise: ctrl.onOpenExercise,
+  }),
+)(
+  requireData<Props>((props) => ({
     isData: Boolean(props.data),
     onNoData: props.onNoData,
-  }))(
-    PureTraining,
-  ),
+  }))(PureTraining),
 );

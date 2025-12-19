@@ -72,7 +72,17 @@ const sr_completedExercise = {
       type: 'string',
     },
   },
-  required: ['id', 'type', 'name', 'workout_id', 'reps', 'weight', 'created_at', 'date', 'user_id'],
+  required: [
+    'id',
+    'type',
+    'name',
+    'workout_id',
+    'reps',
+    'weight',
+    'created_at',
+    'date',
+    'user_id',
+  ],
 };
 
 const sw_completedTrainings = {

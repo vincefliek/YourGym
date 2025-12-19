@@ -20,23 +20,24 @@ export const controller: Controller<ControllerType> = (
   const { navigationApi, trainingsApi } = serviceLocator.getAPIs();
 
   const getData = () => getStoreData(controller.storeDataAccessors);
-  const getParams = () => navigationApi.getPathParams(
-    navigationApi.routes.editTraining,
-  );
+  const getParams = () =>
+    navigationApi.getPathParams(navigationApi.routes.editTraining);
 
   return {
     getTraining: () => {
       const params = getParams();
       const trainings = getData().trainings;
-      const training = trainings.find((training: Training) =>
-        training.id === params.training);
+      const training = trainings.find(
+        (training: Training) => training.id === params.training,
+      );
       return training;
     },
     onSave: async () => {
       const params = getParams();
       const trainings = getData().trainings;
-      const training = trainings.find((training: Training) =>
-        training.id === params.training);
+      const training = trainings.find(
+        (training: Training) => training.id === params.training,
+      );
 
       if (training) {
         await navigationApi.toTraining(training.id);
@@ -50,8 +51,9 @@ export const controller: Controller<ControllerType> = (
     onChangeName: (name: string) => {
       const params = getParams();
       const trainings = getData().trainings;
-      const training = trainings.find((training: Training) =>
-        training.id === params.training);
+      const training = trainings.find(
+        (training: Training) => training.id === params.training,
+      );
 
       if (training) {
         trainingsApi.update.training(training.id, { name });

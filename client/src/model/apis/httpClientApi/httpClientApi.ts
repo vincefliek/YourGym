@@ -41,7 +41,7 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
   async function performRefresh(): Promise<string | undefined> {
     if (refreshing) {
       console.log('>> refreshing <<', refreshing);
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         refreshQueue.push(resolve);
       });
     }
@@ -66,7 +66,7 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
         return;
       }
 
-      const refreshedSessionData = await res.json() as AuthResponseData;
+      const refreshedSessionData = (await res.json()) as AuthResponseData;
       const refreshedSession = refreshedSessionData.session;
 
       newToken = {
@@ -80,7 +80,7 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
     } finally {
       refreshing = false;
       if (newToken) {
-        refreshQueue.forEach(cb => cb(newToken!.access_token));
+        refreshQueue.forEach((cb) => cb(newToken!.access_token));
       }
       refreshQueue = [];
     }
@@ -161,8 +161,10 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
   }
 
   return {
-    get: <TResponse>(url: string, options?: RequestInit & { headers?: Record<string, string> }) =>
-      request<TResponse>(url, { ...options, method: 'GET' }),
+    get: <TResponse>(
+      url: string,
+      options?: RequestInit & { headers?: Record<string, string> },
+    ) => request<TResponse>(url, { ...options, method: 'GET' }),
     post: <TResponse, TBody = any>(
       url: string,
       body?: TBody,
@@ -178,7 +180,9 @@ export function createHttpClientAPI(options: HttpClientOptions): HttpClientAPI {
       body?: TBody,
       options?: RequestInit & { headers?: Record<string, string> },
     ) => request<TResponse, TBody>(url, { ...options, method: 'PATCH', body }),
-    delete: <TResponse>(url: string, options?: RequestInit & { headers?: Record<string, string> }) =>
-      request<TResponse>(url, { ...options, method: 'DELETE' }),
+    delete: <TResponse>(
+      url: string,
+      options?: RequestInit & { headers?: Record<string, string> },
+    ) => request<TResponse>(url, { ...options, method: 'DELETE' }),
   };
 }

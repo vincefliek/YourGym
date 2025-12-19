@@ -14,9 +14,9 @@ export const controller = (
 
   const getStoreData = () => store.getStoreData(controller.storeDataAccessors);
   const getById = (id: string): CompletedTraining | undefined =>
-    getStoreData()
-      .completedTrainings
-      .find((it: CompletedTraining) => it.id === id);
+    getStoreData().completedTrainings.find(
+      (it: CompletedTraining) => it.id === id,
+    );
 
   return {
     isAuthenticated: () => {
@@ -45,8 +45,8 @@ export const controller = (
     getCompletedTrainings: () => {
       return getStoreData().completedTrainings.sort(
         (trA: CompletedTraining, trB: CompletedTraining) =>
-          new Date(trB.timestamptz).getTime()
-          - new Date(trA.timestamptz).getTime(),
+          new Date(trB.timestamptz).getTime() -
+          new Date(trA.timestamptz).getTime(),
       );
     },
     onDeleteCompletedTraining: async (trainingId) => {
@@ -71,10 +71,12 @@ export const controller = (
       };
     },
     createSetsPreview: (sets: CompletedSet[]) => {
-      return trainingsApi.create.setsPreview(sets.map(set => ({
-        ...set,
-        done: true,
-      })));
+      return trainingsApi.create.setsPreview(
+        sets.map((set) => ({
+          ...set,
+          done: true,
+        })),
+      );
     },
   };
 };

@@ -3,10 +3,7 @@ import { Training } from '../../model/types';
 
 export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   const { getStoreData } = serviceLocator.getStore();
-  const {
-    navigationApi,
-    trainingsApi,
-  } = serviceLocator.getAPIs();
+  const { navigationApi, trainingsApi } = serviceLocator.getAPIs();
 
   const getData = () => getStoreData(controller.storeDataAccessors);
   const getById = (id: string) =>

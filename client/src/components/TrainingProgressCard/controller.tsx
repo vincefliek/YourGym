@@ -17,12 +17,14 @@ export const controller = (
 
   return {
     getLast7DaysAggregates: () => {
-      const completed: CompletedTraining[] = getStore().completedTrainings || [];
+      const completed: CompletedTraining[] =
+        getStore().completedTrainings || [];
       const agg = aggregateByDay(completed);
       return lastNDays(agg, 7);
     },
     getTotalsForLast7Days: () => {
-      const completed: CompletedTraining[] = getStore().completedTrainings || [];
+      const completed: CompletedTraining[] =
+        getStore().completedTrainings || [];
       const agg = aggregateByDay(completed);
       const last7 = lastNDays(agg, 7);
       const totalVolumeKg = last7.reduce((s, a) => s + a.totalVolumeKg, 0);

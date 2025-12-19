@@ -19,11 +19,7 @@ import {
 } from '../../screens';
 import { Navigator, Notifications } from '../../components';
 import { AppContext } from '../../utils';
-import {
-  AppProps,
-  AppState,
-  AppContext as IAppContext,
-} from '../../types';
+import { AppProps, AppState, AppContext as IAppContext } from '../../types';
 import style from './style.module.scss';
 
 export class App extends React.Component<AppProps, AppState> {

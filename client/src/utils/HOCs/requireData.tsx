@@ -4,7 +4,9 @@ import { RequireDataConfig } from './types';
 // type RequiredDataHOC = <P extends object>(config: (props: P) => RequireDataConfig) =>
 //   (Component: ComponentType<P>) => ComponentType<P>;
 
-export const requireData = <P extends object>(getInfo: (props: P) => RequireDataConfig) => {
+export const requireData = <P extends object>(
+  getInfo: (props: P) => RequireDataConfig,
+) => {
   if (typeof getInfo !== 'function') {
     throw new Error(
       '`getInfo` argument in `requireData` function is mandatory',
@@ -18,9 +20,7 @@ export const requireData = <P extends object>(getInfo: (props: P) => RequireData
   );
 
   if (!infoExists) {
-    throw new Error(
-      'return value of `getInfo()` in `requireData` lacks data!',
-    );
+    throw new Error('return value of `getInfo()` in `requireData` lacks data!');
   }
 
   return <T extends object>(Wrapped: ComponentType<P & T>) => {

@@ -11,19 +11,19 @@ export function mockFetch(data: any, ok = true) {
   });
 }
 
-export const createApi = (
-  store: StoreType,
-  validator: Validator,
-) => {
+export const createApi = (store: StoreType, validator: Validator) => {
   const tools = { store, validator };
   return createAuthApi(
     tools,
-    { httpClientAPI: createHttpClientAPI({
-      tools,
-      baseUrl: '',
-      tokenStorage,
-      refreshEndpoint: '/refresh',
-    }), notificationsApi: {} as any },
+    {
+      httpClientAPI: createHttpClientAPI({
+        tools,
+        baseUrl: '',
+        tokenStorage,
+        refreshEndpoint: '/refresh',
+      }),
+      notificationsApi: {} as any,
+    },
     tokenStorage,
   );
 };

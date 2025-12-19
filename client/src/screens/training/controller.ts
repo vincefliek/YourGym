@@ -9,14 +9,14 @@ export const controller: Controller = (
   const { navigationApi, trainingsApi } = serviceLocator.getAPIs();
 
   const getData = () => getStoreData(controller.storeDataAccessors);
-  const getParams = () => navigationApi.getPathParams(
-    navigationApi.routes.openTraining,
-  );
+  const getParams = () =>
+    navigationApi.getPathParams(navigationApi.routes.openTraining);
   const findTraining = () => {
     const params = getParams();
     const trainings: Training[] = getData().trainings;
-    const training = trainings.find((training: Training) =>
-      training.id === params.training);
+    const training = trainings.find(
+      (training: Training) => training.id === params.training,
+    );
 
     return training;
   };

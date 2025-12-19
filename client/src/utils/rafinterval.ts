@@ -18,5 +18,7 @@ export function createRAFInterval(
 
   requestAnimationFrame(loop);
 
-  return () => { stopped = true; }; // stop fn
+  return () => {
+    stopped = true;
+  }; // stop fn
 }

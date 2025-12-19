@@ -17,9 +17,9 @@ describe('signup', () => {
   });
 
   it('should validate email and password', async () => {
-    await expect(
-      authApi.signup('invalid', '123'),
-    ).rejects.toThrow('Invalid email format');
+    await expect(authApi.signup('invalid', '123')).rejects.toThrow(
+      'Invalid email format',
+    );
   });
 
   it('should signup successfully', async () => {

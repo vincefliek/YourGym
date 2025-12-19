@@ -1,11 +1,6 @@
 import React from 'react';
 
-import {
-  Button,
-  Input,
-  Layout,
-  NavbarContainer,
-} from '../../components';
+import { Button, Input, Layout, NavbarContainer } from '../../components';
 import { connect, requireData } from '../../utils';
 import { controller } from './controller';
 import BackIcon from '../../assets/backArrow.svg?react';
@@ -24,7 +19,11 @@ interface Props {
   isInProgress: boolean;
   getCurrentExercise: (training: Training, exercise: ExerciseType) => number;
   getTotalExercises: (training: Training) => number;
-  onChangeRepetitions: (exerciseId: string, setId: string, value: number) => void;
+  onChangeRepetitions: (
+    exerciseId: string,
+    setId: string,
+    value: number,
+  ) => void;
   onChangeWeight: (exerciseId: string, setId: string, value: number) => void;
   onDoneSet: (trainingId: string, exerciseId: string, set: Set) => void;
   onResetDoneSet: (trainingId: string, exerciseId: string, set: Set) => void;
@@ -37,11 +36,7 @@ interface Props {
 class PureExercise extends React.Component<Props> {
   renderTopBar = () => {
     const { exercise } = this.props;
-    return(
-      <div className={style.topBar}>
-        {exercise.name}
-      </div>
-    );
+    return <div className={style.topBar}>{exercise.name}</div>;
   };
 
   renderBottomBar = () => {
@@ -57,34 +52,31 @@ class PureExercise extends React.Component<Props> {
     } = this.props;
     return (
       <NavbarContainer className={style.navbarContainer}>
-        <Button
-          skin="icon"
-          size="large"
-          onClick={onBack}
-        >
+        <Button skin="icon" size="large" onClick={onBack}>
           <BackIcon />
         </Button>
-        {isInProgress && <div className={style.switch}>
-          <Button
-            skin="icon"
-            size="large"
-            onClick={() => onExercisePrev(training, exercise)}
-          >
-            <ArrowLeft />
-          </Button>
-          <div>
-            {getCurrentExercise(training, exercise)}
-            /
-            {getTotalExercises(training)}
+        {isInProgress && (
+          <div className={style.switch}>
+            <Button
+              skin="icon"
+              size="large"
+              onClick={() => onExercisePrev(training, exercise)}
+            >
+              <ArrowLeft />
+            </Button>
+            <div>
+              {getCurrentExercise(training, exercise)}/
+              {getTotalExercises(training)}
+            </div>
+            <Button
+              skin="icon"
+              size="large"
+              onClick={() => onExerciseNext(training, exercise)}
+            >
+              <ArrowRight />
+            </Button>
           </div>
-          <Button
-            skin="icon"
-            size="large"
-            onClick={() => onExerciseNext(training, exercise)}
-          >
-            <ArrowRight />
-          </Button>
-        </div>}
+        )}
       </NavbarContainer>
     );
   };
@@ -106,17 +98,14 @@ class PureExercise extends React.Component<Props> {
           const isDisabledInput = set.done || !isInProgress;
 
           return (
-            <li
-              key={set.id}
-              className={style.set}
-            >
+            <li key={set.id} className={style.set}>
               <div className={style.setPreview}>
                 <div className={style.setRepetitions}>
                   <Input
                     type="number"
                     disabled={isDisabledInput}
                     value={set.repetitions}
-                    onBlur={value =>
+                    onBlur={(value) =>
                       onChangeRepetitions(exercise.id, set.id, Number(value))
                     }
                   />
@@ -127,14 +116,12 @@ class PureExercise extends React.Component<Props> {
                     type="number"
                     disabled={isDisabledInput}
                     value={set.weight}
-                    onBlur={value =>
+                    onBlur={(value) =>
                       onChangeWeight(exercise.id, set.id, Number(value))
                     }
                   />
                 </div>
-                <div>
-                kg
-                </div>
+                <div>kg</div>
                 {isInProgress ? (
                   set.done ? (
                     <Button
@@ -142,7 +129,8 @@ class PureExercise extends React.Component<Props> {
                       size="large"
                       font="indieFlower"
                       onClick={() =>
-                        onResetDoneSet(training.id, exercise.id, set)}
+                        onResetDoneSet(training.id, exercise.id, set)
+                      }
                     >
                       done
                     </Button>
@@ -169,37 +157,24 @@ class PureExercise extends React.Component<Props> {
     const { setsHistory } = this.props;
     return (
       <div className={style.history}>
-        <div className={style.historyUnit}>
-          History
-        </div>
+        <div className={style.historyUnit}>History</div>
         <ul className={style.setsHistoryBox}>
           {setsHistory.map((setsByDate: any) => {
             return (
-              <li
-                key={setsByDate.date}
-                className={style.setsByDate}
-              >
+              <li key={setsByDate.date} className={style.setsByDate}>
                 <ul className={style.sets}>
                   <div className={style.setsDate}>
-                    <b>
-                      {setsByDate.date}
-                    </b>
+                    <b>{setsByDate.date}</b>
                   </div>
 
                   {setsByDate.sets.map((set: any, index: any) => {
                     return (
-                      <li
-                        key={set.id}
-                        className={style.set}
-                      >
+                      <li key={set.id} className={style.set}>
                         <div className={style.setPreview}>
                           <div className={style.setUnit}>
-                            <b>№{index + 1}</b> {' '}
-                            {set.repetitions}x{set.weight}kg
+                            <b>№{index + 1}</b> {set.repetitions}x{set.weight}kg
                           </div>
-                          <div className={style.setTime}>
-                            {set.time}
-                          </div>
+                          <div className={style.setTime}>{set.time}</div>
                         </div>
                       </li>
                     );
@@ -220,10 +195,7 @@ class PureExercise extends React.Component<Props> {
     const areSetsHistory = Boolean(setsHistory.length);
 
     return (
-      <Layout
-        topBar={this.renderTopBar()}
-        bottomBar={this.renderBottomBar()}
-      >
+      <Layout topBar={this.renderTopBar()} bottomBar={this.renderBottomBar()}>
         <div className={style.screen}>
           {areSets && this.renderSets()}
           {areSetsHistory && this.renderSetsHistory()}
@@ -234,28 +206,29 @@ class PureExercise extends React.Component<Props> {
 }
 
 // TODO - add types for controller
-export const Exercise = connect<any, Props>({
-  controller,
-}, ctrl => ({
-  training: ctrl.getTraining(),
-  exercise: ctrl.getExercise(),
-  setsHistory: ctrl.getSetsHistory(),
-  isInProgress: ctrl.isInProgress(),
-  getCurrentExercise: ctrl.getCurrentExerciseIntoNavbar,
-  getTotalExercises: ctrl.getTotalExercisesIntoNavbar,
-  onChangeRepetitions: ctrl.onChangeRepetitions,
-  onChangeWeight: ctrl.onChangeWeight,
-  onDoneSet: ctrl.onDoneSet,
-  onResetDoneSet: ctrl.onResetDoneSet,
-  onExerciseNext: ctrl.onExerciseNext,
-  onExercisePrev: ctrl.onExercisePrev,
-  onNoData: ctrl.onNoData,
-  onBack: ctrl.onBack,
-}))(
-  requireData<Props>(props => ({
+export const Exercise = connect<any, Props>(
+  {
+    controller,
+  },
+  (ctrl) => ({
+    training: ctrl.getTraining(),
+    exercise: ctrl.getExercise(),
+    setsHistory: ctrl.getSetsHistory(),
+    isInProgress: ctrl.isInProgress(),
+    getCurrentExercise: ctrl.getCurrentExerciseIntoNavbar,
+    getTotalExercises: ctrl.getTotalExercisesIntoNavbar,
+    onChangeRepetitions: ctrl.onChangeRepetitions,
+    onChangeWeight: ctrl.onChangeWeight,
+    onDoneSet: ctrl.onDoneSet,
+    onResetDoneSet: ctrl.onResetDoneSet,
+    onExerciseNext: ctrl.onExerciseNext,
+    onExercisePrev: ctrl.onExercisePrev,
+    onNoData: ctrl.onNoData,
+    onBack: ctrl.onBack,
+  }),
+)(
+  requireData<Props>((props) => ({
     isData: Boolean(props.exercise),
     onNoData: props.onNoData,
-  }))(
-    PureExercise,
-  ),
+  }))(PureExercise),
 );

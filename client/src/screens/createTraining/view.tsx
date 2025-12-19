@@ -65,22 +65,23 @@ class PureCreateTraining extends React.Component<Props> {
   }
 }
 
-export const CreateTraining = connect<Controller, Props>({
-  controller,
-}, ctrl => ({
-  data: ctrl.getData(),
-  onNoData: ctrl.onNoData,
-  onChangeName: ctrl.onChangeName,
-  onAddExercise: ctrl.onAddExercise,
-  onDelete: ctrl.onDelete,
-  onSave: ctrl.onSave,
-  onDeleteExercise: ctrl.onDeleteExercise,
-  onOpenExercise: ctrl.onOpenExercise,
-}))(
-  requireData<Props>(props => ({
+export const CreateTraining = connect<Controller, Props>(
+  {
+    controller,
+  },
+  (ctrl) => ({
+    data: ctrl.getData(),
+    onNoData: ctrl.onNoData,
+    onChangeName: ctrl.onChangeName,
+    onAddExercise: ctrl.onAddExercise,
+    onDelete: ctrl.onDelete,
+    onSave: ctrl.onSave,
+    onDeleteExercise: ctrl.onDeleteExercise,
+    onOpenExercise: ctrl.onOpenExercise,
+  }),
+)(
+  requireData<Props>((props) => ({
     isData: Boolean(props.data),
     onNoData: props.onNoData,
-  }))(
-    PureCreateTraining,
-  ),
+  }))(PureCreateTraining),
 );

@@ -14,17 +14,18 @@ const PureAuthProtection: React.FC<AuthProtectionProps> = (props) => {
     }
   }, [isAuthenticated, navigateHome]);
 
-  return isAuthenticated
-    ? <Outlet />
-    : null;
+  return isAuthenticated ? <Outlet /> : null;
 };
 
 export const AuthProtection = connect<
   AuthProtectionController,
   AuthProtectionProps
->({
-  controller,
-}, ctrl => ({
-  isAuthenticated: ctrl.isAuthenticated(),
-  navigateHome: ctrl.navigateHome,
-}))(PureAuthProtection);
+>(
+  {
+    controller,
+  },
+  (ctrl) => ({
+    isAuthenticated: ctrl.isAuthenticated(),
+    navigateHome: ctrl.navigateHome,
+  }),
+)(PureAuthProtection);

@@ -16,12 +16,7 @@ interface PureMenuProps {
 }
 
 const PureMenu: React.FC<PureMenuProps> = (props) => {
-  const {
-    authData,
-    syncData,
-    sync,
-    signout,
-  } = props;
+  const { authData, syncData, sync, signout } = props;
 
   return (
     <Layout bottomBar={<Navbar />}>
@@ -33,11 +28,13 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
           <h4>Auth</h4>
           <div className={style.twoColumns}>
             <div>Status:</div>
-            {authData.isLoading
-              ? <div>⏳ Loading...</div>
-              : authData.isAuthenticated
-                ? <div>✅</div>
-                : <div>⛔️</div>}
+            {authData.isLoading ? (
+              <div>⏳ Loading...</div>
+            ) : authData.isAuthenticated ? (
+              <div>✅</div>
+            ) : (
+              <div>⛔️</div>
+            )}
           </div>
           {authData.error && (
             <div className={style.twoColumns}>
@@ -60,17 +57,21 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
           <h4>Sync</h4>
           <div className={style.twoColumns}>
             <div>Last at:</div>
-            {syncData.isLoading
-              ? <div>⏳ Loading...</div>
-              : syncData.lastSyncAt
-                ? <div>{syncData.lastSyncAt}</div>
-                : <div>🏗️ TBD</div>}
+            {syncData.isLoading ? (
+              <div>⏳ Loading...</div>
+            ) : syncData.lastSyncAt ? (
+              <div>{syncData.lastSyncAt}</div>
+            ) : (
+              <div>🏗️ TBD</div>
+            )}
           </div>
           <div className={style.twoColumns}>
             <div>Status:</div>
-            {syncData.serverHasChanges
-              ? <div>⚠️ Server has changes ⚠️</div>
-              : <div>✅</div>}
+            {syncData.serverHasChanges ? (
+              <div>⚠️ Server has changes ⚠️</div>
+            ) : (
+              <div>✅</div>
+            )}
           </div>
           {syncData.error && (
             <div className={style.twoColumns}>
@@ -94,11 +95,14 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
   );
 };
 
-export const Menu = connect<MenuController, PureMenuProps>({
-  controller,
-}, ctrl => ({
-  authData: ctrl.getAuthData(),
-  syncData: ctrl.getSyncData(),
-  sync: ctrl.sync,
-  signout: ctrl.signout,
-}))(PureMenu);
+export const Menu = connect<MenuController, PureMenuProps>(
+  {
+    controller,
+  },
+  (ctrl) => ({
+    authData: ctrl.getAuthData(),
+    syncData: ctrl.getSyncData(),
+    sync: ctrl.sync,
+    signout: ctrl.signout,
+  }),
+)(PureMenu);

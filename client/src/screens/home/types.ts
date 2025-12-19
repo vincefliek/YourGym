@@ -1,4 +1,8 @@
-import { CompletedTraining, CompletedSet, TimestampTZ } from '../../model/types';
+import {
+  CompletedTraining,
+  CompletedSet,
+  TimestampTZ,
+} from '../../model/types';
 
 interface DateAndTime {
   date: string;

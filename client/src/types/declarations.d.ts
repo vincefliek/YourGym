@@ -6,7 +6,7 @@ declare module '*.scss' {
 declare module '*.svg' {
   import * as React from 'react';
   const ReactComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
-  export { ReactComponent};
+  export { ReactComponent };
 }
 
 declare module '*.png' {
@@ -24,5 +24,5 @@ interface Window {
     store: import('../model/store').Store;
     validator: import('jsonschema').Validator;
     apis: any;
-  }
+  };
 }

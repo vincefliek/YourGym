@@ -8,9 +8,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
     <div className={style.layout}>
       {topBar && <div className={style.layoutTop}>{topBar}</div>}
       <div className={style.layoutCenter}>
-        <div className={style.layoutContent}>
-          {children}
-        </div>
+        <div className={style.layoutContent}>{children}</div>
       </div>
       {bottomBar && <div className={style.layoutBottom}>{bottomBar}</div>}
     </div>

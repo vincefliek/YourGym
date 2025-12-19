@@ -8,9 +8,8 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   const { trainingsApi, navigationApi } = serviceLocator.getAPIs();
 
   const getData = () => getStoreData(controller.storeDataAccessors);
-  const getParams = () => navigationApi.getPathParams(
-    navigationApi.routes.editNewExercise,
-  );
+  const getParams = () =>
+    navigationApi.getPathParams(navigationApi.routes.editNewExercise);
 
   return {
     getExercise: () => {

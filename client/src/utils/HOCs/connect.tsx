@@ -32,7 +32,10 @@ export const connect = <T extends object, P extends object>(
       private controller: T;
       private stateToProps: ReturnType<typeof mapToProps>;
 
-      constructor(props: WrappedProps, context: React.ContextType<typeof AppContext>) {
+      constructor(
+        props: WrappedProps,
+        context: React.ContextType<typeof AppContext>,
+      ) {
         super(props);
         this.controller = params.controller(context.serviceLocator);
         this.stateToProps = mapToProps(this.controller);
@@ -59,12 +62,7 @@ export const connect = <T extends object, P extends object>(
       };
 
       render() {
-        return (
-          <Wrapped
-            {...this.props as P}
-            {...this.stateToProps}
-          />
-        );
+        return <Wrapped {...(this.props as P)} {...this.stateToProps} />;
       }
     }
 

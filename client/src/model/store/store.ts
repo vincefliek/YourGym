@@ -108,7 +108,7 @@ export class Store implements StoreInterface {
     } catch (err) {
       // swallow but surface developer-friendly error for debugging
       // (no throw so writes remain fire & forget)
-       
+
       console.error(`[Store] Failed to persist ${accessor} to IndexedDB:`, err);
     }
   }
@@ -120,7 +120,6 @@ export class Store implements StoreInterface {
       );
       return v;
     } catch (err) {
-       
       console.error(`[Store] Failed to read ${accessor} from IndexedDB:`, err);
       return undefined;
     }
@@ -128,28 +127,28 @@ export class Store implements StoreInterface {
 
   private _valueForIDBAccessor(accessor: string): any {
     switch (accessor) {
-    case 'route':
-      return this.state.nav.route;
-    case 'backRouteWithHistoryReplace':
-      return this.state.nav.backRouteWithHistoryReplace;
-    case 'trainings':
-      return this.state.trainings;
-    case 'completedTrainings':
-      return this.state.completedTrainings;
-    case 'activeTraining':
-      return this.state.activeTraining;
-    case 'newTraining':
-      return this.state.newTraining;
-    case 'newExercise':
-      return this.state.newExercise;
-    case 'auth':
-      return this.state.auth;
-    case 'sync':
-      return this.state.sync;
-    case 'notifications':
-      return this.state.notifications;
-    default:
-      return undefined;
+      case 'route':
+        return this.state.nav.route;
+      case 'backRouteWithHistoryReplace':
+        return this.state.nav.backRouteWithHistoryReplace;
+      case 'trainings':
+        return this.state.trainings;
+      case 'completedTrainings':
+        return this.state.completedTrainings;
+      case 'activeTraining':
+        return this.state.activeTraining;
+      case 'newTraining':
+        return this.state.newTraining;
+      case 'newExercise':
+        return this.state.newExercise;
+      case 'auth':
+        return this.state.auth;
+      case 'sync':
+        return this.state.sync;
+      case 'notifications':
+        return this.state.notifications;
+      default:
+        return undefined;
     }
   }
 
@@ -168,39 +167,40 @@ export class Store implements StoreInterface {
         // persistence (disabled above).
         // use setters to keep notification flow intact
         switch (accessor) {
-        case 'route':
-          this.route = persisted as unknown as string | undefined;
-          break;
-        case 'backRouteWithHistoryReplace':
-          this.backRouteWithHistoryReplace =
-            persisted as unknown as string | undefined;
-          break;
-        case 'trainings':
-          this.trainings = persisted as Training[];
-          break;
-        case 'completedTrainings':
-          this.completedTrainings = persisted as CompletedTraining[];
-          break;
-        case 'activeTraining':
-          this.activeTraining = persisted as ActiveTraining | null;
-          break;
-        case 'newTraining':
-          this.newTraining = persisted as Training | null;
-          break;
-        case 'newExercise':
-          this.newExercise = persisted as Exercise | null;
-          break;
-        case 'auth':
-          this.auth = persisted as Partial<AuthState>;
-          break;
-        case 'sync':
-          this.sync = persisted as Partial<SyncWithServer>;
-          break;
-        case 'notifications':
-          this.notifications = persisted as Notification[];
-          break;
-        default:
-          break;
+          case 'route':
+            this.route = persisted as unknown as string | undefined;
+            break;
+          case 'backRouteWithHistoryReplace':
+            this.backRouteWithHistoryReplace = persisted as unknown as
+              | string
+              | undefined;
+            break;
+          case 'trainings':
+            this.trainings = persisted as Training[];
+            break;
+          case 'completedTrainings':
+            this.completedTrainings = persisted as CompletedTraining[];
+            break;
+          case 'activeTraining':
+            this.activeTraining = persisted as ActiveTraining | null;
+            break;
+          case 'newTraining':
+            this.newTraining = persisted as Training | null;
+            break;
+          case 'newExercise':
+            this.newExercise = persisted as Exercise | null;
+            break;
+          case 'auth':
+            this.auth = persisted as Partial<AuthState>;
+            break;
+          case 'sync':
+            this.sync = persisted as Partial<SyncWithServer>;
+            break;
+          case 'notifications':
+            this.notifications = persisted as Notification[];
+            break;
+          default:
+            break;
         }
       });
 
@@ -242,7 +242,7 @@ export class Store implements StoreInterface {
 
     dataAccessorsToNotify.forEach((accessor) => {
       if (this.isValidAccessor(accessor)) {
-        this.subscribers[accessor].forEach(subscriber => {
+        this.subscribers[accessor].forEach((subscriber) => {
           subscriber();
         });
       }
@@ -263,17 +263,16 @@ export class Store implements StoreInterface {
   private _delete = (subscriber: () => void) => {
     Object.keys(this.subscribers).forEach((accessor) => {
       if (this.isValidAccessor(accessor)) {
-        this.subscribers[accessor] =
-          this.subscribers[accessor].filter(s => s !== subscriber);
+        this.subscribers[accessor] = this.subscribers[accessor].filter(
+          (s) => s !== subscriber,
+        );
       }
     });
   };
 
-  private isValidAccessor(
-    accessor: string,
-  ): accessor is keyof Subscribers {
+  private isValidAccessor(accessor: string): accessor is keyof Subscribers {
     return accessor in this.subscribers;
-  };
+  }
 
   subscribe = (subscriber: () => void, publicDataAccessors: string[]) => {
     if (typeof subscriber !== 'function') {
@@ -290,24 +289,26 @@ export class Store implements StoreInterface {
     };
   };
 
-  private getPublicDataAccessorsToDataMap = (state: State) => ({
-    route: state.nav.route,
-    backRouteWithHistoryReplace: state.nav.backRouteWithHistoryReplace,
-    trainings: state.trainings,
-    completedTrainings: state.completedTrainings,
-    activeTraining: state.activeTraining,
-    newTraining: state.newTraining,
-    newExercise: state.newExercise,
-    auth: state.auth,
-    sync: state.sync,
-    notifications: state.notifications,
-  } as const);
+  private getPublicDataAccessorsToDataMap = (state: State) =>
+    ({
+      route: state.nav.route,
+      backRouteWithHistoryReplace: state.nav.backRouteWithHistoryReplace,
+      trainings: state.trainings,
+      completedTrainings: state.completedTrainings,
+      activeTraining: state.activeTraining,
+      newTraining: state.newTraining,
+      newExercise: state.newExercise,
+      auth: state.auth,
+      sync: state.sync,
+      notifications: state.notifications,
+    }) as const;
 
   getStoreData = (publicDataAccessors: string[]): { [key: string]: any } => {
     validateDataAccessors(publicDataAccessors);
 
-    const publicDataAccessorsToData =
-      this.getPublicDataAccessorsToDataMap(this.state);
+    const publicDataAccessorsToData = this.getPublicDataAccessorsToDataMap(
+      this.state,
+    );
 
     type DataKey = keyof typeof publicDataAccessorsToData;
 
@@ -319,11 +320,12 @@ export class Store implements StoreInterface {
       (acc, prop) => {
         acc[prop] = publicDataAccessorsToData[prop as DataKey];
         return acc;
-      }, {});
+      },
+      {},
+    );
 
     return data;
   };
-
 
   get route(): string | undefined {
     return this.state.nav.route;
@@ -462,9 +464,7 @@ const allPublicDataAccessors = [
 
 function validateDataAccessors(publicDataAccessors: string[]): void {
   if (!doesDataAccessorsExist(publicDataAccessors)) {
-    throw new Error(
-      'Public Data Accessors were not specified!',
-    );
+    throw new Error('Public Data Accessors were not specified!');
   }
 
   if (!areValidDataAccessors(publicDataAccessors)) {
@@ -487,11 +487,15 @@ function validateAllDataAccessorsDeclared(publicDataAccessors: string[]): void {
 }
 
 function areAllDataAccessorsDeclared(publicDataAccessors: string[]): boolean {
-  return allPublicDataAccessors.every(key => publicDataAccessors.includes(key));
+  return allPublicDataAccessors.every((key) =>
+    publicDataAccessors.includes(key),
+  );
 }
 
 function areValidDataAccessors(publicDataAccessors: string[]): boolean {
-  return publicDataAccessors.every(key => allPublicDataAccessors.includes(key));
+  return publicDataAccessors.every((key) =>
+    allPublicDataAccessors.includes(key),
+  );
 }
 
 function doesDataAccessorsExist(publicDataAccessors: string[]): boolean {

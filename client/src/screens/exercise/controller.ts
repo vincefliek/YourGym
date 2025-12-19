@@ -8,19 +8,23 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   const { navigationApi, trainingsApi } = serviceLocator.getAPIs();
 
   const getData = () => getStoreData(controller.storeDataAccessors);
-  const getParams = () => navigationApi.getPathParams(
-    navigationApi.routes.openExercise,
-  );
+  const getParams = () =>
+    navigationApi.getPathParams(navigationApi.routes.openExercise);
   const findTraining = () => {
     const params = getParams();
     const trainings = getData().trainings;
-    const training = trainings.find((training: Training) =>
-      training.id === params.training);
+    const training = trainings.find(
+      (training: Training) => training.id === params.training,
+    );
 
     return training;
   };
 
-  const changeSet = (exerciseId: string, setId: string, update: Partial<Set>) => {
+  const changeSet = (
+    exerciseId: string,
+    setId: string,
+    update: Partial<Set>,
+  ) => {
     const trainingId = findTraining()?.id;
 
     if (!trainingId) return;
@@ -60,8 +64,9 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
     getExercise: () => {
       const params = getParams();
       const training = findTraining();
-      const exercise = training?.exercises.find((exercise: Exercise) =>
-        exercise.id === params.exercise);
+      const exercise = training?.exercises.find(
+        (exercise: Exercise) => exercise.id === params.exercise,
+      );
 
       return exercise;
     },
@@ -72,34 +77,21 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
       return training.exercises.length;
     },
     onChangeRepetitions: (exerciseId: string, setId: string, value: string) => {
-      changeSet(
-        exerciseId,
-        setId,
-        { repetitions: toNumber(value) },
-      );
+      changeSet(exerciseId, setId, { repetitions: toNumber(value) });
     },
     onChangeWeight: (exerciseId: string, setId: string, value: string) => {
-      changeSet(
-        exerciseId,
-        setId,
-        { weight: toNumber(value) },
-      );
+      changeSet(exerciseId, setId, { weight: toNumber(value) });
     },
     onDoneSet: async (trainingId: string, exerciseId: string, set: Set) => {
-      changeSet(
-        exerciseId,
-        set.id,
-        { done: true },
-      );
+      changeSet(exerciseId, set.id, { done: true });
     },
-    onResetDoneSet:
-      async (trainingId: string, exerciseId: string, set: Set) => {
-        changeSet(
-          exerciseId,
-          set.id,
-          { done: false },
-        );
-      },
+    onResetDoneSet: async (
+      trainingId: string,
+      exerciseId: string,
+      set: Set,
+    ) => {
+      changeSet(exerciseId, set.id, { done: false });
+    },
     onExerciseNext: async (training: Training, exercise: Exercise) => {
       const currentExerciseIndex = training.exercises.indexOf(exercise);
 
@@ -136,16 +128,19 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
       const data = getData();
       const params = getParams();
       const training = findTraining();
-      const exercise = training?.exercises.find((ex: Exercise) =>
-        ex.id === params.exercise,
+      const exercise = training?.exercises.find(
+        (ex: Exercise) => ex.id === params.exercise,
       );
 
       if (!exercise) return [];
 
       const completed = [...(data.completedTrainings as CompletedTraining[])]
         // sort by most recent first
-        .sort((a, b) =>
-          new Date(b.timestamptz).getTime() - new Date(a.timestamptz).getTime())
+        .sort(
+          (a, b) =>
+            new Date(b.timestamptz).getTime() -
+            new Date(a.timestamptz).getTime(),
+        )
         .map((tr) => {
           // TODO must be selected by exercise "type", not "name"
           const ex = tr.exercises.find((it: any) => it.name === exercise.name);
@@ -168,4 +163,8 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   };
 };
 
-controller.storeDataAccessors = ['trainings', 'activeTraining', 'completedTrainings'];
+controller.storeDataAccessors = [
+  'trainings',
+  'activeTraining',
+  'completedTrainings',
+];

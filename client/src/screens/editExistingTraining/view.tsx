@@ -42,20 +42,23 @@ const PureEditExistingTraining: React.FC<Props> = (props) => {
   );
 };
 
-export const EditExistingTraining = connect<ControllerType, Props>({
-  controller,
-}, ctrl => ({
-  data: ctrl.getTraining(),
-  onSave: ctrl.onSave,
-  onDelete: ctrl.onDelete,
-  onNoData: ctrl.onNoData,
-  onChangeName: ctrl.onChangeName,
-  onAddExercise: ctrl.onAddExercise,
-  onDeleteExercise: ctrl.onDeleteExercise,
-  onEditExercise: ctrl.onEditExercise,
-}))(requireData<Props>(props => ({
-  isData: Boolean(props.data),
-  onNoData: props.onNoData,
-}))(
-  PureEditExistingTraining,
-));
+export const EditExistingTraining = connect<ControllerType, Props>(
+  {
+    controller,
+  },
+  (ctrl) => ({
+    data: ctrl.getTraining(),
+    onSave: ctrl.onSave,
+    onDelete: ctrl.onDelete,
+    onNoData: ctrl.onNoData,
+    onChangeName: ctrl.onChangeName,
+    onAddExercise: ctrl.onAddExercise,
+    onDeleteExercise: ctrl.onDeleteExercise,
+    onEditExercise: ctrl.onEditExercise,
+  }),
+)(
+  requireData<Props>((props) => ({
+    isData: Boolean(props.data),
+    onNoData: props.onNoData,
+  }))(PureEditExistingTraining),
+);

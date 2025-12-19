@@ -31,7 +31,9 @@ const AuthForm = ({ title, onSubmit }: AuthFormProps) => {
     <form onSubmit={_onSubmit} className={style.authForm}>
       <h3 className={style.authFormHeader}>{title}</h3>
       <div className={style.authField}>
-        <label className={style.authLabel} htmlFor="email">Email:</label>
+        <label className={style.authLabel} htmlFor="email">
+          Email:
+        </label>
         <input
           className={style.authInput}
           type="email"
@@ -41,7 +43,9 @@ const AuthForm = ({ title, onSubmit }: AuthFormProps) => {
         />
       </div>
       <div className={style.authField}>
-        <label className={style.authLabel} htmlFor="password">Password:</label>
+        <label className={style.authLabel} htmlFor="password">
+          Password:
+        </label>
         <input
           className={style.authInput}
           type="password"
@@ -73,10 +77,12 @@ const PureHome: React.FC<HomeProps> = (props) => {
     createSetsPreview,
   } = props;
 
-  const [expandedTrainingId, setExpandedTrainingId] = React.useState<string | null>(null);
+  const [expandedTrainingId, setExpandedTrainingId] = React.useState<
+    string | null
+  >(null);
 
   const toggleExpanded = (id: string) => {
-    setExpandedTrainingId(prev => (prev === id ? null : id));
+    setExpandedTrainingId((prev) => (prev === id ? null : id));
   };
 
   const [isLoginForm, setIsLoginForm] = React.useState(true);
@@ -85,17 +91,12 @@ const PureHome: React.FC<HomeProps> = (props) => {
     const { completedTrainings, getDateAndTime } = props;
     return (
       <>
-        <h3 style={{ textAlign: 'center' }}>
-          Recent Trainings
-        </h3>
+        <h3 style={{ textAlign: 'center' }}>Recent Trainings</h3>
         <ul className={style.trainings}>
-          {completedTrainings.map(training => {
+          {completedTrainings.map((training) => {
             const isExpanded = expandedTrainingId === training.id;
             return (
-              <li
-                key={training.id}
-                className={style.training}
-              >
+              <li key={training.id} className={style.training}>
                 <div className={style.trainingDate}>
                   {getDateAndTime(training.timestamptz).date}
                 </div>
@@ -113,9 +114,13 @@ const PureHome: React.FC<HomeProps> = (props) => {
                       className={style.trainingBoxHeader}
                       aria-expanded={isExpanded}
                     >
-                      <div className={classNames({
-                        [style.trainingName]: isExpanded,
-                      })}>{training.name}</div>
+                      <div
+                        className={classNames({
+                          [style.trainingName]: isExpanded,
+                        })}
+                      >
+                        {training.name}
+                      </div>
                       <Button
                         className={style.expandIndicator}
                         skin="text"
@@ -126,11 +131,13 @@ const PureHome: React.FC<HomeProps> = (props) => {
                         {isExpanded ? '📖' : '📗'}
                       </Button>
                     </div>
-                    <div className={classNames(style.exerciseList, {
-                      [style.expanded]: isExpanded,
-                      [style.collapsed]: !isExpanded,
-                    })}>
-                      {training.exercises.map(ex => {
+                    <div
+                      className={classNames(style.exerciseList, {
+                        [style.expanded]: isExpanded,
+                        [style.collapsed]: !isExpanded,
+                      })}
+                    >
+                      {training.exercises.map((ex) => {
                         return (
                           <div key={ex.id} className={style.exerciseRow}>
                             <div className={style.exerciseName}>{ex.name}</div>
@@ -171,7 +178,7 @@ const PureHome: React.FC<HomeProps> = (props) => {
               className={style.authToggleButton}
               skin="text"
               size="medium"
-              onClick={() => setIsLoginForm(state => !state)}
+              onClick={() => setIsLoginForm((state) => !state)}
             >
               {isLoginForm ? 'Go to Sign Up' : 'Go to Sign In'}
             </Button>
@@ -183,14 +190,17 @@ const PureHome: React.FC<HomeProps> = (props) => {
   );
 };
 
-export const Home = connect<HomeController, HomeProps>({
-  controller,
-}, ctrl => ({
-  isAuthenticated: ctrl.isAuthenticated(),
-  completedTrainings: ctrl.getCompletedTrainings(),
-  onDeleteCompletedTraining: ctrl.onDeleteCompletedTraining,
-  signin: ctrl.signin,
-  signup: ctrl.signup,
-  getDateAndTime: ctrl.getDateAndTime,
-  createSetsPreview: ctrl.createSetsPreview,
-}))(PureHome);
+export const Home = connect<HomeController, HomeProps>(
+  {
+    controller,
+  },
+  (ctrl) => ({
+    isAuthenticated: ctrl.isAuthenticated(),
+    completedTrainings: ctrl.getCompletedTrainings(),
+    onDeleteCompletedTraining: ctrl.onDeleteCompletedTraining,
+    signin: ctrl.signin,
+    signup: ctrl.signup,
+    getDateAndTime: ctrl.getDateAndTime,
+    createSetsPreview: ctrl.createSetsPreview,
+  }),
+)(PureHome);

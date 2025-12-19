@@ -63,13 +63,16 @@ class PureNavbar extends React.Component<NavbarProps, NavbarState> {
   }
 }
 
-export const Navbar = connect<NavbarController, NavbarProps>({
-  controller,
-}, ctrl => ({
-  onHomeClick: ctrl.onHomeClick,
-  onTrainingsClick: ctrl.onTrainingsClick,
-  onBurgerClick: ctrl.onBurgerClick,
-  isHomeActive: ctrl.isHomeActive(),
-  isTrainingsActive: ctrl.isTrainingsActive(),
-  isBurgerActive: ctrl.isBurgerActive(),
-}))(PureNavbar);
+export const Navbar = connect<NavbarController, NavbarProps>(
+  {
+    controller,
+  },
+  (ctrl) => ({
+    onHomeClick: ctrl.onHomeClick,
+    onTrainingsClick: ctrl.onTrainingsClick,
+    onBurgerClick: ctrl.onBurgerClick,
+    isHomeActive: ctrl.isHomeActive(),
+    isTrainingsActive: ctrl.isTrainingsActive(),
+    isBurgerActive: ctrl.isBurgerActive(),
+  }),
+)(PureNavbar);

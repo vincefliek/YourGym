@@ -19,9 +19,7 @@ interface Props {
 type Controller = ReturnType<typeof controller>;
 
 const PureTrainings: React.FC<Props> = (props) => {
-  const {
-    data,
-  } = props;
+  const { data } = props;
 
   const isData = data.length;
 
@@ -43,12 +41,9 @@ const PureTrainings: React.FC<Props> = (props) => {
     const { data, onDelete, onOpen } = props;
     return (
       <ul className={style.trainings}>
-        {data.map(training => {
+        {data.map((training) => {
           return (
-            <li
-              key={training.id}
-              className={style.training}
-            >
+            <li key={training.id} className={style.training}>
               <Button
                 skin="icon"
                 size="medium"
@@ -59,7 +54,7 @@ const PureTrainings: React.FC<Props> = (props) => {
               </Button>
               <div
                 className={style.trainingBox}
-                onClick={ () => onOpen(training.id) }
+                onClick={() => onOpen(training.id)}
               >
                 {training.name}
               </div>
@@ -74,11 +69,7 @@ const PureTrainings: React.FC<Props> = (props) => {
     const { onAdd } = props;
     return (
       <NavbarContainer className={style.navbarContainer}>
-        <Button
-          skin="icon"
-          size="large"
-          onClick={onAdd}
-        >
+        <Button skin="icon" size="large" onClick={onAdd}>
           <AddIcon />
         </Button>
       </NavbarContainer>
@@ -87,33 +78,27 @@ const PureTrainings: React.FC<Props> = (props) => {
 
   if (!isData) {
     return (
-      <Layout
-        bottomBar={<Navbar />}
-      >
-        <div className={style.screenAddNew}>
-          {renderAddFirstTraining()}
-        </div>
+      <Layout bottomBar={<Navbar />}>
+        <div className={style.screenAddNew}>{renderAddFirstTraining()}</div>
       </Layout>
     );
   }
 
   return (
-    <Layout
-      topBar={renderTopBar()}
-      bottomBar={<Navbar />}
-    >
-      <div className={style.screen}>
-        {renderTrainings()}
-      </div>
+    <Layout topBar={renderTopBar()} bottomBar={<Navbar />}>
+      <div className={style.screen}>{renderTrainings()}</div>
     </Layout>
   );
 };
 
-export const Trainings = connect<Controller, Props>({
-  controller,
-}, ctrl => ({
-  data: ctrl.getTrainings(),
-  onAdd: ctrl.onAddTraining,
-  onDelete: ctrl.onDeleteTraining,
-  onOpen: ctrl.onOpenTraining,
-}))(PureTrainings);
+export const Trainings = connect<Controller, Props>(
+  {
+    controller,
+  },
+  (ctrl) => ({
+    data: ctrl.getTrainings(),
+    onAdd: ctrl.onAddTraining,
+    onDelete: ctrl.onDeleteTraining,
+    onOpen: ctrl.onOpenTraining,
+  }),
+)(PureTrainings);

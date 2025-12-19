@@ -48,9 +48,9 @@ export const aggregateByDay = (
   });
 
   // return sorted by date ascending
-  return Array
-    .from(map.values())
-    .sort((a, b) => (a.dateISO < b.dateISO ? -1 : 1));
+  return Array.from(map.values()).sort((a, b) =>
+    a.dateISO < b.dateISO ? -1 : 1,
+  );
 };
 
 export const lastNDays = (
@@ -60,7 +60,7 @@ export const lastNDays = (
   if (n <= 0) return [];
 
   // Build map for quick lookup (keys expected as YYYY-MM-DD UTC)
-  const aggMap = new Map(aggregates.map(a => [a.dateISO, a]));
+  const aggMap = new Map(aggregates.map((a) => [a.dateISO, a]));
 
   const MS_DAY = 24 * 60 * 60 * 1000;
   const result: TrainingAggregate[] = [];
@@ -74,7 +74,8 @@ export const lastNDays = (
     if (v) {
       result.push(v);
     } else {
-      result.push({ dateISO: key,
+      result.push({
+        dateISO: key,
         totalVolumeKg: 0,
         totalReps: 0,
         sessionsCount: 0,

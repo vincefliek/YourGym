@@ -1,18 +1,10 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import {
-  Button,
-  Input,
-  Layout,
-  NavbarContainer,
-} from '../../components';
+import { Button, Input, Layout, NavbarContainer } from '../../components';
 import DoneIcon from '../../assets/done.svg?react';
 import DeleteIcon from '../../assets/delete.svg?react';
-import {
-  CSSTransition,
-  TransitionGroup,
-} from 'react-transition-group';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { ExerciseProps, ExerciseState } from './types';
 
 import style from './style.module.scss';
@@ -36,18 +28,10 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     const { onDelete, onSave } = this.props;
     return (
       <NavbarContainer className={style.navbarContainer}>
-        <Button
-          skin="icon"
-          size="large"
-          onClick={onDelete}
-        >
+        <Button skin="icon" size="large" onClick={onDelete}>
           <DeleteIcon />
         </Button>
-        <Button
-          skin="icon"
-          size="large"
-          onClick={onSave}
-        >
+        <Button skin="icon" size="large" onClick={onSave}>
           <DoneIcon />
         </Button>
       </NavbarContainer>
@@ -55,12 +39,8 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   };
 
   renderSets = () => {
-    const {
-      data,
-      onDeleteSet,
-      onChangeRepetitions,
-      onChangeWeight,
-    } = this.props;
+    const { data, onDeleteSet, onChangeRepetitions, onChangeWeight } =
+      this.props;
     return (
       <TransitionGroup component={'ul'} className={style.sets}>
         {data.sets.map((set, index) => {
@@ -84,9 +64,7 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
                 >
                   <DeleteIcon />
                 </Button>
-                <div className={style.setName}>
-                  Set {index + 1}
-                </div>
+                <div className={style.setName}>Set {index + 1}</div>
                 <div className={style.setRepetitions}>
                   <Input
                     type="number"
@@ -106,9 +84,7 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
                     className={style.input}
                   />
                 </div>
-                <div className={style.weightUnit}>
-                  kg
-                </div>
+                <div className={style.weightUnit}>kg</div>
               </li>
             </CSSTransition>
           );
@@ -123,13 +99,12 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     const areSets = Boolean(data.sets.length);
 
     return (
-      <Layout
-        topBar={this.renderTopBar()}
-        bottomBar={this.renderBottomBar()}
-      >
-        <div className={classnames(style.screen, {
-          [style.screenNoData]: !areSets,
-        })}>
+      <Layout topBar={this.renderTopBar()} bottomBar={this.renderBottomBar()}>
+        <div
+          className={classnames(style.screen, {
+            [style.screenNoData]: !areSets,
+          })}
+        >
           {this.renderSets()}
           <Button
             skin="primary"
@@ -137,7 +112,7 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
             className={style.button}
             onClick={onAddSet}
           >
-              Add set
+            Add set
           </Button>
         </div>
       </Layout>

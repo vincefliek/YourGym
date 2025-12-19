@@ -1,1 +1,1 @@
-export { Dashboard} from './view';
+export { Dashboard } from './view';

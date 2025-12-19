@@ -17,9 +17,9 @@ describe('signin', () => {
   });
 
   it('should validate email', async () => {
-    await expect(
-      authApi.signin('invalid', '123'),
-    ).rejects.toThrow('Invalid email format');
+    await expect(authApi.signin('invalid', '123')).rejects.toThrow(
+      'Invalid email format',
+    );
   });
 
   it('should signin successfully', async () => {

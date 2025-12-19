@@ -34,9 +34,7 @@ const ToastItem: React.FC<{
       role="status"
       aria-live="polite"
     >
-      <div className={style.message}>
-        {n.message}
-      </div>
+      <div className={style.message}>{n.message}</div>
       <Button
         skin="icon"
         size="small"
@@ -59,25 +57,15 @@ const PureNotifications: React.FC<Props> = ({
   }
 
   return (
-    <div
-      className={style.notifications}
-      aria-live="polite"
-    >
-      {notifications.map(n => (
-        <ToastItem
-          key={n.id}
-          n={n}
-          onClose={removeNotification}
-        />
+    <div className={style.notifications} aria-live="polite">
+      {notifications.map((n) => (
+        <ToastItem key={n.id} n={n} onClose={removeNotification} />
       ))}
     </div>
   );
 };
 
-export const Notifications = connect(
-  { controller },
-  ctrl => ({
-    notifications: ctrl.getNotifications(),
-    removeNotification: ctrl.removeNotification,
-  }),
-)(PureNotifications);
+export const Notifications = connect({ controller }, (ctrl) => ({
+  notifications: ctrl.getNotifications(),
+  removeNotification: ctrl.removeNotification,
+}))(PureNotifications);

@@ -3,7 +3,6 @@ import { Validator } from 'jsonschema';
 export type TimestampTZ =
   `${string}-${string}-${string}T${string}:${string}:${string}+${string}:${string}`;
 
-
 export interface Set {
   id: string;
   repetitions: number;
@@ -35,10 +34,12 @@ export type CompletedSet = Omit<Set, 'done' | 'time'> & {
   timestamptz: TimestampTZ;
 };
 
-export interface CompletedTrainingExcercise
-  extends Omit<Exercise, 'setsPreview' | 'sets'> {
-    sets: CompletedSet[];
-  }
+export interface CompletedTrainingExcercise extends Omit<
+  Exercise,
+  'setsPreview' | 'sets'
+> {
+  sets: CompletedSet[];
+}
 
 export type CompletedTraining = Omit<Training, 'exercises'> & {
   exercises: CompletedTrainingExcercise[];
@@ -50,7 +51,7 @@ export type CompletedTraining = Omit<Training, 'exercises'> & {
   timestamptz: TimestampTZ;
   createdInDbAt?: TimestampTZ | undefined;
   updatedInDbAt?: TimestampTZ | undefined;
-}
+};
 
 export type ActiveTraining = Pick<
   CompletedTraining,
@@ -59,10 +60,12 @@ export type ActiveTraining = Pick<
   templateTrainingId?: string;
 };
 
-
 export interface Store {
   getStoreData: (publicDataAccessors: string[]) => { [key: string]: any };
-  subscribe: (subscriber: () => void, publicDataAccessors: string[]) => () => void;
+  subscribe: (
+    subscriber: () => void,
+    publicDataAccessors: string[],
+  ) => () => void;
   get route(): string | undefined;
   set route(value: string | undefined);
   get backRouteWithHistoryReplace(): string | undefined;
@@ -164,17 +167,21 @@ export interface NavigationApi {
     dashboard: string;
   };
   goBack: () => void;
-  setBackRouteWithReplace: (
-    route: string | undefined,
-  ) => void;
+  setBackRouteWithReplace: (route: string | undefined) => void;
   resetRoute: () => void;
   toTrainings: () => Promise<unknown>;
   toHome: () => Promise<unknown>;
   toMenu: () => Promise<unknown>;
   toCreateTraining: () => Promise<unknown>;
   toCreateExercise: (trainingId: string) => Promise<unknown>;
-  toEditNewExercise: (trainingId: string, exerciseId: string) => Promise<unknown>;
-  toEditExistingExercise: (trainingId: string, exerciseId: string) => Promise<unknown>;
+  toEditNewExercise: (
+    trainingId: string,
+    exerciseId: string,
+  ) => Promise<unknown>;
+  toEditExistingExercise: (
+    trainingId: string,
+    exerciseId: string,
+  ) => Promise<unknown>;
   toTraining: (trainingId: string) => Promise<unknown>;
   toExercise: (trainingId: string, exerciseId: string) => Promise<unknown>;
   toEditTraining: (trainingId: string) => Promise<unknown>;
@@ -203,7 +210,11 @@ export interface TrainingsApi {
       set: Set,
     ) => void;
     training: (trainingId: string, input: Partial<Training>) => void;
-    exercise: (trainingId: string, exerciseId: string, input: Partial<Exercise>) => void;
+    exercise: (
+      trainingId: string,
+      exerciseId: string,
+      input: Partial<Exercise>,
+    ) => void;
     allTrainings: (trainings: Training[]) => void;
     completedTrainings: (trainings: CompletedTraining[]) => void;
   };
@@ -237,23 +248,29 @@ export interface AuthApi {
 }
 
 export interface HttpClientAPI {
-  get<TResponse>(url: string, options?: RequestInit & { headers?: Record<string, string> }): Promise<TResponse>;
+  get<TResponse>(
+    url: string,
+    options?: RequestInit & { headers?: Record<string, string> },
+  ): Promise<TResponse>;
   post<TResponse, TBody = any>(
     url: string,
     body?: TBody,
-    options?: RequestInit & { headers?: Record<string, string> }
+    options?: RequestInit & { headers?: Record<string, string> },
   ): Promise<TResponse>;
   put<TResponse, TBody = any>(
     url: string,
     body?: TBody,
-    options?: RequestInit & { headers?: Record<string, string> }
+    options?: RequestInit & { headers?: Record<string, string> },
   ): Promise<TResponse>;
   patch<TResponse, TBody = any>(
     url: string,
     body?: TBody,
-    options?: RequestInit & { headers?: Record<string, string> }
+    options?: RequestInit & { headers?: Record<string, string> },
   ): Promise<TResponse>;
-  delete<TResponse>(url: string, options?: RequestInit & { headers?: Record<string, string> }): Promise<TResponse>;
+  delete<TResponse>(
+    url: string,
+    options?: RequestInit & { headers?: Record<string, string> },
+  ): Promise<TResponse>;
 }
 
 export interface TokenPair {
@@ -316,14 +333,14 @@ export namespace ServerWrite {
 export interface TrainingsServerApi {
   get: {
     completedTrainings: () => Promise<ServerRead.sr_CompletedTraining[]>;
-  },
+  };
   create: {
-    completedTrainings: (data: CompletedTraining[]) => Promise<
-      ServerRead.sr_CompletedTraining[]
-    >;
-  },
-  update: {},
+    completedTrainings: (
+      data: CompletedTraining[],
+    ) => Promise<ServerRead.sr_CompletedTraining[]>;
+  };
+  update: {};
   delete: {
     completedTraining: (data: CompletedTraining) => Promise<void>;
-  },
+  };
 }

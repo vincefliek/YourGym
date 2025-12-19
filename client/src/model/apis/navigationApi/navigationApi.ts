@@ -16,12 +16,11 @@ interface Routes {
   dashboard: string;
 }
 
-export const createNavigationApi: ApiFactory<
-  NavigationApi,
-  {}
-> = (
-  { store }: { store: Store },
-) => {
+export const createNavigationApi: ApiFactory<NavigationApi, {}> = ({
+  store,
+}: {
+  store: Store;
+}) => {
   const routes: Routes = {
     home: '/',
     trainings: '/trainings',
@@ -50,10 +49,8 @@ export const createNavigationApi: ApiFactory<
     return match?.params ?? {};
   };
 
-  const getData = () => store.getStoreData([
-    'route',
-    'backRouteWithHistoryReplace',
-  ]);
+  const getData = () =>
+    store.getStoreData(['route', 'backRouteWithHistoryReplace']);
 
   const isRouteOpenedRightNow = (route: string): boolean =>
     Boolean(matchPath(route, getPathName()));
@@ -63,7 +60,7 @@ export const createNavigationApi: ApiFactory<
     params: Record<string, string> = {},
   ) => {
     // TODO [vlad-ozh] [it's a hack]
-    if (isRouteOpenedRightNow(route) && (route !== routes.openExercise)) {
+    if (isRouteOpenedRightNow(route) && route !== routes.openExercise) {
       return;
     }
 
@@ -72,9 +69,7 @@ export const createNavigationApi: ApiFactory<
     return waitForCondition(async () => isRouteOpenedRightNow(route));
   };
 
-  const setBackRouteWithReplace = (
-    route: string | undefined,
-  ) => {
+  const setBackRouteWithReplace = (route: string | undefined) => {
     store.backRouteWithHistoryReplace = route
       ? generatePath(route, getPathParams(route))
       : route;

@@ -8,18 +8,12 @@ import {
   ServerWrite,
   ServerRead,
 } from '../../types';
-import {
-  ServerReadSchemas,
-  ServerWriteSchemas,
-} from './schemas';
+import { ServerReadSchemas, ServerWriteSchemas } from './schemas';
 
 export const createTrainingsServerApi: ApiFactory<
   TrainingsServerApi,
   Pick<AppAPIs, 'httpClientAPI'>
->  = (
-  { validator }: ApiTools,
-  dependencies,
-) => {
+> = ({ validator }: ApiTools, dependencies) => {
   validator.addSchema(ServerReadSchemas.completedTrainings);
   validator.addSchema(ServerReadSchemas.completedTraining);
   validator.addSchema(ServerReadSchemas.completedExercise);
@@ -71,7 +65,7 @@ export const createTrainingsServerApi: ApiFactory<
   const completedExerciseToServerWriteType = (
     item: CompletedTrainingExcercise,
   ): ServerWrite.sw_CompletedExcercise[] => {
-    return item.sets.map(set => {
+    return item.sets.map((set) => {
       return {
         name: item.name,
         date: set.timestamptz,

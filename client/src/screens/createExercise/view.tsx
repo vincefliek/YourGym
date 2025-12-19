@@ -5,7 +5,10 @@ import { connect, requireData } from '../../utils';
 import { controller } from './controller';
 import { CreateExerciseProps, CreateExerciseState } from './types';
 
-class PureCreateExercise extends React.Component<CreateExerciseProps, CreateExerciseState> {
+class PureCreateExercise extends React.Component<
+  CreateExerciseProps,
+  CreateExerciseState
+> {
   _onDeleteSet = (setId: string) => {
     const exerciseId = this.props.data.id;
     this.props.onDeleteSet(exerciseId, setId);
@@ -37,23 +40,24 @@ class PureCreateExercise extends React.Component<CreateExerciseProps, CreateExer
   }
 }
 
-export const CreateExercise = connect({
-  controller,
-}, (ctrl): CreateExerciseProps => ({
-  data: ctrl.getData(),
-  onChangeName: ctrl.onChangeName,
-  onChangeWeight: ctrl.onChangeWeight,
-  onChangeRepetitions: ctrl.onChangeRepetitions,
-  onNoData: ctrl.onNoData,
-  onAddSet: ctrl.onAddSet,
-  onDeleteSet: ctrl.onDeleteSet,
-  onDelete: ctrl.onDelete,
-  onSave: ctrl.onSave,
-}))(
+export const CreateExercise = connect(
+  {
+    controller,
+  },
+  (ctrl): CreateExerciseProps => ({
+    data: ctrl.getData(),
+    onChangeName: ctrl.onChangeName,
+    onChangeWeight: ctrl.onChangeWeight,
+    onChangeRepetitions: ctrl.onChangeRepetitions,
+    onNoData: ctrl.onNoData,
+    onAddSet: ctrl.onAddSet,
+    onDeleteSet: ctrl.onDeleteSet,
+    onDelete: ctrl.onDelete,
+    onSave: ctrl.onSave,
+  }),
+)(
   requireData((props: CreateExerciseProps) => ({
     isData: Boolean(props.data),
     onNoData: props.onNoData,
-  }))(
-    PureCreateExercise,
-  ),
+  }))(PureCreateExercise),
 );
