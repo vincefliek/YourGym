@@ -8,15 +8,18 @@ export interface TrainingAggregate {
 }
 
 function toDateKey(timestamptz: string): string {
-  // convert to local date key YYYY-MM-DD
+  // Use UTC-normalized YYYY-MM-DD to avoid local TZ shifting the day.
   const d = new Date(timestamptz);
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
+  if (Number.isNaN(d.getTime())) {
+    // fallback: try to slice ISO-like string
+    return timestamptz.slice(0, 10);
+  }
+  return d.toISOString().slice(0, 10);
 }
 
-export const aggregateByDay = (completed: CompletedTraining[]): TrainingAggregate[] => {
+export const aggregateByDay = (
+  completed: CompletedTraining[],
+): TrainingAggregate[] => {
   const map = new Map<string, TrainingAggregate>();
 
   completed.forEach((ct) => {
@@ -45,33 +48,38 @@ export const aggregateByDay = (completed: CompletedTraining[]): TrainingAggregat
   });
 
   // return sorted by date ascending
-  return Array.from(map.values()).sort((a, b) => (a.dateISO < b.dateISO ? -1 : 1));
+  return Array
+    .from(map.values())
+    .sort((a, b) => (a.dateISO < b.dateISO ? -1 : 1));
 };
 
-export const lastNDays = (aggregates: TrainingAggregate[], n = 7): TrainingAggregate[] => {
+export const lastNDays = (
+  aggregates: TrainingAggregate[],
+  n = 7,
+): TrainingAggregate[] => {
   if (n <= 0) return [];
 
-  const end = new Date();
-  const start = new Date();
-  start.setDate(end.getDate() - (n - 1));
-
-  const startKey = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, '0')}-${String(start.getDate()).padStart(2, '0')}`;
-  const endKey = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}-${String(end.getDate()).padStart(2, '0')}`;
-
-  // Build map for quick lookup
+  // Build map for quick lookup (keys expected as YYYY-MM-DD UTC)
   const aggMap = new Map(aggregates.map(a => [a.dateISO, a]));
 
+  const MS_DAY = 24 * 60 * 60 * 1000;
   const result: TrainingAggregate[] = [];
-  const cur = new Date(start);
-  while (cur <= end) {
-    const key = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, '0')}-${String(cur.getDate()).padStart(2, '0')}`;
+
+  // iterate from (n-1) days ago up to today, using UTC-normalized keys
+  for (let i = 0; i < n; i += 1) {
+    const offset = n - 1 - i; // days before today
+    const d = new Date(Date.now() - offset * MS_DAY);
+    const key = d.toISOString().slice(0, 10);
     const v = aggMap.get(key);
     if (v) {
       result.push(v);
     } else {
-      result.push({ dateISO: key, totalVolumeKg: 0, totalReps: 0, sessionsCount: 0 });
+      result.push({ dateISO: key,
+        totalVolumeKg: 0,
+        totalReps: 0,
+        sessionsCount: 0,
+      });
     }
-    cur.setDate(cur.getDate() + 1);
   }
 
   return result;
