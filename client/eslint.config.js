@@ -3,6 +3,8 @@ import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
+import prettierPlugin from "eslint-plugin-prettier";
+import prettierConfig from "eslint-config-prettier";
 
 export default tseslint.config(
   { ignores: ['dist'] },
@@ -19,9 +21,11 @@ export default tseslint.config(
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      prettier: prettierPlugin,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      ...prettierConfig.rules,
       'react/prop-types': 'off',
       'react-refresh/only-export-components': [
         'warn',
@@ -36,6 +40,21 @@ export default tseslint.config(
         }
       ],
       '@typescript-eslint/no-namespace': 'off',
+      "eol-last": [
+        "warn",
+        "always"
+      ],
+      "comma-dangle": [
+        "warn",
+        {
+          "arrays": "always-multiline",
+          "objects": "always-multiline",
+          "imports": "always-multiline",
+          "exports": "always-multiline",
+          "functions": "always-multiline"
+        }
+      ],
+      "prettier/prettier": "error",
     },
   }
 );
