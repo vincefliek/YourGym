@@ -1,0 +1,27 @@
+.card {
+  background: var(--color-surface, #fff);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.kpis {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+.kpiItem {
+  flex: 1;
+}
+.kpiLabel {
+  font-size: 12px;
+  color: #666;
+}
+.kpiValue {
+  font-size: 16px;
+  font-weight: 700;
+}

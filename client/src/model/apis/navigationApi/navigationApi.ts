@@ -13,6 +13,7 @@ interface Routes {
   editNewExercise: string;
   editExistingExercise: string;
   openExercise: string;
+  dashboard: string;
 }
 
 export const createNavigationApi: ApiFactory<
@@ -32,6 +33,7 @@ export const createNavigationApi: ApiFactory<
     editNewExercise: '/trainings/:training/:exercise/editNew',
     editExistingExercise: '/trainings/:training/:exercise/edit',
     openExercise: '/trainings/:training/:exercise',
+    dashboard: '/dashboard',
   };
 
   /**

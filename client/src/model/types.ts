@@ -161,6 +161,7 @@ export interface NavigationApi {
     openTraining: string;
     openExercise: string;
     editTraining: string;
+    dashboard: string;
   };
   goBack: () => void;
   setBackRouteWithReplace: (

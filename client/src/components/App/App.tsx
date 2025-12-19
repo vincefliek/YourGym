@@ -6,6 +6,7 @@ import {
   Trainings,
   Home,
   Menu,
+  Dashboard,
   NotFound,
   CreateTraining,
   CreateExercise,
@@ -86,6 +87,10 @@ export class App extends React.Component<AppProps, AppState> {
             <Route
               path={this.apis.navigationApi.routes.editTraining}
               element={<EditExistingTraining />}
+            />
+            <Route
+              path={this.apis.navigationApi.routes.dashboard}
+              element={<Dashboard />}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>

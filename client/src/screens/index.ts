@@ -10,3 +10,4 @@ export { EditNewExercise } from './editNewExercise';
 export { EditExistingExercise } from './editExistingExercise';
 export { EditExistingTraining } from './editExistingTraining/view';
 export { AuthProtection } from './authProtection/view';
+export { Dashboard } from './dashboard';

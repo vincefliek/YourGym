@@ -1,0 +1,1 @@
+export { TrainingProgressCard } from './view';
