@@ -1,8 +1,10 @@
-import { createRAFInterval } from '../utils';
-import { AppAPIs, Store } from './types';
+import { createRAFInterval } from '../../utils';
+import { ResumeManager } from './resumeManager';
+import { AppAPIs, Store } from '../types';
 
 export const initGlobalTasks = (store: Store, apis: AppAPIs) => {
   let _stopPeriodicTasks = () => {};
+  const resumeManager = new ResumeManager();
 
   /* ========= LIFECYCLE ========= */
 
@@ -10,16 +12,19 @@ export const initGlobalTasks = (store: Store, apis: AppAPIs) => {
   checkSyncStatus();
   runPeriodicTasks();
 
+  resumeManager.init({
+    onResume: resumeAppFromBackground,
+    onRetryFailed: async (err) => {
+      apis.notificationsApi.addNotification({
+        type: 'error',
+        message: `Resume from background failed. Error: ${err?.message || String(err)}`,
+      });
+    },
+  });
+
   window.document.addEventListener(
     'visibilitychange',
     () => {
-      // return from background / tab becomes active
-      if (document.visibilityState === 'visible') {
-        checkAuthStatus();
-        checkSyncStatus();
-        runPeriodicTasks();
-      }
-
       // move into background / tab becomes inactive
       if (document.visibilityState === 'hidden') {
         stopPeriodicTasks();
@@ -30,12 +35,18 @@ export const initGlobalTasks = (store: Store, apis: AppAPIs) => {
 
   /* ========= IMPLEMENTATION ========= */
 
+  async function resumeAppFromBackground() {
+    // return from background / tab becomes active
+    await Promise.all([checkAuthStatus(), checkSyncStatus()]);
+    runPeriodicTasks();
+  }
+
   function checkAuthStatus() {
-    void apis.authApi.getSession();
+    return apis.authApi.getSession();
   }
 
   function checkSyncStatus() {
-    void apis.syncApi.hasServerChanges();
+    return apis.syncApi.hasServerChanges();
   }
 
   function stopPeriodicTasks() {

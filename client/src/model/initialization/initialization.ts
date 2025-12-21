@@ -1,6 +1,6 @@
-import { Store } from './store';
-import { createAPIs } from './apis';
-import { Validator } from './validation';
+import { Store } from '../store';
+import { createAPIs } from '../apis';
+import { Validator } from '../validation';
 import { initGlobalTasks } from './globalTasks';
 
 export const initApp = async () => {
