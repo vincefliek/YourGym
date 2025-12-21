@@ -27,7 +27,10 @@ export const createSyncApi: ApiFactory<
   const hasServerChanges = async () => {
     try {
       const quereParams = new URLSearchParams({
-        since: store.getStoreData(['sync']).sync.lastSyncAt,
+        since:
+          store.getStoreData(['sync']).sync.lastSyncAt ||
+          // no "lastSyncAt" for new user
+          getTimestampWithTimeZone(new Date()),
       });
       const url = `/api/changes?${quereParams.toString()}`;
 
