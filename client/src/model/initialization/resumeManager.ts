@@ -70,8 +70,12 @@ export class ResumeManager {
     try {
       await this.onResume();
     } catch (err) {
-      console.warn('Resume failed, retrying once', err);
-      await this.retryOnce();
+      console.error('ResumeManager: resume failed, retrying once', err);
+      try {
+        await this.retryOnce();
+      } catch (retryErr) {
+        console.error('ResumeManager: resume retry failed', retryErr);
+      }
     } finally {
       this.isRunning = false;
     }
@@ -88,7 +92,11 @@ export class ResumeManager {
     try {
       await this.onResume();
     } catch (err: any) {
-      this.onRetryFailed(err);
+      try {
+        await this.onRetryFailed(err);
+      } catch (handlerErr) {
+        console.error('ResumeManager: onRetryFailed handler threw', handlerErr);
+      }
     }
   }
 

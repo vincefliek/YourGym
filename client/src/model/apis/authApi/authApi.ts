@@ -56,13 +56,15 @@ export const createAuthApi: ApiFactory<
         authError: null,
       };
     } catch (e: any) {
+      const errorMessage = `Signup failed. Error: ${e.message || String(e) || 'Unknown error'}`;
+
       store.auth = {
-        authError: e.message,
+        authError: errorMessage,
         authLoading: false,
       };
       notificationsApi.addNotification({
         type: 'error',
-        message: e.message || 'Signup failed',
+        message: errorMessage,
       });
     }
   }
@@ -100,13 +102,15 @@ export const createAuthApi: ApiFactory<
         authError: null,
       };
     } catch (e: any) {
+      const errorMessage = `Signin failed. Error: ${e.message || String(e) || 'Unknown error'}`;
+
       store.auth = {
-        authError: e.message,
+        authError: errorMessage,
         authLoading: false,
       };
       notificationsApi.addNotification({
         type: 'error',
-        message: e.message || 'Signin failed',
+        message: errorMessage,
       });
     }
   }
@@ -126,13 +130,15 @@ export const createAuthApi: ApiFactory<
         authError: null,
       };
     } catch (e: any) {
+      const errorMessage = `Signout failed. Error: ${e.message || String(e) || 'Unknown error'}`;
+
       store.auth = {
-        authError: e.message,
+        authError: errorMessage,
         authLoading: false,
       };
       notificationsApi.addNotification({
         type: 'error',
-        message: e.message || 'Signout failed',
+        message: errorMessage,
       });
     }
   }
@@ -152,13 +158,17 @@ export const createAuthApi: ApiFactory<
         authError: null,
       };
     } catch (e: any) {
+      const errorMessage = `Get session failed. Error: ${e.message || String(e) || 'Unknown error'}`;
+
       store.auth = {
-        authError: e.message,
+        user: null,
+        isAuthenticated: false,
+        authError: errorMessage,
         authLoading: false,
       };
       notificationsApi.addNotification({
         type: 'error',
-        message: e.message || 'Get session failed',
+        message: errorMessage,
       });
     }
   }
@@ -185,12 +195,14 @@ export const createAuthApi: ApiFactory<
         isAuthenticated: !!data.user,
       };
     } catch (e: any) {
+      const errorMessage = `Refresh token failed. Error: ${e.message || String(e) || 'Unknown error'}`;
+
       store.auth = {
-        authError: e.message,
+        authError: errorMessage,
       };
       notificationsApi.addNotification({
         type: 'error',
-        message: e.message || 'Refresh token failed',
+        message: errorMessage,
       });
     }
   }
