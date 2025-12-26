@@ -6,14 +6,15 @@ import path from 'path';
 export default defineConfig({
   build: {
     outDir: 'build',
+    sourcemap: true,
   },
   plugins: [react(), svgr()],
   server: {
-    port: 3000
+    port: 3000,
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src')
-    }
-  }
-})
+      '@': path.resolve(__dirname, 'src'),
+    },
+  },
+});
