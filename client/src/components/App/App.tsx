@@ -31,8 +31,8 @@ export class App extends React.Component<AppProps, AppState> {
 
     const { apis, appContext } = props;
 
-    this.apis = apis as any;
-    this.appContext = appContext as any;
+    this.apis = apis;
+    this.appContext = appContext;
   }
 
   render() {

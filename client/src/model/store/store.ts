@@ -91,6 +91,21 @@ export class Store implements StoreInterface {
     validateAllDataAccessorsDeclared(publicDataAccessors);
   }
 
+  // Return true when there is nothing persisted in IndexedDB for all public accessors
+  async hasServerDataInIndexedDB(): Promise<boolean> {
+    try {
+      const checks = await Promise.all([
+        this._readIDBAccessorValue('completedTrainings'),
+      ]);
+
+      return checks.every((v) => typeof v !== 'undefined');
+    } catch (err) {
+      // On error assume not empty to avoid accidental overwrites
+      console.error('[Store] Failed to check IndexedDB emptiness:', err);
+      return false;
+    }
+  }
+
   // ---------------------
   // IndexedDB helpers
   // ---------------------
@@ -109,7 +124,10 @@ export class Store implements StoreInterface {
       // swallow but surface developer-friendly error for debugging
       // (no throw so writes remain fire & forget)
 
-      console.error(`[Store] Failed to persist ${accessor} to IndexedDB:`, err);
+      console.error(
+        `[Store] Failed to persist "${accessor}" to IndexedDB:`,
+        err,
+      );
     }
   }
 
@@ -211,9 +229,6 @@ export class Store implements StoreInterface {
     }
   }
 
-  // ---------------------
-  // Existing internal logic (kept but extended to persist)
-  // ---------------------
   private _updateStoreData = (
     fn: (state: State) => Partial<State>,
     dataAccessorsToNotify: string[],

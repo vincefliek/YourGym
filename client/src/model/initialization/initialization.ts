@@ -7,7 +7,14 @@ export const initApp = async () => {
   const store = new Store();
   const validator = new Validator();
 
-  await store.hydrateFromIndexedDB();
+  try {
+    await store.hydrateFromIndexedDB();
+  } catch (error: any) {
+    console.error(
+      '[initApp] hydrateFromIndexedDB failed. Error:',
+      error?.message || String(error) || 'Unknown error',
+    );
+  }
 
   const apis = createAPIs({
     store,

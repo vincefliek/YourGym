@@ -66,6 +66,8 @@ export interface Store {
     subscriber: () => void,
     publicDataAccessors: string[],
   ) => () => void;
+  hasServerDataInIndexedDB(): Promise<boolean>;
+  hydrateFromIndexedDB(): Promise<void>;
   get route(): string | undefined;
   set route(value: string | undefined);
   get backRouteWithHistoryReplace(): string | undefined;
