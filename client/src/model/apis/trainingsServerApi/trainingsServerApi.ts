@@ -1,3 +1,7 @@
+import { v4 as uuidv4 } from 'uuid';
+import groupBy from 'lodash/groupBy';
+import { format, toZonedTime } from 'date-fns-tz';
+
 import {
   ApiTools,
   ApiFactory,
@@ -7,6 +11,7 @@ import {
   CompletedTrainingExcercise,
   ServerWrite,
   ServerRead,
+  TimestampTZ,
 } from '../../types';
 import { ServerReadSchemas, ServerWriteSchemas } from './schemas';
 
@@ -35,7 +40,30 @@ export const createTrainingsServerApi: ApiFactory<
     }
   };
 
-  const getCompletedTrainings = async () => {
+  const converUTCtoTimeZoned = <
+    T extends string | TimestampTZ | undefined | null,
+  >(
+    date: T,
+  ): T => {
+    if (!date) return date;
+
+    // Get browser/user timezone
+    const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    // Convert UTC → user timezone
+    const zoned = toZonedTime(date, userTz);
+
+    // Format
+    const formatted = format(zoned, `yyyy-MM-dd'T'HH:mm:ss.SSSXXX`, {
+      timeZone: userTz,
+    });
+
+    return formatted as T;
+  };
+
+  const getCompletedTrainings = async (): Promise<
+    ServerRead.sr_CompletedTraining[]
+  > => {
     let data = [];
 
     try {
@@ -87,6 +115,35 @@ export const createTrainingsServerApi: ApiFactory<
     };
   };
 
+  const toClientCompletedTrainings = (
+    data: ServerRead.sr_CompletedTraining[],
+  ): CompletedTraining[] => {
+    const result: CompletedTraining[] = data.map((tr) => {
+      const grouped = groupBy(tr.exercises, (it) => it.name);
+      const exercises = Object.values(grouped).map((gr) => ({
+        /* "id" - only for client, not used on the server */
+        id: uuidv4(),
+        name: gr?.[0]?.name,
+        sets:
+          gr?.map((it) => ({
+            id: it.id,
+            repetitions: it.reps,
+            weight: it.weight,
+            timestamptz: converUTCtoTimeZoned(it.date),
+          })) ?? [],
+      })) as CompletedTrainingExcercise[];
+      return {
+        id: tr.id,
+        name: tr.name,
+        exercises,
+        timestamptz: converUTCtoTimeZoned(tr.date),
+        createdInDbAt: converUTCtoTimeZoned(tr.created_at),
+        updatedInDbAt: converUTCtoTimeZoned(tr.updated_at) ?? undefined,
+      };
+    });
+    return result;
+  };
+
   const createCompletedTrainings = async (data: CompletedTraining[]) => {
     try {
       const workouts = data.map(completedTrainingToServerWriteType);
@@ -121,10 +178,15 @@ export const createTrainingsServerApi: ApiFactory<
     completedTraining: deleteCompletedTraining,
   };
 
+  const _mappers: TrainingsServerApi['mappers'] = {
+    toClientCompletedTrainings,
+  };
+
   return {
     get: _get,
     create: _create,
     update: _update,
     delete: _delete,
+    mappers: _mappers,
   };
 };

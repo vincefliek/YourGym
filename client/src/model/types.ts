@@ -339,6 +339,11 @@ export interface TrainingsServerApi {
       data: CompletedTraining[],
     ) => Promise<ServerRead.sr_CompletedTraining[]>;
   };
+  mappers: {
+    toClientCompletedTrainings: (
+      data: ServerRead.sr_CompletedTraining[],
+    ) => CompletedTraining[];
+  };
   update: {};
   delete: {
     completedTraining: (data: CompletedTraining) => Promise<void>;
