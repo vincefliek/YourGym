@@ -1,19 +1,31 @@
-import { render, screen } from '@testing-library/react';
+import {
+  render,
+  screen,
+  // waitForElementToBeRemoved,
+} from '@testing-library/react';
 import { HashRouter } from 'react-router-dom';
 import { App } from './App';
+import { initApp } from '../../model';
 
-test('renders App with navbar', () => {
-  render(
-    <HashRouter>
-      <App apis={{} as any} appContext={{} as any} />
-    </HashRouter>,
-  );
-  const homeBtn = screen.getByText(/Home/i, {
-    selector: 'button',
+describe('App', () => {
+  beforeEach(async () => {
+    const { apis, appContext } = await initApp();
+    render(
+      <HashRouter>
+        <App apis={apis} appContext={appContext} />
+      </HashRouter>,
+    );
   });
-  const trainingsBtn = screen.getByText(/Trainings/i, {
-    selector: 'button',
+
+  test('renders initially', async () => {
+    const homeBtn = await screen.findByText(/Home/i, {
+      selector: 'button',
+    });
+    const trainingsBtn = await screen.findByText(/Trainings/i, {
+      selector: 'button',
+    });
+
+    expect(homeBtn).toBeInTheDocument();
+    expect(trainingsBtn).toBeInTheDocument();
   });
-  expect(homeBtn).toBeInTheDocument();
-  expect(trainingsBtn).toBeInTheDocument();
 });

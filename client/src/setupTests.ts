@@ -3,6 +3,21 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+
+/**
+ * for doing click, hover, drag and drop etc. in tests
+ */
+import '@testing-library/user-event';
+
+/**
+ * for `fetch` in tests
+ */
+import 'jest-fetch-mock/setupJest';
+
+/**
+ * for `indexedDB` in tests
+ * `structured-clone` polyfill is required for `fake-indexeddb`
+ */
 import 'core-js/actual/structured-clone';
 import 'fake-indexeddb/auto';
 
@@ -10,3 +25,11 @@ import 'fake-indexeddb/auto';
 jest.mock('uuid', () => ({
   v4: () => `mock-uuid-${Math.random()}`,
 }));
+
+// const createApiMocks = () => {};
+
+// export const apiMocks = createApiMocks();
+
+// beforeAll(() => apiMocks.init());
+// afterEach(() => apiMocks.resetCache());
+// afterAll(() => apiMocks.destroy());
