@@ -91,7 +91,6 @@ export class Store implements StoreInterface {
     validateAllDataAccessorsDeclared(publicDataAccessors);
   }
 
-  // Return true when there is nothing persisted in IndexedDB for all public accessors
   async hasServerDataInIndexedDB(): Promise<boolean> {
     try {
       const checks = await Promise.all([

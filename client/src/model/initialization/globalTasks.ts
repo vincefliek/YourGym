@@ -45,7 +45,12 @@ export const initGlobalTasks = (
   let _prevIsAuthenticated = store.auth?.isAuthenticated;
 
   store.subscribe(() => {
-    if (isChangedAndTrue(_prevIsAuthenticated, store.auth?.isAuthenticated)) {
+    if (
+      isChangedAndNewValueTrue(
+        _prevIsAuthenticated,
+        store.auth?.isAuthenticated,
+      )
+    ) {
       _prevIsAuthenticated = store.auth?.isAuthenticated;
 
       void hydrateStoreFromServer();
@@ -130,7 +135,7 @@ export const initGlobalTasks = (
     }
   }
 
-  function isChangedAndTrue(
+  function isChangedAndNewValueTrue(
     prevValue: boolean | undefined,
     newValue: boolean | undefined,
   ): boolean {
