@@ -13,7 +13,7 @@ describe('signin', () => {
     store = new Store();
     validator = new Validator();
     authApi = createApi(store, validator);
-    mockFetch({ user: mockUser });
+    mockFetch({});
   });
 
   it('should validate email', async () => {

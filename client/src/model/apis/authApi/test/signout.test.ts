@@ -13,7 +13,7 @@ describe('signout', () => {
     store = new Store();
     validator = new Validator();
     authApi = createApi(store, validator);
-    mockFetch({ success: true });
+    mockFetch({});
     store.auth = {
       user: mockUser,
       isAuthenticated: true,

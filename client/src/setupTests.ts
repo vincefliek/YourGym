@@ -3,3 +3,10 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+import 'core-js/actual/structured-clone';
+import 'fake-indexeddb/auto';
+
+// mock "uuid" npm package
+jest.mock('uuid', () => ({
+  v4: () => `mock-uuid-${Math.random()}`,
+}));
