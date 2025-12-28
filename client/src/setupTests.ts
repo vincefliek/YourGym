@@ -21,15 +21,22 @@ import 'jest-fetch-mock/setupJest';
 import 'core-js/actual/structured-clone';
 import 'fake-indexeddb/auto';
 
+import { IDBFactory } from 'fake-indexeddb';
+
+import { createApiMocks } from './test-utils/createApiMocks';
+
 // mock "uuid" npm package
 jest.mock('uuid', () => ({
   v4: () => `mock-uuid-${Math.random()}`,
 }));
 
-// const createApiMocks = () => {};
+export const apiMocks = createApiMocks();
 
-// export const apiMocks = createApiMocks();
-
-// beforeAll(() => apiMocks.init());
-// afterEach(() => apiMocks.resetCache());
-// afterAll(() => apiMocks.destroy());
+beforeAll(() => apiMocks.init());
+beforeEach(() => {
+  global.indexedDB = new IDBFactory();
+});
+afterEach(() => {
+  apiMocks.resetCache();
+});
+afterAll(() => apiMocks.destroy());

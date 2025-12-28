@@ -61,7 +61,7 @@
     "dev": "vite",
     "build": "npm run ts-check && vite build",
     "preview": "vite preview",
-    "test": "jest",
+    "test": "NODE_ENV=test jest",
     "test:watch": "jest --watchAll",
     "test:ci": "jest --runInBand --coverage",
     "ts-check": "tsc --noEmit",

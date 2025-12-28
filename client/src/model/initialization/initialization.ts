@@ -8,7 +8,10 @@ export const initApp = async () => {
   const validator = new Validator();
 
   try {
-    await store.hydrateFromIndexedDB();
+    // TODO: skip in tests, becase next test block is affected by previous test data from indexedDB
+    if (process.env.NODE_ENV !== 'test') {
+      await store.hydrateFromIndexedDB();
+    }
   } catch (error: any) {
     console.error(
       '[initApp] hydrateFromIndexedDB failed. Error:',
