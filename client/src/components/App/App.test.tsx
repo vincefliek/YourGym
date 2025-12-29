@@ -41,6 +41,18 @@ describe('App', () => {
 
     expect(homeBtn).toBeInTheDocument();
     expect(trainingsBtn).toBeInTheDocument();
+
+    // TODO: check how to wait for all async tasks to finish
+
+    /*
+    import { waitFor } from '@testing-library/react';
+
+    // Even if the write is fire-and-forget, it likely changes something in the UI eventually
+    await waitFor(() => {
+      expect(screen.getByText('Data Saved')).toBeInTheDocument();
+    }, { timeout: 2000 });
+    
+    */
   });
 
   test('renders home initially - user is NOT logged in', async () => {

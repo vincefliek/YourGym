@@ -46,7 +46,12 @@ export class ResumeManager {
   }
 
   private handleSignal = () => {
-    if (document.visibilityState !== 'visible') return;
+    if (document.visibilityState !== 'visible') {
+      // hack, until it's clear why sometimes the flow exits
+      // withouth setting it to "false"
+      this.isRunning = false;
+      return;
+    }
 
     const now = Date.now();
     if (now - this.lastResume < 2000) return; // guard spam
