@@ -195,7 +195,11 @@ class PureExercise extends React.Component<Props> {
     const areSetsHistory = Boolean(setsHistory.length);
 
     return (
-      <Layout topBar={this.renderTopBar()} bottomBar={this.renderBottomBar()}>
+      <Layout
+        topBar={this.renderTopBar()}
+        bottomBar={this.renderBottomBar()}
+        dataTestId="exercise-screen"
+      >
         <div className={style.screen}>
           {areSets && this.renderSets()}
           {areSetsHistory && this.renderSetsHistory()}

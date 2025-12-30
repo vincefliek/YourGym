@@ -8,6 +8,7 @@ export interface TrainingProps {
   id: string;
   name: string;
   exercises: Exercise[];
+  dataTestId?: string;
   onChangeName: (name: string) => void;
   onAddExercise: () => void;
   onDelete: () => Promise<void>;

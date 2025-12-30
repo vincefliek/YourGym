@@ -29,6 +29,7 @@ const PureEditExistingTraining: React.FC<Props> = (props) => {
   } = props;
   return (
     <TrainingComp
+      dataTestId="edit-existing-training-screen"
       id={data.id}
       name={data.name}
       exercises={data.exercises}

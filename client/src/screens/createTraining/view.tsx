@@ -51,6 +51,7 @@ class PureCreateTraining extends React.Component<Props> {
     } = this.props;
     return (
       <Training
+        dataTestId="create-training-screen"
         id={data.id}
         name={data.name}
         exercises={data.exercises}

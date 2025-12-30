@@ -2,6 +2,7 @@ import { Exercise } from '../../model/types';
 
 export interface ExerciseProps {
   data: Exercise;
+  dataTestId?: string;
   onChangeName: (value: string) => void;
   onDeleteSet: (setId: string) => void;
   onChangeRepetitions: (setId: string, value: string) => void;

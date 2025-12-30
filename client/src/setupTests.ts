@@ -23,7 +23,7 @@ import 'fake-indexeddb/auto';
 
 import { IDBFactory } from 'fake-indexeddb';
 
-import { createApiMocks } from './test-utils/createApiMocks';
+import { createApiMocks } from './test-utils';
 
 // mock "uuid" npm package
 jest.mock('uuid', () => ({

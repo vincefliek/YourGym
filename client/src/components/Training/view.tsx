@@ -11,6 +11,7 @@ export const Training: React.FC<TrainingProps> = ({
   id,
   name,
   exercises,
+  dataTestId,
   onChangeName,
   onAddExercise,
   onDelete,
@@ -22,9 +23,15 @@ export const Training: React.FC<TrainingProps> = ({
 
   return (
     <Layout
+      dataTestId={dataTestId}
       topBar={
         <div className={style.topBar}>
-          <Input type="text" value={name} onBlur={onChangeName} />
+          <Input
+            type="text"
+            value={name}
+            onBlur={onChangeName}
+            data-testid="training-name-input"
+          />
         </div>
       }
       bottomBar={
@@ -48,7 +55,11 @@ export const Training: React.FC<TrainingProps> = ({
           [style.screenNoData]: !areExercises,
         })}
       >
-        <TransitionGroup component={'ul'} className={style.exercises}>
+        <TransitionGroup
+          component={'ul'}
+          className={style.exercises}
+          data-testid="exercises-list"
+        >
           {exercises.map((exercise) => (
             <CSSTransition
               key={exercise.id}
@@ -60,7 +71,7 @@ export const Training: React.FC<TrainingProps> = ({
                 exitActive: style.setActiveExit,
               }}
             >
-              <li className={style.exercise}>
+              <li className={style.exercise} data-testid="exercise-item">
                 <Button
                   skin="icon"
                   size="medium"

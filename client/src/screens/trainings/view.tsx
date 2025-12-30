@@ -84,14 +84,18 @@ const PureTrainings: React.FC<Props> = (props) => {
 
   if (!isData) {
     return (
-      <Layout bottomBar={<Navbar />}>
+      <Layout bottomBar={<Navbar />} dataTestId="trainings-screen-no-data">
         <div className={style.screenAddNew}>{renderAddFirstTraining()}</div>
       </Layout>
     );
   }
 
   return (
-    <Layout topBar={renderTopBar()} bottomBar={<Navbar />}>
+    <Layout
+      topBar={renderTopBar()}
+      bottomBar={<Navbar />}
+      dataTestId="trainings-screen"
+    >
       <div className={style.screen}>{renderTrainings()}</div>
     </Layout>
   );

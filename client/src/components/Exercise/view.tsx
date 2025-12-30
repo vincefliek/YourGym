@@ -19,6 +19,7 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
           value={data.name}
           onBlur={onChangeName}
           className={style.input}
+          data-testid="exercise-name-input"
         />
       </div>
     );
@@ -103,12 +104,16 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   };
 
   render() {
-    const { data, onAddSet } = this.props;
+    const { data, onAddSet, dataTestId } = this.props;
 
     const areSets = Boolean(data.sets.length);
 
     return (
-      <Layout topBar={this.renderTopBar()} bottomBar={this.renderBottomBar()}>
+      <Layout
+        dataTestId={dataTestId}
+        topBar={this.renderTopBar()}
+        bottomBar={this.renderBottomBar()}
+      >
         <div
           className={classnames(style.screen, {
             [style.screenNoData]: !areSets,

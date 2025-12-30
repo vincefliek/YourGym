@@ -32,6 +32,7 @@ class PureNavbar extends React.Component<NavbarProps, NavbarState> {
             [style.active]: isHomeActive,
           })}
           onClick={onHomeClick}
+          data-testid="nav-home-button"
         >
           Home
         </Button>
@@ -43,6 +44,7 @@ class PureNavbar extends React.Component<NavbarProps, NavbarState> {
             [style.active]: isTrainingsActive,
           })}
           onClick={onTrainingsClick}
+          data-testid="nav-trainings-button"
         >
           Trainings
         </Button>
@@ -54,6 +56,7 @@ class PureNavbar extends React.Component<NavbarProps, NavbarState> {
             [style.animationBurger]: isBurgerActive,
           })}
           onClick={onBurgerClick}
+          data-testid="nav-burger-button"
         >
           <Burger />
           <Dumbbell />

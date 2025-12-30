@@ -103,7 +103,11 @@ class PureTraining extends React.Component<Props> {
     const areExercises = Boolean(data.exercises.length);
 
     return (
-      <Layout topBar={this.renderTopBar()} bottomBar={this.renderBottomBar()}>
+      <Layout
+        topBar={this.renderTopBar()}
+        bottomBar={this.renderBottomBar()}
+        dataTestId="existing-training-screen"
+      >
         <div className={style.screen}>
           {areExercises && this.renderExercises()}
         </div>
