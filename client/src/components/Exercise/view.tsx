@@ -31,7 +31,12 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
         <Button skin="icon" size="large" onClick={onDelete}>
           <DeleteIcon />
         </Button>
-        <Button skin="icon" size="large" onClick={onSave}>
+        <Button
+          skin="icon"
+          size="large"
+          onClick={onSave}
+          data-testid="exercise-save-button"
+        >
           <DoneIcon />
         </Button>
       </NavbarContainer>
@@ -42,7 +47,11 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     const { data, onDeleteSet, onChangeRepetitions, onChangeWeight } =
       this.props;
     return (
-      <TransitionGroup component={'ul'} className={style.sets}>
+      <TransitionGroup
+        component={'ul'}
+        className={style.sets}
+        data-testid="sets-list"
+      >
         {data.sets.map((set, index) => {
           return (
             <CSSTransition
@@ -55,7 +64,7 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
                 exitActive: style.setActiveExit,
               }}
             >
-              <li className={style.set}>
+              <li className={style.set} data-testid="set-item">
                 <Button
                   skin="icon"
                   size="medium"
@@ -111,6 +120,7 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
             font="nunito"
             className={style.button}
             onClick={onAddSet}
+            data-testid="add-set-button"
           >
             Add set
           </Button>

@@ -31,6 +31,7 @@ const PureTrainings: React.FC<Props> = (props) => {
         font="nunito"
         className={style.addNew}
         onClick={onAdd}
+        data-testid="add-training-button"
       >
         Add your 1st training
       </Button>
@@ -69,7 +70,12 @@ const PureTrainings: React.FC<Props> = (props) => {
     const { onAdd } = props;
     return (
       <NavbarContainer className={style.navbarContainer}>
-        <Button skin="icon" size="large" onClick={onAdd}>
+        <Button
+          skin="icon"
+          size="large"
+          onClick={onAdd}
+          data-testid="add-training-button-top"
+        >
           <AddIcon />
         </Button>
       </NavbarContainer>

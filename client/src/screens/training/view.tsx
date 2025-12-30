@@ -57,7 +57,12 @@ class PureTraining extends React.Component<Props> {
         <Button skin="icon" size="large" onClick={onBack}>
           <BackIcon />
         </Button>
-        <Button skin="icon" size="large" onClick={onEdit}>
+        <Button
+          skin="icon"
+          size="large"
+          onClick={onEdit}
+          data-testid="training-edit-button"
+        >
           <EditIcon />
         </Button>
       </NavbarContainer>

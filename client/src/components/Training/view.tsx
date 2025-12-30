@@ -32,7 +32,12 @@ export const Training: React.FC<TrainingProps> = ({
           <Button skin="icon" size="large" onClick={onDelete}>
             <DeleteIcon />
           </Button>
-          <Button skin="icon" size="large" onClick={onSave}>
+          <Button
+            skin="icon"
+            size="large"
+            onClick={onSave}
+            data-testid="training-save-button"
+          >
             <DoneIcon />
           </Button>
         </NavbarContainer>
@@ -81,6 +86,7 @@ export const Training: React.FC<TrainingProps> = ({
           font="nunito"
           className={style.button}
           onClick={onAddExercise}
+          data-testid="add-exercise-button"
         >
           Add exersise
         </Button>
