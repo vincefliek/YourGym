@@ -8,5 +8,6 @@ export { Input } from './Input';
 export { Exercise } from './Exercise';
 export { Training } from './Training';
 export { Notifications } from './Notifications';
+export { BlockingLayer } from './BlockingLayer';
 export { TrainingProgressCard } from './TrainingProgressCard';
 export { TrainingProgressChart } from './TrainingProgressChart';
