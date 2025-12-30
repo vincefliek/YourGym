@@ -24,6 +24,10 @@ interface State {
   auth: AuthState;
   sync: SyncWithServer;
   notifications: Notification[];
+  uiBlockingLayer: {
+    isVisible: boolean;
+    message?: string;
+  };
 }
 
 interface Subscribers {
@@ -37,6 +41,7 @@ interface Subscribers {
   activeTraining: Array<() => void>;
   sync: Array<() => void>;
   notifications: Array<() => void>;
+  uiBlockingLayer: Array<() => void>;
 }
 
 export class Store implements StoreInterface {
@@ -72,6 +77,10 @@ export class Store implements StoreInterface {
         error: undefined,
       },
       notifications: [],
+      uiBlockingLayer: {
+        isVisible: false,
+        message: undefined,
+      },
     };
     this.subscribers = {
       route: [],
@@ -84,6 +93,7 @@ export class Store implements StoreInterface {
       auth: [],
       sync: [],
       notifications: [],
+      uiBlockingLayer: [],
     };
 
     const publicDataAccessors = Object.keys(this.subscribers);
@@ -164,6 +174,8 @@ export class Store implements StoreInterface {
         return this.state.sync;
       case 'notifications':
         return this.state.notifications;
+      case 'uiBlockingLayer':
+        return this.state.uiBlockingLayer;
       default:
         return undefined;
     }
@@ -215,6 +227,9 @@ export class Store implements StoreInterface {
             break;
           case 'notifications':
             this.notifications = persisted as Notification[];
+            break;
+          case 'uiBlockingLayer':
+            this.state.uiBlockingLayer = persisted as State['uiBlockingLayer'];
             break;
           default:
             break;
@@ -315,6 +330,7 @@ export class Store implements StoreInterface {
       auth: state.auth,
       sync: state.sync,
       notifications: state.notifications,
+      uiBlockingLayer: state.uiBlockingLayer,
     }) as const;
 
   getStoreData = (publicDataAccessors: string[]): { [key: string]: any } => {
@@ -379,6 +395,10 @@ export class Store implements StoreInterface {
 
   get sync(): SyncWithServer {
     return this.state.sync;
+  }
+
+  get uiBlockingLayer(): State['uiBlockingLayer'] {
+    return this.state.uiBlockingLayer;
   }
 
   set auth(data: Partial<AuthState>) {
@@ -461,6 +481,16 @@ export class Store implements StoreInterface {
     const fn = () => ({ notifications: data });
     this._updateStoreData(fn, ['notifications']);
   }
+
+  set uiBlockingLayer(data: State['uiBlockingLayer']) {
+    const fn = (state: State) => ({
+      uiBlockingLayer: {
+        ...state.uiBlockingLayer,
+        ...data,
+      },
+    });
+    this._updateStoreData(fn, ['uiBlockingLayer']);
+  }
 }
 
 const allPublicDataAccessors = [
@@ -474,6 +504,7 @@ const allPublicDataAccessors = [
   'auth',
   'sync',
   'notifications',
+  'uiBlockingLayer',
 ];
 
 function validateDataAccessors(publicDataAccessors: string[]): void {
