@@ -88,6 +88,7 @@ export const initGlobalTasks = (
   }
 
   let _hydrateInProgress = false;
+  let _hydrationStart = 0;
 
   async function hydrateStoreFromServer() {
     // a lock prevents concurrent hydrations
@@ -96,13 +97,18 @@ export const initGlobalTasks = (
     }
 
     try {
-      // TODO: add UI indication of hydration in progress
-
       const hasServerDataInIndexedDB = await store.hasServerDataInIndexedDB();
 
       if (!hasServerDataInIndexedDB) {
         if (store.auth?.isAuthenticated) {
+          _hydrationStart = performance.now();
+
           _hydrateInProgress = true;
+
+          store.uiBlockingLayer = {
+            isVisible: true,
+            message: 'Hydrating local store with data from server...',
+          };
 
           console.log(
             '[HydrateStoreFromServer] 🏗️ Starting hydration from server...',
@@ -126,12 +132,32 @@ export const initGlobalTasks = (
         }
       }
     } catch (error: any) {
-      console.error(
-        '[HydrateStoreFromServer] ⚠️ Failed to hydrate store from server. Error:',
-        error?.message || String(error) || 'Unknown error',
-      );
+      const errorMessage = `[HydrateStoreFromServer] ⚠️ Failed to hydrate store from server. Error: ${error?.message || String(error) || 'Unknown error'}`;
+
+      notificationsApi.addNotification({
+        type: 'error',
+        message: errorMessage,
+      });
+      console.error(errorMessage);
     } finally {
       _hydrateInProgress = false;
+
+      const removeUiBlockingLayer = () => {
+        store.uiBlockingLayer = {
+          isVisible: false,
+          message: undefined,
+        };
+      };
+
+      const hydrationDuration = performance.now() - _hydrationStart;
+
+      if (hydrationDuration < 1000) {
+        setTimeout(() => {
+          removeUiBlockingLayer();
+        }, 1500);
+      } else {
+        removeUiBlockingLayer();
+      }
     }
   }
 

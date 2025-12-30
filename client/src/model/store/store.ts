@@ -7,6 +7,7 @@ import {
   SyncWithServer,
   ActiveTraining,
   Notification,
+  UiBlockingLayerState,
 } from '../types';
 
 import { get as idbGet, set as idbSet } from 'idb-keyval';
@@ -24,10 +25,7 @@ interface State {
   auth: AuthState;
   sync: SyncWithServer;
   notifications: Notification[];
-  uiBlockingLayer: {
-    isVisible: boolean;
-    message?: string;
-  };
+  uiBlockingLayer: UiBlockingLayerState;
 }
 
 interface Subscribers {

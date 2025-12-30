@@ -88,6 +88,13 @@ export interface Store {
   set sync(data: Partial<SyncWithServer>);
   get notifications(): Notification[];
   set notifications(value: Notification[]);
+  get uiBlockingLayer(): UiBlockingLayerState;
+  set uiBlockingLayer(data: UiBlockingLayerState);
+}
+
+export interface UiBlockingLayerState {
+  isVisible: boolean;
+  message?: string;
 }
 
 export type NotificationType = 'error' | 'info' | 'success';

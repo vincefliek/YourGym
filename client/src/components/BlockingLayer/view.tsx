@@ -12,10 +12,17 @@ const PureBlockingLayer: React.FC<Props> = ({ data }) => {
   if (!data.isVisible) return null;
 
   return (
-    <div className={style.blockingLayer} role="status" aria-live="polite">
+    <div
+      className={style.blockingLayer}
+      role="status"
+      aria-live="polite"
+      data-testid="ui-blocking-layer"
+    >
       <div className={style.overlay} />
       <div className={style.messageWrapper}>
-        <div className={style.message}>{data.message}</div>
+        <div className={style.message} data-testid="ui-blocking-layer-message">
+          {data.message}
+        </div>
       </div>
     </div>
   );
