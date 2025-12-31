@@ -161,8 +161,6 @@ export const createAuthApi: ApiFactory<
       const errorMessage = `Get session failed. Error: ${e.message || String(e) || 'Unknown error'}`;
 
       store.auth = {
-        user: null,
-        isAuthenticated: false,
         authError: errorMessage,
         authLoading: false,
       };
