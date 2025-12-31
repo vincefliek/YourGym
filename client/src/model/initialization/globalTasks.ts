@@ -1,4 +1,4 @@
-import { createRAFInterval } from '../../utils';
+// import { createRAFInterval } from '../../utils';
 import { ResumeManager } from './resumeManager';
 import { AppAPIs, Store } from '../types';
 
@@ -12,14 +12,14 @@ export const initGlobalTasks = (
     notificationsApi,
   }: AppAPIs,
 ) => {
-  let _stopPeriodicTasks = () => {};
+  // let _stopPeriodicTasks = () => {};
   const resumeManager = new ResumeManager();
 
   /* ========= LIFECYCLE ========= */
 
   checkAuthStatus();
   checkSyncStatus();
-  runPeriodicTasks();
+  // runPeriodicTasks(); // TEMP disabled for testing
 
   resumeManager.init({
     onResume: resumeAppFromBackground,
@@ -36,7 +36,7 @@ export const initGlobalTasks = (
     () => {
       // move into background / tab becomes inactive
       if (document.visibilityState === 'hidden') {
-        stopPeriodicTasks();
+        // stopPeriodicTasks(); // TEMP disabled for testing
       }
     },
     false,
@@ -64,7 +64,7 @@ export const initGlobalTasks = (
     await Promise.all([checkAuthStatus(), checkSyncStatus()]);
     // wait for auth check before hydration
     await hydrateStoreFromServer();
-    runPeriodicTasks();
+    // runPeriodicTasks(); // TEMP disabled for testing
   }
 
   function checkAuthStatus() {
@@ -75,17 +75,17 @@ export const initGlobalTasks = (
     return syncApi.hasServerChanges();
   }
 
-  function stopPeriodicTasks() {
-    _stopPeriodicTasks();
-  }
+  // function stopPeriodicTasks() {
+  //   _stopPeriodicTasks();
+  // }
 
-  function runPeriodicTasks() {
-    const ONE_MINUTE = 1000 * 60;
-    const PERIODIC_TASKS_TIME_MS = ONE_MINUTE * 5;
-    _stopPeriodicTasks = createRAFInterval(() => {
-      checkSyncStatus();
-    }, PERIODIC_TASKS_TIME_MS);
-  }
+  // function runPeriodicTasks() {
+  //   const ONE_MINUTE = 1000 * 60;
+  //   const PERIODIC_TASKS_TIME_MS = ONE_MINUTE * 5;
+  //   _stopPeriodicTasks = createRAFInterval(() => {
+  //     checkSyncStatus();
+  //   }, PERIODIC_TASKS_TIME_MS);
+  // }
 
   let _hydrateInProgress = false;
   let _hydrationStart = 0;
