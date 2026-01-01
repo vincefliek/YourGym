@@ -30,6 +30,18 @@ jest.mock('uuid', () => ({
   v4: () => `mock-uuid-${Math.random()}`,
 }));
 
+// mock "virtual:pwa-register/react" npm package
+jest.mock(
+  'virtual:pwa-register/react',
+  () => ({
+    useRegisterSW: () => ({
+      needRefresh: [false, jest.fn()],
+      updateServiceWorker: jest.fn(() => Promise.resolve()),
+    }),
+  }),
+  { virtual: true },
+);
+
 export const apiMocks = createApiMocks();
 
 beforeAll(() => apiMocks.init());

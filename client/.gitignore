@@ -5,6 +5,9 @@
 /.pnp
 .pnp.js
 
+# e.g. dev Service worker
+/dev-dist
+
 # testing
 /coverage
 
