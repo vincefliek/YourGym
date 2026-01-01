@@ -84,11 +84,9 @@ class PureTraining extends React.Component<Props> {
               key={exercise.id}
               className={style.exercise}
               data-testid="training-exercise-item"
+              onClick={() => onOpenExercise(data, exercise)}
             >
-              <div
-                className={style.exerciseBox}
-                onClick={() => onOpenExercise(data, exercise)}
-              >
+              <div className={style.exerciseBox}>
                 {exercise.name}
                 <br />
                 {exercise.setsPreview}
