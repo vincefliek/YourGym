@@ -31,7 +31,7 @@ const PureTrainings: React.FC<Props> = (props) => {
         font="nunito"
         className={style.addNew}
         onClick={onAdd}
-        data-testid="add-training-button"
+        data-testid="add-first-training-button"
       >
         Add your 1st training
       </Button>
@@ -41,21 +41,27 @@ const PureTrainings: React.FC<Props> = (props) => {
   const renderTrainings = () => {
     const { data, onDelete, onOpen } = props;
     return (
-      <ul className={style.trainings}>
+      <ul className={style.trainings} data-testid="trainings-list">
         {data.map((training) => {
           return (
-            <li key={training.id} className={style.training}>
+            <li
+              key={training.id}
+              className={style.training}
+              data-testid="training-item"
+            >
               <Button
                 skin="icon"
                 size="medium"
                 className={style.trainingDelete}
                 onClick={() => onDelete(training.id)}
+                data-testid="delete-training-button"
               >
                 <DeleteIcon />
               </Button>
               <div
                 className={style.trainingBox}
                 onClick={() => onOpen(training.id)}
+                data-testid="open-training-button"
               >
                 {training.name}
               </div>

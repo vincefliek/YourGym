@@ -72,10 +72,14 @@ class PureTraining extends React.Component<Props> {
   renderExercises = () => {
     const { data, onOpenExercise } = this.props;
     return (
-      <ul className={style.exercises}>
+      <ul className={style.exercises} data-testid="training-exercises-list">
         {data.exercises.map((exercise) => {
           return (
-            <li key={exercise.id} className={style.exercise}>
+            <li
+              key={exercise.id}
+              className={style.exercise}
+              data-testid="training-exercise-item"
+            >
               <div
                 className={style.exerciseBox}
                 onClick={() => onOpenExercise(data, exercise)}
@@ -118,6 +122,7 @@ class PureTraining extends React.Component<Props> {
               font="nunito"
               className={style.button}
               onClick={onFinish}
+              data-testid="finish-training-button"
             >
               🏆 FINISH 🏆
             </Button>
@@ -127,6 +132,7 @@ class PureTraining extends React.Component<Props> {
               font="nunito"
               className={style.button}
               onClick={onStart}
+              data-testid="start-training-button"
             >
               Start
             </Button>

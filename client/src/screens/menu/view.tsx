@@ -19,7 +19,7 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
   const { authData, syncData, sync, signout } = props;
 
   return (
-    <Layout bottomBar={<Navbar />}>
+    <Layout bottomBar={<Navbar />} dataTestId="menu-screen">
       <div>
         <div style={{ marginBottom: 12 }}>
           <TrainingProgressCard />

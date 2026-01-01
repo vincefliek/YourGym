@@ -198,7 +198,7 @@ class PureExercise extends React.Component<Props> {
       <Layout
         topBar={this.renderTopBar()}
         bottomBar={this.renderBottomBar()}
-        dataTestId="exercise-screen"
+        dataTestId="existing-exercise-screen"
       >
         <div className={style.screen}>
           {areSets && this.renderSets()}

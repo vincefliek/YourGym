@@ -51,6 +51,7 @@ class PureEditNewExercise extends React.Component<Props> {
 
     return (
       <Exercise
+        dataTestId="edit-new-exercise-screen"
         data={data}
         onChangeName={this._onChangeName}
         onDeleteSet={this._onDeleteSet}

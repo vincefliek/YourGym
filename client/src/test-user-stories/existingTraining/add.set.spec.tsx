@@ -41,7 +41,7 @@ describe('existing training', () => {
     });
 
     // create new training
-    const addTrainingBtn = await waitForByTestId('add-training-button');
+    const addTrainingBtn = await waitForByTestId('add-first-training-button');
     act(() => userEvent.click(addTrainingBtn));
 
     // inside of create training screen

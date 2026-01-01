@@ -27,6 +27,7 @@ class PureCreateExercise extends React.Component<
 
     return (
       <Exercise
+        dataTestId="create-exercise-screen"
         data={data}
         onChangeName={onChangeName}
         onDeleteSet={this._onDeleteSet}

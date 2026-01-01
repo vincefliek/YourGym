@@ -159,7 +159,7 @@ const PureHome: React.FC<HomeProps> = (props) => {
   };
 
   return (
-    <Layout bottomBar={<Navbar />}>
+    <Layout bottomBar={<Navbar />} dataTestId="home-screen">
       <div className={style.screen}>
         {!isAuthenticated && (
           <>

@@ -6,7 +6,7 @@ import { Layout, Navbar, TrainingProgressChart } from '../../components';
 
 const PureDashboard: React.FC<any> = ({ aggregates }) => {
   return (
-    <Layout bottomBar={<Navbar />}>
+    <Layout bottomBar={<Navbar />} dataTestId="dashboard-screen">
       <div style={{ padding: 12 }}>
         <h2>Progress dashboard</h2>
         <section style={{ marginTop: 12 }}>
