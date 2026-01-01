@@ -52,7 +52,12 @@ class PureExercise extends React.Component<Props> {
     } = this.props;
     return (
       <NavbarContainer className={style.navbarContainer}>
-        <Button skin="icon" size="large" onClick={onBack}>
+        <Button
+          skin="icon"
+          size="large"
+          onClick={onBack}
+          data-testid="back-button"
+        >
           <BackIcon />
         </Button>
         {isInProgress && (

@@ -93,11 +93,15 @@ const PureHome: React.FC<HomeProps> = (props) => {
     return (
       <>
         <h3 style={{ textAlign: 'center' }}>Recent Trainings</h3>
-        <ul className={style.trainings}>
+        <ul className={style.trainings} data-testid="completed-trainings-list">
           {completedTrainings.map((training) => {
             const isExpanded = expandedTrainingId === training.id;
             return (
-              <li key={training.id} className={style.training}>
+              <li
+                key={training.id}
+                className={style.training}
+                data-testid="completed-training-item"
+              >
                 <div className={style.trainingDate}>
                   {getDateAndTime(training.timestamptz).date}
                 </div>

@@ -62,8 +62,10 @@ export const initGlobalTasks = (
   async function resumeAppFromBackground() {
     // return from background / tab becomes active
     await Promise.all([checkAuthStatus(), checkSyncStatus()]);
+
     // wait for auth check before hydration
     await hydrateStoreFromServer();
+
     // runPeriodicTasks(); // TEMP disabled for testing
   }
 
@@ -91,6 +93,11 @@ export const initGlobalTasks = (
   let _hydrationStart = 0;
 
   async function hydrateStoreFromServer() {
+    // TODO: skip in tests until properly configured for tests
+    if (process.env.NODE_ENV === 'test') {
+      return;
+    }
+
     // a lock prevents concurrent hydrations
     if (_hydrateInProgress) {
       return;

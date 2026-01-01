@@ -6,7 +6,7 @@ import {
 } from '@testing-library/react';
 
 const _private_waitForAllByMethod = async (
-  method: 'findAllByTestId',
+  method: 'findAllByTestId' | 'queryAllByTestId',
   param: Matcher,
   options?: waitForOptions,
 ) => {
@@ -22,7 +22,7 @@ const _private_waitForAllByMethod = async (
 };
 
 const _private_waitForByMethod = async (
-  method: 'findByTestId' | 'findByText',
+  method: 'findByTestId' | 'findByText' | 'queryByTestId' | 'queryByText',
   param: Matcher,
   options?: waitForOptions,
 ) => {
