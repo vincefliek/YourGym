@@ -7,6 +7,17 @@ export default defineConfig({
   build: {
     outDir: 'build',
     sourcemap: true,
+    rollupOptions: {
+      // Prevent Vite from trying to bundle test files
+      external: [
+        '**/*.test.ts',
+        '**/*.spec.ts',
+        '**/*.test.tsx',
+        '**/*.spec.tsx',
+        '**/__tests__',
+        '**/test-utils',
+      ],
+    },
   },
   plugins: [react(), svgr()],
   server: {
