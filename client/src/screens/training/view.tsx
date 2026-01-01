@@ -54,7 +54,12 @@ class PureTraining extends React.Component<Props> {
     const { onBack, onEdit } = this.props;
     return (
       <NavbarContainer className={style.navbarContainer}>
-        <Button skin="icon" size="large" onClick={onBack}>
+        <Button
+          skin="icon"
+          size="large"
+          onClick={onBack}
+          data-testid="training-back-button"
+        >
           <BackIcon />
         </Button>
         <Button

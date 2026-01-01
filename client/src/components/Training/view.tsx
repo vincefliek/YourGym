@@ -36,7 +36,12 @@ export const Training: React.FC<TrainingProps> = ({
       }
       bottomBar={
         <NavbarContainer className={style.navbarContainer}>
-          <Button skin="icon" size="large" onClick={onDelete}>
+          <Button
+            skin="icon"
+            size="large"
+            onClick={onDelete}
+            data-testid="training-delete-button"
+          >
             <DeleteIcon />
           </Button>
           <Button
@@ -77,12 +82,14 @@ export const Training: React.FC<TrainingProps> = ({
                   size="medium"
                   className={style.exerciseDelete}
                   onClick={() => onDeleteExercise(id, exercise.id)}
+                  data-testid="delete-exercise-button"
                 >
                   <DeleteIcon />
                 </Button>
                 <div
                   className={style.exerciseBox}
                   onClick={() => onOpenExercise(exercise.id)}
+                  data-testid="open-exercise-button"
                 >
                   {exercise.name}
                   <br />

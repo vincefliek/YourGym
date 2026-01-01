@@ -49,6 +49,7 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
             onClick={() => signout()}
             style={{ width: '100%' }}
             disabled={authData.isLoading}
+            data-testid="signout-button"
           >
             Sign out
           </Button>
@@ -86,6 +87,7 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
             onClick={sync}
             style={{ width: '100%' }}
             disabled={syncData.isLoading}
+            data-testid="sync-button"
           >
             Sync
           </Button>

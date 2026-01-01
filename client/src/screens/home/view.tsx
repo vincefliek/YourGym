@@ -60,6 +60,7 @@ const AuthForm = ({ title, onSubmit }: AuthFormProps) => {
           className={style.authSubmit}
           skin="primary"
           size="medium"
+          data-testid="auth-submit-button"
         >
           Submit
         </Button>
@@ -106,6 +107,7 @@ const PureHome: React.FC<HomeProps> = (props) => {
                     size="medium"
                     className={style.trainingDelete}
                     onClick={() => onDeleteCompletedTraining(training.id)}
+                    data-testid="delete-completed-training-button"
                   >
                     <DeleteIcon />
                   </Button>
@@ -127,6 +129,7 @@ const PureHome: React.FC<HomeProps> = (props) => {
                         size="medium"
                         onClick={() => toggleExpanded(training.id)}
                         aria-expanded={isExpanded}
+                        data-testid="toggle-completed-training-details-button"
                       >
                         {isExpanded ? '📖' : '📗'}
                       </Button>
@@ -179,6 +182,7 @@ const PureHome: React.FC<HomeProps> = (props) => {
               skin="text"
               size="medium"
               onClick={() => setIsLoginForm((state) => !state)}
+              data-testid="toggle-form-type-button"
             >
               {isLoginForm ? 'Go to Sign Up' : 'Go to Sign In'}
             </Button>

@@ -33,14 +33,18 @@ const ToastItem: React.FC<{
       })}
       role="status"
       aria-live="polite"
+      data-testid="notification"
     >
-      <div className={style.message}>{n.message}</div>
+      <div className={style.message} data-testid="notification-message">
+        {n.message}
+      </div>
       <Button
         skin="icon"
         size="small"
         className={style.closeBtn}
         onClick={() => onClose(n.id)}
         aria-label="Dismiss"
+        data-testid="dismiss-notification-button"
       >
         <DeleteIcon />
       </Button>
@@ -57,7 +61,11 @@ const PureNotifications: React.FC<Props> = ({
   }
 
   return (
-    <div className={style.notifications} aria-live="polite">
+    <div
+      className={style.notifications}
+      aria-live="polite"
+      data-testid="notifications-container"
+    >
       {notifications.map((n) => (
         <ToastItem key={n.id} n={n} onClose={removeNotification} />
       ))}

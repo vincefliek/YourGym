@@ -29,7 +29,12 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     const { onDelete, onSave } = this.props;
     return (
       <NavbarContainer className={style.navbarContainer}>
-        <Button skin="icon" size="large" onClick={onDelete}>
+        <Button
+          skin="icon"
+          size="large"
+          onClick={onDelete}
+          data-testid="exercise-delete-button"
+        >
           <DeleteIcon />
         </Button>
         <Button
@@ -71,6 +76,7 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
                   size="medium"
                   className={style.setDelete}
                   onClick={() => onDeleteSet(set.id)}
+                  data-testid="delete-set-button"
                 >
                   <DeleteIcon />
                 </Button>
@@ -82,6 +88,7 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
                     onBlur={(value) => onChangeRepetitions(set.id, value)}
                     onChange={() => {}}
                     className={style.input}
+                    data-testid="set-repetitions-input"
                   />
                 </div>
                 <div>X</div>
@@ -92,6 +99,7 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
                     onBlur={(value) => onChangeWeight(set.id, value)}
                     onChange={() => {}}
                     className={style.input}
+                    data-testid="set-weight-input"
                   />
                 </div>
                 <div className={style.weightUnit}>kg</div>

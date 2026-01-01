@@ -61,6 +61,7 @@ class PureExercise extends React.Component<Props> {
               skin="icon"
               size="large"
               onClick={() => onExercisePrev(training, exercise)}
+              data-testid="prev-exercise-button"
             >
               <ArrowLeft />
             </Button>
@@ -72,6 +73,7 @@ class PureExercise extends React.Component<Props> {
               skin="icon"
               size="large"
               onClick={() => onExerciseNext(training, exercise)}
+              data-testid="next-exercise-button"
             >
               <ArrowRight />
             </Button>
@@ -131,6 +133,7 @@ class PureExercise extends React.Component<Props> {
                       onClick={() =>
                         onResetDoneSet(training.id, exercise.id, set)
                       }
+                      data-testid="undo-set-button"
                     >
                       done
                     </Button>
@@ -140,6 +143,7 @@ class PureExercise extends React.Component<Props> {
                       size="large"
                       className={style.setDone}
                       onClick={() => onDoneSet(training.id, exercise.id, set)}
+                      data-testid="done-set-button"
                     >
                       <DoneIcon />
                     </Button>
