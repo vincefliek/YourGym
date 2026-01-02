@@ -41,15 +41,13 @@ export const Button: React.FC<ButtonProps> = ({
    * later un-focusing it by clicking in an empty space.
    * after that, all buttons became unclickable.
    */
-  const onClickIOSFix = isIOS
-    ? { onTouchEnd: (e: any) => onClick?.(e) }
-    : { onClick };
+  const Component = isIOS ? IOSFixedOnClickButton : RegularButton;
 
   return (
-    <button
+    <Component
       type="button"
       {...props}
-      {...(disabled ? void 0 : onClickIOSFix)}
+      onClick={disabled ? void 0 : onClick}
       disabled={disabled}
       className={classnames(
         className,
@@ -59,6 +57,48 @@ export const Button: React.FC<ButtonProps> = ({
         sizeClassName,
         { [style.disabled]: disabled },
       )}
+      children={children}
+    />
+  );
+};
+
+const RegularButton = (props: any) => <button {...props} />;
+
+const IOSFixedOnClickButton: React.FC<any> = ({
+  onClick,
+  children,
+  style,
+  ...props
+}) => {
+  const isScrolling = React.useRef(false);
+
+  // 1. Detect if the user starts moving (scrolling)
+  const onPointerMove = () => {
+    isScrolling.current = true;
+  };
+
+  // 2. Reset the scroll flag when they first touch
+  const onPointerDown = () => {
+    isScrolling.current = false;
+  };
+
+  // 3. Only fire the handler if they didn't scroll
+  const onPointerUp = (e: any) => {
+    if (!isScrolling.current) {
+      onClick(e);
+    }
+  };
+
+  return (
+    <button
+      {...props}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      style={{
+        ...style,
+        touchAction: 'pan-y',
+      }}
     >
       {children}
     </button>

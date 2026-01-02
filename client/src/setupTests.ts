@@ -42,6 +42,11 @@ jest.mock(
   { virtual: true },
 );
 
+// mock iOS detection cause app target audience is iOS
+jest.mock('./utils/isIOS.ts', () => ({
+  isIOS: () => true,
+}));
+
 export const apiMocks = createApiMocks();
 
 beforeAll(() => apiMocks.init());
