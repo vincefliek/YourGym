@@ -1,3 +1,5 @@
+@use '../common/_fonts';
+
 html,
 body,
 :global(#root) {
@@ -20,4 +22,15 @@ code {
 
 .app {
   height: 100%;
+}
+
+.releaseVersion {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: 10px;
+  text-align: center;
+  font-family: fonts.$nunito;
+  font-size: 16px;
 }

@@ -38,6 +38,7 @@ export class App extends React.Component<AppProps, AppState> {
   render() {
     return (
       <AppContext.Provider value={this.appContext}>
+        <div className={style.releaseVersion}>v{__APP_VERSION__}</div>
         <div className={style.app}>
           <Navigator />
           <Notifications />
