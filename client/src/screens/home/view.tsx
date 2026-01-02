@@ -192,7 +192,7 @@ const PureHome: React.FC<HomeProps> = (props) => {
             </Button>
           </>
         )}
-        {isAuthenticated && renderTrainings()}
+        {renderTrainings()}
       </div>
     </Layout>
   );
