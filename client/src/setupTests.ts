@@ -47,6 +47,7 @@ export const apiMocks = createApiMocks();
 beforeAll(() => apiMocks.init());
 beforeEach(() => {
   global.indexedDB = new IDBFactory();
+  (global as any).__APP_VERSION__ = 'v1.0.0';
 });
 afterEach(() => {
   apiMocks.resetCache();
