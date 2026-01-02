@@ -1,6 +1,6 @@
 {
   "name": "your-gym",
-  "version": "1.0.35",
+  "version": "1.0.36",
   "private": true,
   "homepage": "https://yourgymstaticsite.onrender.com",
   "dependencies": {
