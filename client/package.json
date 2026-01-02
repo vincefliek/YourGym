@@ -1,6 +1,6 @@
 {
   "name": "your-gym",
-  "version": "0.1.0",
+  "version": "1.0.34",
   "private": true,
   "homepage": "https://yourgymstaticsite.onrender.com",
   "dependencies": {
@@ -60,7 +60,7 @@
     "prepare": "cd .. && husky install client/.husky",
     "start": "git add .husky/pre-commit && vite",
     "dev": "vite",
-    "build": "npm run ts-check && vite build",
+    "build": "npm run ts-check && npm version patch --no-git-tag-version && vite build",
     "preview": "vite preview",
     "test": "NODE_ENV=test jest",
     "test:watch": "jest --watchAll",
