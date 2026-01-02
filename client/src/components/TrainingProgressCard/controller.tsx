@@ -6,12 +6,14 @@ import { aggregateByDay, lastNDays } from '../../model/aggregation';
 interface CardController {
   getLast7DaysAggregates: () => TrainingAggregate[];
   getTotalsForLast7Days: () => { totalVolumeKg: number; sessions: number };
+  onOpen: () => void;
 }
 
 export const controller = (
   serviceLocator: AppContext['serviceLocator'],
 ): CardController => {
   const store = serviceLocator.getStore();
+  const { navigationApi } = serviceLocator.getAPIs();
 
   const getStore = () => store.getStoreData(controller.storeDataAccessors);
 
@@ -30,6 +32,9 @@ export const controller = (
       const totalVolumeKg = last7.reduce((s, a) => s + a.totalVolumeKg, 0);
       const sessions = last7.reduce((s, a) => s + a.sessionsCount, 0);
       return { totalVolumeKg, sessions };
+    },
+    onOpen: async () => {
+      await navigationApi.toDashboard();
     },
   };
 };

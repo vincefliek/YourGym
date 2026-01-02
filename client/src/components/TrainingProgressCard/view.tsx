@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import { connect } from '../../utils';
 import { controller } from './controller';
@@ -11,19 +10,18 @@ import { TrainingAggregate } from '../../model/aggregation';
 interface Props {
   last7: TrainingAggregate[];
   totals: { totalVolumeKg: number; sessions: number };
+  onOpen: () => void;
 }
 
-const PureCard: React.FC<Props> = ({ last7, totals }) => {
+const PureCard: React.FC<Props> = ({ last7, totals, onOpen }) => {
   return (
     <div className={style.card}>
       <div className={style.header}>
         <h4>Progress</h4>
         <div className={style.actions}>
-          <Link to="/dashboard">
-            <Button skin="primary" size="small">
-              Open
-            </Button>
-          </Link>
+          <Button skin="primary" size="small" onClick={onOpen}>
+            Open
+          </Button>
         </div>
       </div>
       <div className={style.kpis}>
@@ -48,6 +46,7 @@ const PureCard: React.FC<Props> = ({ last7, totals }) => {
 export const TrainingProgressCard = connect({ controller }, (ctrl) => ({
   last7: ctrl.getLast7DaysAggregates(),
   totals: ctrl.getTotalsForLast7Days(),
+  onOpen: ctrl.onOpen,
 }))(PureCard);
 
 export default TrainingProgressCard;

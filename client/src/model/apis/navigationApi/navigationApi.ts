@@ -140,6 +140,9 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = ({
         exercise: exerciseId,
       });
     },
+    toDashboard: () => {
+      return setRoute(routes.dashboard);
+    },
     isHomeUrl: () => {
       return isRouteOpenedRightNow(routes.home);
     },

@@ -194,6 +194,7 @@ export interface NavigationApi {
   toTraining: (trainingId: string) => Promise<unknown>;
   toExercise: (trainingId: string, exerciseId: string) => Promise<unknown>;
   toEditTraining: (trainingId: string) => Promise<unknown>;
+  toDashboard: () => Promise<unknown>;
   isHomeUrl: () => boolean;
   isTrainingsUrl: () => boolean;
   isMenuUrl: () => boolean;
