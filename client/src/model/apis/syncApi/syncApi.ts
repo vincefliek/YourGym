@@ -39,13 +39,16 @@ export const createSyncApi: ApiFactory<
         serverHasChanges,
       };
     } catch (error) {
-      console.error('[TrainingsServerApi] hasServerChanges', error);
+      console.error(
+        '[TrainingsServerApi] hasServerChanges failed. Error:',
+        error,
+      );
       throw error;
     }
   };
 
   /**
-   * Save on the server (insert into DB) all trainings
+   * Save on the server (insert into DB) all completed trainings
    * that were not synced earlier.
    * After that substitute local ones with the ones from
    * the request result.
@@ -88,8 +91,14 @@ export const createSyncApi: ApiFactory<
       store.sync = {
         lastSyncAt: getTimestampWithTimeZone(new Date()),
         isLoading: false,
+        error: undefined, // reset the prev error
       };
     } catch (error: any) {
+      /**
+       * Each member of the sync process must re-throw a human readable error.
+       * Here's a centralized place to notify the system and the user
+       * about the error.
+       */
       store.sync = {
         isLoading: false,
         error: error.message,
