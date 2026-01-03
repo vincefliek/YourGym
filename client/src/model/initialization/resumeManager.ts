@@ -1,6 +1,7 @@
 interface ResumeManagerConfig {
   onResume: () => Promise<void>;
   onRetryFailed?: (err: Error) => Promise<void>;
+  logInfo?: (data: { message: string }) => void;
 }
 
 /**
@@ -21,6 +22,7 @@ export class ResumeManager {
   private onResume: ResumeManagerConfig['onResume'] = async () => {};
   private onRetryFailed: Required<ResumeManagerConfig>['onRetryFailed'] =
     async () => {};
+  private logInfo: Required<ResumeManagerConfig>['logInfo'] = () => {};
 
   constructor() {}
 
@@ -28,6 +30,9 @@ export class ResumeManager {
     this.onResume = config.onResume;
     if (config.onRetryFailed) {
       this.onRetryFailed = config.onRetryFailed;
+    }
+    if (config.logInfo) {
+      this.logInfo = config.logInfo;
     }
 
     document.addEventListener('visibilitychange', this.handleSignal, false);
@@ -53,6 +58,12 @@ export class ResumeManager {
       return;
     }
 
+    if (!navigator.onLine) {
+      this.logInfo({
+        message: 'ResumeManager: OFFLINE when entring `handleSignal`.',
+      });
+    }
+
     const now = Date.now();
     if (now - this.lastResume < 2000) return; // guard spam
 
@@ -61,6 +72,11 @@ export class ResumeManager {
     }
 
     this.resumeTimer = window.setTimeout(() => {
+      if (!navigator.onLine) {
+        this.logInfo({
+          message: 'ResumeManager: OFFLINE when calling `this.runResume()` !!!',
+        });
+      }
       this.resumeTimer = null;
       this.runResume();
     }, 500); // ⏱️ iOS-safe delay
