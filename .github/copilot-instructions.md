@@ -84,3 +84,4 @@ If anything is unclear or you want more examples (specific component flows, comm
 - ALWAYS check for element presence or absence using `await expect(...).resolves` or `await expect(...).rejects` patterns to handle asynchronous DOM updates correctly.
 - ALWAYS check for the expected screen after navigation or actions that do navigation to facilitate further maintenance and debugging. Example: `expect(await driver.waitFor.byTestId('home-screen')).toBeInTheDocument();`
 - ALWAYS wait for element to disappear/to be removed via `waitForElementToBeRemoved` from `@testing-library/react`.
+- If the flakiness happens (or there is a suspection), then wrap the code into `waitFor(...)` from `@testing-library/react`.
