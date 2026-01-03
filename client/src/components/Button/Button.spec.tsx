@@ -1,8 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { act } from 'react';
+import { render, screen } from '@testing-library/react';
+import userEventBuilder from '@testing-library/user-event';
 
 import { Button } from './view';
-import userEventBuilder from '@testing-library/user-event';
 
 describe('Button (iOS click fix)', () => {
   afterEach(() => {
@@ -19,7 +18,10 @@ describe('Button (iOS click fix)', () => {
 
     const btn = await screen.findByRole('button');
 
-    await act(() => userEvent.click(btn));
+    await userEvent.pointer([
+      { keys: '[TouchA>]', target: btn },
+      { keys: '[/TouchA]' },
+    ]);
 
     expect(handler).toHaveBeenCalledTimes(1);
   });
@@ -33,23 +35,34 @@ describe('Button (iOS click fix)', () => {
 
     const btn = await screen.findByRole('button');
 
-    await act(() => userEvent.click(btn));
+    await userEvent.pointer([
+      { keys: '[TouchA>]', target: btn },
+      { keys: '[/TouchA]' },
+    ]);
 
     expect(handler).toHaveBeenCalledTimes(1);
   });
 
   it('does not fire onClick on iOS when pointermove (scroll) occurs between down/up', async () => {
     jest.doMock('../../utils/isIOS', () => ({ isIOS: () => true }));
+    const userEvent = userEventBuilder.setup();
 
     const handler = jest.fn();
     render(<Button onClick={handler}>Press</Button>);
+
     const btn = await screen.findByRole('button');
 
-    act(() => {
-      fireEvent.pointerDown(btn);
-      fireEvent.pointerMove(btn);
-      fireEvent.pointerUp(btn);
-    });
+    await userEvent.pointer([
+      // touch the screen at element1
+      // The ">" suffix indicates a press and hold (PointerDown)
+      { keys: '[TouchA>]', target: btn },
+      // move the touch pointer on the screen
+      // "coords" simulates a physical movement
+      { pointerName: 'TouchA', target: btn, coords: { x: 10, y: 100 } },
+      // release the touch pointer at the last position
+      // The "/" prefix indicates a release (PointerUp)
+      { keys: '[/TouchA]' },
+    ]);
 
     expect(handler).not.toHaveBeenCalled();
   });
