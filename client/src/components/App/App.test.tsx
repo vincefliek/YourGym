@@ -1,6 +1,6 @@
 import { act } from 'react';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import userEventBuilder from '@testing-library/user-event';
 import { HashRouter } from 'react-router-dom';
 
 import { App } from './App';
@@ -37,22 +37,8 @@ describe('App', () => {
       selector: 'button',
     });
 
-    // logDOM();
-
     expect(homeBtn).toBeInTheDocument();
     expect(trainingsBtn).toBeInTheDocument();
-
-    // TODO: check how to wait for all async tasks to finish
-
-    /*
-    import { waitFor } from '@testing-library/react';
-
-    // Even if the write is fire-and-forget, it likely changes something in the UI eventually
-    await waitFor(() => {
-      expect(screen.getByText('Data Saved')).toBeInTheDocument();
-    }, { timeout: 2000 });
-    
-    */
   });
 
   test('renders home initially - user is NOT logged in', async () => {
@@ -70,14 +56,14 @@ describe('App', () => {
       selector: 'button',
     });
 
-    // logDOM();
-
     expect(homeBtn).toBeInTheDocument();
     expect(trainingsBtn).toBeInTheDocument();
   });
 
   test('navigates to trainings screen', async () => {
     await renderApp();
+
+    const userEvent = userEventBuilder.setup();
 
     const homeBtn = await screen.findByText(/Home/i, {
       selector: 'button',
@@ -86,16 +72,10 @@ describe('App', () => {
       selector: 'button',
     });
 
-    // logDOM();
-
     expect(homeBtn.classList.contains('active')).toBeTruthy();
     expect(trainingsBtnBefore.classList.contains('active')).toBeFalsy();
 
-    act(() => {
-      userEvent.click(trainingsBtnBefore);
-    });
-
-    // logDOM();
+    await act(() => userEvent.click(trainingsBtnBefore));
 
     const trainingsBtnAfter = await screen.findByText(/Trainings/i, {
       selector: 'button',

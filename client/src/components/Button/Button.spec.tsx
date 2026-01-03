@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { act } from 'react';
 
 import { Button } from './view';
-import userEvent from '@testing-library/user-event';
+import userEventBuilder from '@testing-library/user-event';
 
 describe('Button (iOS click fix)', () => {
   afterEach(() => {
@@ -12,30 +12,28 @@ describe('Button (iOS click fix)', () => {
 
   it('calls onClick for non-iOS (regular button) when clicked', async () => {
     jest.doMock('../../utils/isIOS', () => ({ isIOS: () => false }));
+    const userEvent = userEventBuilder.setup();
 
     const handler = jest.fn();
     render(<Button onClick={handler}>Press</Button>);
 
     const btn = await screen.findByRole('button');
 
-    act(() => {
-      userEvent.click(btn);
-    });
+    await act(() => userEvent.click(btn));
 
     expect(handler).toHaveBeenCalledTimes(1);
   });
 
   it('fires onClick on iOS when pointerdown + pointerup without movement', async () => {
     jest.doMock('../../utils/isIOS', () => ({ isIOS: () => true }));
+    const userEvent = userEventBuilder.setup();
 
     const handler = jest.fn();
     render(<Button onClick={handler}>Press</Button>);
 
     const btn = await screen.findByRole('button');
 
-    act(() => {
-      userEvent.click(btn);
-    });
+    await act(() => userEvent.click(btn));
 
     expect(handler).toHaveBeenCalledTimes(1);
   });

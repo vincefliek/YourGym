@@ -1,5 +1,5 @@
 import { act } from 'react';
-import userEvent from '@testing-library/user-event';
+import userEventBuilder from '@testing-library/user-event';
 import { TestDriver, createDriver } from '../../test-utils';
 import { waitFor } from '@testing-library/react';
 
@@ -16,6 +16,8 @@ describe('in progress training', () => {
   });
 
   test('add exercise during training and finish', async () => {
+    const userEvent = userEventBuilder.setup();
+
     await driver.render.app();
 
     // back to home screen
@@ -25,13 +27,13 @@ describe('in progress training', () => {
 
     // open the newly created training
     const trainingBox = await driver.waitFor.byText(/New Training/i);
-    act(() => userEvent.click(trainingBox));
+    await act(() => userEvent.click(trainingBox));
 
     // click start
     const startTrainingButton = await driver.waitFor.byTestId(
       'start-training-button',
     );
-    act(() => userEvent.click(startTrainingButton));
+    await act(() => userEvent.click(startTrainingButton));
 
     // inside of create exercise screen
     expect(
@@ -40,7 +42,7 @@ describe('in progress training', () => {
 
     // go back to training screen
     const backBtn = await driver.waitFor.byTestId('back-button');
-    act(() => userEvent.click(backBtn));
+    await act(() => userEvent.click(backBtn));
 
     // inside of create training screen
     expect(
@@ -51,7 +53,7 @@ describe('in progress training', () => {
     const editTrainingIcon = await driver.waitFor.byTestId(
       'training-edit-button',
     );
-    act(() => userEvent.click(editTrainingIcon));
+    await act(() => userEvent.click(editTrainingIcon));
 
     // inside of edit existing training screen
     expect(
@@ -60,7 +62,7 @@ describe('in progress training', () => {
 
     // add a new exercise
     const addExerciseBtn = await driver.waitFor.byTestId('add-exercise-button');
-    act(() => userEvent.click(addExerciseBtn));
+    await act(() => userEvent.click(addExerciseBtn));
 
     // inside of create exercise screen (adding new exercise)
     expect(
@@ -69,13 +71,13 @@ describe('in progress training', () => {
 
     // add one set to the new exercise
     const addSetBtn = await driver.waitFor.byTestId('add-set-button');
-    act(() => userEvent.click(addSetBtn));
+    await act(() => userEvent.click(addSetBtn));
 
     // save exercise
     const saveExerciseBtn = await driver.waitFor.byTestId(
       'exercise-save-button',
     );
-    act(() => userEvent.click(saveExerciseBtn));
+    await act(() => userEvent.click(saveExerciseBtn));
 
     // back to edit training screen and check exercise added
     expect(
@@ -91,7 +93,7 @@ describe('in progress training', () => {
     const saveTrainingBtn = await driver.waitFor.byTestId(
       'training-save-button',
     );
-    act(() => userEvent.click(saveTrainingBtn));
+    await act(() => userEvent.click(saveTrainingBtn));
 
     // back to existing training screen
     expect(
@@ -102,7 +104,7 @@ describe('in progress training', () => {
     const exercisesAfter = await driver.waitFor.allByTestId(
       'training-exercise-item',
     );
-    act(() => userEvent.click(exercisesAfter[1], {}));
+    await act(() => userEvent.click(exercisesAfter[1]));
 
     // inside of existing exercise screen
     expect(
@@ -111,11 +113,11 @@ describe('in progress training', () => {
 
     // mark set as completed
     const completeSetBtn = await driver.waitFor.byTestId('done-set-button');
-    act(() => userEvent.click(completeSetBtn));
+    await act(() => userEvent.click(completeSetBtn));
 
     // go back to training screen
     const backBtn2 = await driver.waitFor.byTestId('back-button');
-    act(() => userEvent.click(backBtn2));
+    await act(() => userEvent.click(backBtn2));
 
     // finish training
     expect(
@@ -125,7 +127,7 @@ describe('in progress training', () => {
     const finishTrainingBtn = await driver.waitFor.byTestId(
       'finish-training-button',
     );
-    act(() => userEvent.click(finishTrainingBtn));
+    await act(() => userEvent.click(finishTrainingBtn));
 
     // back to home screen
     expect(await driver.waitFor.byTestId('home-screen')).toBeInTheDocument();

@@ -1,5 +1,5 @@
 import { act } from 'react';
-import userEvent from '@testing-library/user-event';
+import userEventBuilder from '@testing-library/user-event';
 
 import { createDriver, type TestDriver } from '../../test-utils';
 
@@ -16,19 +16,21 @@ describe('existing training', () => {
   });
 
   test('add a set to an existing exercise', async () => {
+    const userEvent = userEventBuilder.setup();
+
     await driver.render.app();
 
     await driver.create.firstTemplateTraining();
 
     // open the newly created training
     const trainingBox = await driver.waitFor.byText(/New Training/i);
-    act(() => userEvent.click(trainingBox));
+    await act(() => userEvent.click(trainingBox));
 
     // click edit the newly created training
     const editTrainingIcon = await driver.waitFor.byTestId(
       'training-edit-button',
     );
-    act(() => userEvent.click(editTrainingIcon));
+    await act(() => userEvent.click(editTrainingIcon));
 
     // inside of edit existing training screen
     expect(
@@ -37,7 +39,7 @@ describe('existing training', () => {
 
     // open the exercise
     const exerciseBox = await driver.waitFor.byText(/New Exercise/i);
-    act(() => userEvent.click(exerciseBox));
+    await act(() => userEvent.click(exerciseBox));
 
     // inside of edit existing exercise screen
     expect(
@@ -48,7 +50,7 @@ describe('existing training', () => {
     expect(itemsBefore.length).toBe(1);
 
     const addSetExisting = await driver.waitFor.byTestId('add-set-button');
-    act(() => userEvent.click(addSetExisting));
+    await act(() => userEvent.click(addSetExisting));
 
     const itemsAfter = await driver.waitFor.allByTestId('set-item');
     expect(itemsAfter.length).toBe(2);
