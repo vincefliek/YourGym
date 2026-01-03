@@ -19,7 +19,7 @@ describe('in progress training', () => {
 
     await driver.render.app();
 
-    // back to home screen
+    // inside of home screen
     expect(await driver.waitFor.byTestId('home-screen')).toBeInTheDocument();
 
     // check there are no completed trainings yet
@@ -63,7 +63,7 @@ describe('in progress training', () => {
     );
     await act(() => userEvent.click(finishTrainingBtn));
 
-    // back to home screen
+    // inside of home screen
     expect(await driver.waitFor.byTestId('home-screen')).toBeInTheDocument();
 
     // check that completed training is added

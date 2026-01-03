@@ -1,6 +1,7 @@
 import {
   createConsecutiveTemplateTraining,
   createFirstTemplateTraining,
+  CreateFirstTemplateTrainingConfig,
 } from './createTemplateTraining';
 import { renderApp, RenderAppResult } from './renderApp';
 import {
@@ -14,7 +15,9 @@ export interface TestDriver {
     app: () => Promise<RenderAppResult>;
   };
   create: {
-    firstTemplateTraining: () => Promise<void>;
+    firstTemplateTraining: (
+      config?: CreateFirstTemplateTrainingConfig,
+    ) => Promise<void>;
     consecutiveTemplateTraining: () => Promise<void>;
   };
   waitFor: {
