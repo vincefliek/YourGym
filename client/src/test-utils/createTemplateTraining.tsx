@@ -1,6 +1,7 @@
 import { act } from 'react';
 import { waitForByTestId, waitForAllByTestId } from './waitHelpers';
 import userEventBuilder from '@testing-library/user-event';
+import { waitFor } from '@testing-library/react';
 
 interface Exercise {
   sets: {
@@ -94,9 +95,11 @@ export const createFirstTemplateTraining = async (
     expect(await waitForByTestId('create-training-screen')).toBeInTheDocument();
 
     // check that exercise is added — ensure count equals number added so far
-    const exerciseItems = await waitForAllByTestId('exercise-item');
-    const addedIndex = exercises.indexOf(ex);
-    expect(exerciseItems.length).toBe(addedIndex + 1);
+    await waitFor(async () => {
+      const exerciseItems = await waitForAllByTestId('exercise-item');
+      const addedIndex = exercises.indexOf(ex);
+      expect(exerciseItems.length).toBe(addedIndex + 1);
+    });
   }
 
   // save training
