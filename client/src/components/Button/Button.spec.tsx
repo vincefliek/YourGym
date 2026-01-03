@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { act } from 'react';
 
 import { Button } from './view';
+import userEvent from '@testing-library/user-event';
 
 describe('Button (iOS click fix)', () => {
   afterEach(() => {
@@ -18,8 +19,7 @@ describe('Button (iOS click fix)', () => {
     const btn = await screen.findByRole('button');
 
     act(() => {
-      fireEvent.pointerDown(btn);
-      fireEvent.pointerUp(btn);
+      userEvent.click(btn);
     });
 
     expect(handler).toHaveBeenCalledTimes(1);
@@ -34,8 +34,7 @@ describe('Button (iOS click fix)', () => {
     const btn = await screen.findByRole('button');
 
     act(() => {
-      fireEvent.pointerDown(btn);
-      fireEvent.pointerUp(btn);
+      userEvent.click(btn);
     });
 
     expect(handler).toHaveBeenCalledTimes(1);
