@@ -10,6 +10,7 @@ export interface RenderAppResult {
   app: RenderResult;
   apis: AppAPIs;
   appContext: AppContext;
+  getUrlNavPath: () => string;
 }
 
 export const renderApp = async (): Promise<RenderAppResult> => {
@@ -23,5 +24,7 @@ export const renderApp = async (): Promise<RenderAppResult> => {
     </HashRouter>,
   );
 
-  return { app, apis, appContext };
+  const getUrlNavPath = (): string => window.location.hash.slice(1);
+
+  return { app, apis, appContext, getUrlNavPath };
 };
