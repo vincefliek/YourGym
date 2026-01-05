@@ -31,6 +31,9 @@ export const createFirstTemplateTraining = async (
   const trainingsNav = await waitForByTestId('nav-trainings-button');
   await act(() => userEvent.click(trainingsNav));
 
+  // inside of trainings screen with no data
+  expect(await waitForByTestId('trainings-screen-no-data')).toBeInTheDocument();
+
   // create new training
   const addTrainingBtn = await waitForByTestId('add-first-training-button');
   await act(() => userEvent.click(addTrainingBtn));
