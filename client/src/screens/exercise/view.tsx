@@ -167,10 +167,14 @@ class PureExercise extends React.Component<Props> {
     return (
       <div className={style.history}>
         <div className={style.historyUnit}>History</div>
-        <ul className={style.setsHistoryBox}>
+        <ul className={style.setsHistoryBox} data-testid="sets-history-list">
           {setsHistory.map((setsByDate: any) => {
             return (
-              <li key={setsByDate.date} className={style.setsByDate}>
+              <li
+                key={setsByDate.date}
+                className={style.setsByDate}
+                data-testid="set-history-item"
+              >
                 <ul className={style.sets}>
                   <div className={style.setsDate}>
                     <b>{setsByDate.date}</b>
