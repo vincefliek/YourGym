@@ -1,41 +1,25 @@
 import { act } from 'react';
-import { render, screen } from '@testing-library/react';
 import userEventBuilder from '@testing-library/user-event';
-import { HashRouter } from 'react-router-dom';
-
-import { App } from './App';
-import { initApp } from '../../model';
 import { apiMocks } from '../../setupTests';
+import { createDriver, TestDriver } from '../../test-utils';
 
 describe('App', () => {
-  const renderApp = async () => {
-    const { apis, appContext } = await initApp();
+  let driver: TestDriver;
 
-    await apis.authApi.signin('test@gmail.com', 'testpassword');
+  beforeEach(async () => {
+    driver = createDriver();
+  });
 
-    const app = render(
-      <HashRouter>
-        <App apis={apis} appContext={appContext} />
-      </HashRouter>,
-    );
-
-    return app;
-  };
-
-  afterEach(async () => {
+  afterEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();
   });
 
   test('renders home initially - user is logged in', async () => {
-    await renderApp();
+    await driver.render.app();
 
-    const homeBtn = await screen.findByText(/Home/i, {
-      selector: 'button',
-    });
-    const trainingsBtn = await screen.findByText(/Trainings/i, {
-      selector: 'button',
-    });
+    const homeBtn = await driver.waitFor.byTestId('nav-home-button');
+    const trainingsBtn = await driver.waitFor.byTestId('nav-trainings-button');
 
     expect(homeBtn).toBeInTheDocument();
     expect(trainingsBtn).toBeInTheDocument();
@@ -47,39 +31,33 @@ describe('App', () => {
     });
     apiMocks.when('/api/session', 'GET').reply(status, body);
 
-    await renderApp();
+    await driver.render.app();
 
-    const homeBtn = await screen.findByText(/Home/i, {
-      selector: 'button',
-    });
-    const trainingsBtn = await screen.findByText(/Trainings/i, {
-      selector: 'button',
-    });
+    const homeBtn = await driver.waitFor.byTestId('nav-home-button');
+    const trainingsBtn = await driver.waitFor.byTestId('nav-trainings-button');
 
     expect(homeBtn).toBeInTheDocument();
     expect(trainingsBtn).toBeInTheDocument();
   });
 
   test('navigates to trainings screen', async () => {
-    await renderApp();
+    await driver.render.app();
 
     const userEvent = userEventBuilder.setup();
 
-    const homeBtn = await screen.findByText(/Home/i, {
-      selector: 'button',
-    });
-    const trainingsBtnBefore = await screen.findByText(/Trainings/i, {
-      selector: 'button',
-    });
+    const homeBtn = await driver.waitFor.byTestId('nav-home-button');
+    const trainingsBtnBefore = await driver.waitFor.byTestId(
+      'nav-trainings-button',
+    );
 
     expect(homeBtn.classList.contains('active')).toBeTruthy();
     expect(trainingsBtnBefore.classList.contains('active')).toBeFalsy();
 
     await act(() => userEvent.click(trainingsBtnBefore));
 
-    const trainingsBtnAfter = await screen.findByText(/Trainings/i, {
-      selector: 'button',
-    });
+    const trainingsBtnAfter = await driver.waitFor.byTestId(
+      'nav-trainings-button',
+    );
 
     expect(trainingsBtnAfter.classList.contains('active')).toBeTruthy();
   });
