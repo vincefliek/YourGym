@@ -2,8 +2,11 @@ import toNumber from 'lodash/toNumber';
 
 import { AppContext } from '../../types';
 import { Set } from '../../model/types';
+import { Controller } from './types';
 
-export const controller = (serviceLocator: AppContext['serviceLocator']) => {
+export const controller = (
+  serviceLocator: AppContext['serviceLocator'],
+): Controller => {
   const { getStoreData } = serviceLocator.getStore();
   const { trainingsApi, navigationApi } = serviceLocator.getAPIs();
 
@@ -67,13 +70,17 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
       }
     },
     onDelete: async () => {
-      await navigationApi.goBack();
+      // await navigationApi.goBack({
+      //   replace: true,
+      // });
       trainingsApi.delete.newExercise();
     },
     onSave: async () => {
       const trainingId = getParams().training;
 
-      await navigationApi.goBack();
+      // await navigationApi.goBack({
+      //   replace: true,
+      // });
 
       if (trainingId) {
         trainingsApi.save.newExercise(trainingId);

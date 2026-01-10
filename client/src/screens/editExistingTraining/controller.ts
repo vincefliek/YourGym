@@ -63,11 +63,10 @@ export const controller: Controller<ControllerType> = (
       const params = getParams();
       trainingsApi.create.newExercise();
 
-      if (params.training) {
-        navigationApi.setBackRouteWithReplace(
-          navigationApi.routes.editTraining,
-        );
-        await navigationApi.toCreateExercise(params.training);
+      const newExerciseId = getData().newExercise?.id;
+
+      if (params.training && newExerciseId) {
+        await navigationApi.toCreateExercise(params.training, newExerciseId);
       }
     },
     onDeleteExercise: (trainingId: string, exerciseId: string) => {
@@ -77,9 +76,6 @@ export const controller: Controller<ControllerType> = (
       const params = getParams();
 
       if (params.training) {
-        navigationApi.setBackRouteWithReplace(
-          navigationApi.routes.editTraining,
-        );
         await navigationApi.toEditExistingExercise(params.training, exerciseId);
       }
     },
@@ -94,4 +90,4 @@ export const controller: Controller<ControllerType> = (
   };
 };
 
-controller.storeDataAccessors = ['trainings'];
+controller.storeDataAccessors = ['trainings', 'newExercise'];

@@ -14,8 +14,8 @@ export const controller = (
       const auth = getStoreData().auth;
       return auth.isAuthenticated;
     },
-    navigateHome: async () => {
-      await navigationApi.toHome();
+    navigate: async () => {
+      await navigationApi.goBack({ replace: true });
     },
   };
 };

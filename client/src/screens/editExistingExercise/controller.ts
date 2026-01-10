@@ -141,14 +141,18 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
         (exercise: Exercise) => exercise.id === params.exercise,
       );
 
-      await navigationApi.goBack();
+      await navigationApi.goBack({
+        replace: true,
+      });
 
       if (training && exercise) {
         trainingsApi.delete.exercise(training.id, exercise.id);
       }
     },
     onSave: async () => {
-      await navigationApi.goBack();
+      await navigationApi.goBack({
+        replace: true,
+      });
     },
   };
 };

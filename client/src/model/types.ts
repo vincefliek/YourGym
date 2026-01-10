@@ -68,10 +68,6 @@ export interface Store {
   ) => () => void;
   hasServerDataInIndexedDB(): Promise<boolean>;
   hydrateFromIndexedDB(): Promise<void>;
-  get route(): string | undefined;
-  set route(value: string | undefined);
-  get backRouteWithHistoryReplace(): string | undefined;
-  set backRouteWithHistoryReplace(value: string | undefined);
   get trainings(): Training[];
   set trainings(value: Training[]);
   get completedTrainings(): CompletedTraining[];
@@ -161,7 +157,17 @@ export type ApiFactory<T, D, M extends any[] = any[]> = (
   ...args: M
 ) => T;
 
+// TODO fix any
+export type RouteConfig = any;
+
+export interface RouterConfiguration {
+  root: RouteConfig;
+  buildRoutes: (root: any, createRoute: (...params: any[]) => any) => any;
+  defaultNotFoundComponent: () => React.ReactNode;
+}
+
 export interface NavigationApi {
+  __router: any;
   routes: {
     home: string;
     trainings: string;
@@ -175,14 +181,16 @@ export interface NavigationApi {
     editTraining: string;
     dashboard: string;
   };
-  goBack: () => void;
-  setBackRouteWithReplace: (route: string | undefined) => void;
-  resetRoute: () => void;
+  setRouterConfiguration: (config: RouterConfiguration) => void;
+  goBack: (params?: { replace?: boolean }) => void;
   toTrainings: () => Promise<unknown>;
   toHome: () => Promise<unknown>;
   toMenu: () => Promise<unknown>;
-  toCreateTraining: () => Promise<unknown>;
-  toCreateExercise: (trainingId: string) => Promise<unknown>;
+  toCreateTraining: (newTrainingId: string) => Promise<unknown>;
+  toCreateExercise: (
+    trainingId: string,
+    exerciseId: string,
+  ) => Promise<unknown>;
   toEditNewExercise: (
     trainingId: string,
     exerciseId: string,

@@ -21,6 +21,8 @@ export const initGlobalTasks = (
   checkSyncStatus();
   runPeriodicTasks();
 
+  // TODO router events
+
   resumeManager.init({
     onResume: resumeAppFromBackground,
     onRetryFailed: async (err) => {

@@ -22,6 +22,7 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
       }
     },
     onNoData: () => {
+      console.log('[onNoData] createTraining');
       navigationApi.toTrainings();
     },
     onChangeName: (name: string) => {
@@ -29,14 +30,16 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
         name,
       });
     },
-    onAddExercise: () => {
+    onAddExercise: async () => {
       const trainingId = getData().newTraining?.id;
       if (trainingId) {
         trainingsApi.create.newExercise();
-        navigationApi.setBackRouteWithReplace(
-          navigationApi.routes.createTraining,
-        );
-        navigationApi.toCreateExercise(trainingId);
+
+        const newExerciseId = getData().newExercise?.id;
+
+        if (newExerciseId) {
+          await navigationApi.toCreateExercise(trainingId, newExerciseId);
+        }
       }
     },
     onDelete: async () => {
@@ -59,4 +62,4 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   };
 };
 
-controller.storeDataAccessors = ['newTraining'];
+controller.storeDataAccessors = ['newTraining', 'newExercise'];

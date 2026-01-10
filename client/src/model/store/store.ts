@@ -13,10 +13,6 @@ import {
 import { get as idbGet, set as idbSet } from 'idb-keyval';
 
 interface State {
-  nav: {
-    route: string | undefined;
-    backRouteWithHistoryReplace: string | undefined;
-  };
   trainings: Training[];
   completedTrainings: CompletedTraining[];
   activeTraining: ActiveTraining | null;
@@ -29,8 +25,6 @@ interface State {
 }
 
 interface Subscribers {
-  route: Array<() => void>;
-  backRouteWithHistoryReplace: Array<() => void>;
   trainings: Array<() => void>;
   newTraining: Array<() => void>;
   newExercise: Array<() => void>;
@@ -53,10 +47,6 @@ export class Store implements StoreInterface {
 
   constructor() {
     this.state = {
-      nav: {
-        route: undefined,
-        backRouteWithHistoryReplace: undefined,
-      },
       trainings: [],
       completedTrainings: [],
       activeTraining: null,
@@ -81,8 +71,6 @@ export class Store implements StoreInterface {
       },
     };
     this.subscribers = {
-      route: [],
-      backRouteWithHistoryReplace: [],
       trainings: [],
       completedTrainings: [],
       activeTraining: [],
@@ -152,10 +140,6 @@ export class Store implements StoreInterface {
 
   private _valueForIDBAccessor(accessor: string): any {
     switch (accessor) {
-      case 'route':
-        return this.state.nav.route;
-      case 'backRouteWithHistoryReplace':
-        return this.state.nav.backRouteWithHistoryReplace;
       case 'trainings':
         return this.state.trainings;
       case 'completedTrainings':
@@ -194,14 +178,6 @@ export class Store implements StoreInterface {
         // persistence (disabled above).
         // use setters to keep notification flow intact
         switch (accessor) {
-          case 'route':
-            this.route = persisted as unknown as string | undefined;
-            break;
-          case 'backRouteWithHistoryReplace':
-            this.backRouteWithHistoryReplace = persisted as unknown as
-              | string
-              | undefined;
-            break;
           case 'trainings':
             this.trainings = persisted as Training[];
             break;
@@ -318,8 +294,6 @@ export class Store implements StoreInterface {
 
   private getPublicDataAccessorsToDataMap = (state: State) =>
     ({
-      route: state.nav.route,
-      backRouteWithHistoryReplace: state.nav.backRouteWithHistoryReplace,
       trainings: state.trainings,
       completedTrainings: state.completedTrainings,
       activeTraining: state.activeTraining,
@@ -354,14 +328,6 @@ export class Store implements StoreInterface {
 
     return data;
   };
-
-  get route(): string | undefined {
-    return this.state.nav.route;
-  }
-
-  get backRouteWithHistoryReplace(): string | undefined {
-    return this.state.nav.backRouteWithHistoryReplace;
-  }
 
   get trainings(): Training[] {
     return this.state.trainings;
@@ -411,28 +377,6 @@ export class Store implements StoreInterface {
       sync: { ...state.sync, ...data } as SyncWithServer,
     });
     this._updateStoreData(fn, ['sync']);
-  }
-
-  set route(data: string | undefined) {
-    const fn = (state: State) => ({
-      nav: {
-        ...state.nav,
-        route: data,
-      },
-    });
-
-    this._updateStoreData(fn, ['route']);
-  }
-
-  set backRouteWithHistoryReplace(data: string | undefined) {
-    const fn = (state: State) => ({
-      nav: {
-        ...state.nav,
-        backRouteWithHistoryReplace: data,
-      },
-    });
-
-    this._updateStoreData(fn, ['backRouteWithHistoryReplace']);
   }
 
   set trainings(data: Training[]) {
@@ -492,8 +436,6 @@ export class Store implements StoreInterface {
 }
 
 const allPublicDataAccessors = [
-  'route',
-  'backRouteWithHistoryReplace',
   'trainings',
   'completedTrainings',
   'activeTraining',

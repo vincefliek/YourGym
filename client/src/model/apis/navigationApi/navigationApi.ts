@@ -1,6 +1,6 @@
-import { generatePath, matchPath } from 'react-router-dom';
-import { waitForCondition } from '../../../utils';
-import { ApiFactory, NavigationApi, Store } from '../../types';
+// import { waitForCondition } from '../../../utils';
+import { ApiFactory, NavigationApi } from '../../types';
+import { initRouter } from './router';
 
 interface Routes {
   home: string;
@@ -16,84 +16,58 @@ interface Routes {
   dashboard: string;
 }
 
-export const createNavigationApi: ApiFactory<NavigationApi, {}> = ({
-  store,
-}: {
-  store: Store;
-}) => {
+export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
   const routes: Routes = {
     home: '/',
-    trainings: '/trainings',
     menu: '/menu',
-    createTraining: '/trainings/new',
-    openTraining: '/trainings/:training',
-    editTraining: '/trainings/:training/edit',
-    createExercise: '/trainings/:training/new-exercise',
-    editNewExercise: '/trainings/:training/:exercise/editNew',
-    editExistingExercise: '/trainings/:training/:exercise/edit',
-    openExercise: '/trainings/:training/:exercise',
     dashboard: '/dashboard',
+    trainings: '/trainings',
+    openTraining: '/trainings/$training',
+    createTraining: '/trainings/$training/new',
+    editTraining: '/trainings/$training/edit',
+    openExercise: '/trainings/$training/$exercise',
+    createExercise: '/trainings/$training/$exercise/new-exercise',
+    editNewExercise: '/trainings/$training/$exercise/editNew',
+    editExistingExercise: '/trainings/$training/$exercise/edit',
   };
 
-  /**
-   * Handles URL with and without hash like:
-   * - `/#/`
-   * - `#/`
-   * - `/`
-   */
-  const getPathName = (): string =>
-    window.location.hash.slice(1) || routes.home;
+  const { router, setConfiguration } = initRouter();
 
   const getPathParams = (route: string) => {
-    const match = matchPath(route, getPathName());
-    return match?.params ?? {};
+    const params = router.matchRoute({ to: route });
+    return { ...params };
   };
 
-  const getData = () =>
-    store.getStoreData(['route', 'backRouteWithHistoryReplace']);
-
   const isRouteOpenedRightNow = (route: string): boolean =>
-    Boolean(matchPath(route, getPathName()));
+    Boolean(router.matchRoute({ to: route }));
 
   const setRoute = async (
     route: string,
     params: Record<string, string> = {},
   ) => {
-    // TODO [vlad-ozh] [it's a hack]
-    if (isRouteOpenedRightNow(route) && route !== routes.openExercise) {
-      return;
-    }
-
-    store.route = generatePath(route, params);
-
-    return waitForCondition(async () => isRouteOpenedRightNow(route));
-  };
-
-  const setBackRouteWithReplace = (route: string | undefined) => {
-    store.backRouteWithHistoryReplace = route
-      ? generatePath(route, getPathParams(route))
-      : route;
+    await router.navigate({
+      // from: router.state.matches[router.state.matches.length - 1]?.routeId,
+      to: route,
+      params,
+    });
   };
 
   return {
+    __router: router,
     routes,
-    setBackRouteWithReplace,
-    resetRoute: () => {
-      if (getData().route !== undefined) {
-        store.route = undefined;
-      }
-    },
-    goBack: () => {
-      const backRoute = getData().backRouteWithHistoryReplace;
-
-      if (backRoute !== undefined) {
-        return setRoute(backRoute).then(() => {
-          setBackRouteWithReplace(undefined);
-        });
-      } else {
-        // Going back in history, will need to handle this differently
-        window.history.back();
-      }
+    setRouterConfiguration: setConfiguration,
+    goBack: async ({ replace } = {}) => {
+      // if (replace) {
+      //   router.history.replace(router.state.location.pathname);
+      // }
+      // if (router.history.canGoBack()) {
+      //   router.history.back();
+      // }
+      return router.navigate({
+        // from: router.state.matches[router.state.matches.length - 1]?.routeId,
+        to: '..',
+        replace,
+      });
     },
     toHome: () => {
       return setRoute(routes.home);
@@ -104,12 +78,15 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = ({
     toMenu: () => {
       return setRoute(routes.menu);
     },
-    toCreateTraining: () => {
-      return setRoute(routes.createTraining);
+    toCreateTraining: (newTrainingId: string) => {
+      return setRoute(routes.createTraining, {
+        training: newTrainingId,
+      });
     },
-    toCreateExercise: (trainingId: string) => {
+    toCreateExercise: (trainingId: string, exerciseId: string) => {
       return setRoute(routes.createExercise, {
         training: trainingId,
+        exercise: exerciseId,
       });
     },
     toEditNewExercise: (trainingId: string, exerciseId: string) => {

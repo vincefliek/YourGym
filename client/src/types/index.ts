@@ -15,4 +15,5 @@ export interface AppState {}
 export interface AppProps {
   apis: AppAPIs;
   appContext: AppContext;
+  currentPath?: string;
 }

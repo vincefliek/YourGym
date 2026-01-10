@@ -1,5 +1,4 @@
 import { render, RenderResult } from '@testing-library/react';
-import { HashRouter } from 'react-router-dom';
 
 import { App } from '../components/App/App';
 import { initApp } from '../model';
@@ -18,11 +17,7 @@ export const renderApp = async (): Promise<RenderAppResult> => {
 
   await apis.authApi.signin('test@gmail.com', 'testpassword');
 
-  const app = render(
-    <HashRouter>
-      <App apis={apis} appContext={appContext} />
-    </HashRouter>,
-  );
+  const app = render(<App apis={apis} appContext={appContext} />);
 
   const getUrlNavPath = (): string => window.location.hash.slice(1);
 

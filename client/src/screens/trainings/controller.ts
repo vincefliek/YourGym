@@ -15,7 +15,12 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
     },
     onAddTraining: () => {
       trainingsApi.create.newTraining();
-      navigationApi.toCreateTraining();
+
+      const newTraining = getData().newTraining;
+
+      if (newTraining?.id) {
+        navigationApi.toCreateTraining(newTraining.id);
+      }
     },
     onDeleteTraining: (id: string) => {
       const training = getById(id);
@@ -38,4 +43,4 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
   };
 };
 
-controller.storeDataAccessors = ['trainings'];
+controller.storeDataAccessors = ['trainings', 'newTraining'];

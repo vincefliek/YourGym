@@ -1,9 +1,9 @@
 export interface AuthProtectionProps {
   isAuthenticated: boolean;
-  navigateHome: () => void;
+  navigate: () => void;
 }
 
 export interface AuthProtectionController {
   isAuthenticated: () => boolean;
-  navigateHome: () => Promise<void>;
+  navigate: () => Promise<void>;
 }

@@ -3,9 +3,13 @@ import React from 'react';
 import { AppContext } from '../context';
 import { ConnectParams, MapToProps } from './types';
 
-export const connect = <T extends object, P extends object>(
-  params: ConnectParams<T>,
-  mapToProps: MapToProps<T, P>,
+export const connect = <
+  Controller extends object,
+  StateProps extends object,
+  OwnProps extends object = {},
+>(
+  params: ConnectParams<Controller>,
+  mapToProps: MapToProps<Controller, StateProps>,
 ) => {
   if (typeof params !== 'object') {
     throw new Error('First argument in `connect` function is mandatory');
@@ -23,13 +27,14 @@ export const connect = <T extends object, P extends object>(
     );
   }
 
-  type WrappedProps = Omit<P, keyof ReturnType<typeof mapToProps>>;
+  type WrappedProps = Omit<StateProps, keyof ReturnType<typeof mapToProps>> &
+    OwnProps;
 
-  return (Wrapped: React.ComponentType<P>) => {
+  return (Wrapped: React.ComponentType<StateProps & OwnProps>) => {
     class ConnectedView extends React.Component<WrappedProps> {
       static contextType = AppContext;
       private unsubscribe?: () => void;
-      private controller: T;
+      private controller: Controller;
       private stateToProps: ReturnType<typeof mapToProps>;
 
       constructor(
@@ -62,7 +67,12 @@ export const connect = <T extends object, P extends object>(
       };
 
       render() {
-        return <Wrapped {...(this.props as P)} {...this.stateToProps} />;
+        return (
+          <Wrapped
+            {...(this.props as StateProps & OwnProps)}
+            {...this.stateToProps}
+          />
+        );
       }
     }
 

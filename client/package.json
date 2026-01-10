@@ -4,6 +4,8 @@
   "private": true,
   "homepage": "https://yourgymstaticsite.onrender.com",
   "dependencies": {
+    "@tanstack/react-router": "^1.146.2",
+    "@tanstack/react-router-devtools": "^1.146.2",
     "classnames": "^2.3.1",
     "date-fns-tz": "^3.2.0",
     "idb-keyval": "^6.2.2",

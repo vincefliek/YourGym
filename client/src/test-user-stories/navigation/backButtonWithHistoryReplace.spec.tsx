@@ -1,6 +1,6 @@
 import { act } from 'react';
 import userEventBuilder from '@testing-library/user-event';
-import { matchPath } from 'react-router-dom';
+import { isMatch } from '../../model/navigation/router';
 
 import { createDriver, type TestDriver } from '../../test-utils';
 import { waitFor } from '@testing-library/react';
@@ -57,25 +57,21 @@ describe('navigation - back with history replace', () => {
 
     await waitFor(
       async () => {
-        const storeData = appContext.serviceLocator
-          .getStore()
-          .getStoreData(['backRouteWithHistoryReplace']);
+        const store = appContext.serviceLocator.getStore();
 
-        const matchedURL = matchPath(
-          apis.navigationApi.routes.editExistingExercise,
-          getUrlNavPath(),
-        );
-        expect(matchedURL?.pattern.path).toBe(
-          apis.navigationApi.routes.editExistingExercise,
-        );
+        expect(
+          isMatch(
+            apis.navigationApi.routes.editExistingExercise,
+            getUrlNavPath(),
+          ),
+        ).toBe(true);
 
-        const matchedBackRoute = matchPath(
-          apis.navigationApi.routes.editTraining,
-          storeData.backRouteWithHistoryReplace,
-        );
-        expect(matchedBackRoute?.pattern.path).toBe(
-          apis.navigationApi.routes.editTraining,
-        );
+        expect(
+          isMatch(
+            apis.navigationApi.routes.editTraining,
+            store.backRouteWithHistoryReplace ?? '',
+          ),
+        ).toBe(true);
       },
       {
         timeout: 1000,
@@ -97,22 +93,15 @@ describe('navigation - back with history replace', () => {
       async () => {
         await new Promise((res) => setTimeout(res, 1000));
 
-        const storeData = appContext.serviceLocator
-          .getStore()
-          .getStoreData(['backRouteWithHistoryReplace']);
+        const store = appContext.serviceLocator.getStore();
 
         // `backRouteWithHistoryReplace` must be reset
-        expect(storeData.backRouteWithHistoryReplace).toBe(undefined);
+        expect(store.backRouteWithHistoryReplace).toBe(undefined);
 
-        const matchedURL = matchPath(
-          apis.navigationApi.routes.editTraining,
-          getUrlNavPath(),
-        );
-        // path should remain
-        // path must not be "edit existing exercise"
-        expect(matchedURL?.pattern.path).toBe(
-          apis.navigationApi.routes.editTraining,
-        );
+        // path should remain and match editTraining
+        expect(
+          isMatch(apis.navigationApi.routes.editTraining, getUrlNavPath()),
+        ).toBe(true);
       },
       {
         timeout: 2000,

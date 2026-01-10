@@ -36,13 +36,11 @@ export const initApp = async () => {
 
   initGlobalTasks(store, apis);
 
-  // if (process.env.NODE_ENV === 'development') {
   window._debugTools_ = {
     store,
     validator,
     apis,
   };
-  // }
 
   return {
     apis,

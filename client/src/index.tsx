@@ -1,6 +1,5 @@
-import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
+// import { HashRouter } from 'react-router-dom';
 
 import { App } from './components';
 import { initApp } from './model';
@@ -16,9 +15,9 @@ window.addEventListener(
     if (rootEl) {
       const root = createRoot(rootEl);
       root.render(
-        <HashRouter>
-          <App apis={apis} appContext={appContext} />
-        </HashRouter>,
+        // <HashRouter>
+        <App apis={apis} appContext={appContext} />,
+        // </HashRouter>,
       );
     }
   },
