@@ -21,19 +21,14 @@ import {
   Training,
   Exercise,
   EditExistingTraining,
-  AuthProtection,
+  // AuthProtection,
 } from '../../screens';
 import { Notifications, BlockingLayer } from '../../components';
 import { AppContext } from '../../utils';
 import { AppProps, AppState, AppContext as IAppContext } from '../../types';
 import style from './style.module.scss';
 
-const RootComp = () => (
-  <>
-    <Outlet />
-    <TanStackRouterDevtools position="bottom-right" />
-  </>
-);
+const RootComp = () => <Outlet />;
 
 interface WithGoBackProps {
   goBack: () => void;
@@ -54,7 +49,7 @@ function withGoBack(apis: AppAPIs, navOptions: NavigateOptions) {
       const params = useParams({ strict: false });
       const goBack = () => {
         console.log('goBack', params);
-        apis.navigationApi.__router.navigate({ ...navOptions, goBack });
+        apis.navigationApi.__router.navigate({ ...navOptions, params });
       };
 
       // Cast back to TProps because we are providing the missing goBack prop
@@ -80,20 +75,23 @@ export class App extends React.Component<AppProps, AppState> {
 
     this.apis = apis;
     this.appContext = appContext;
+  }
 
-    apis.navigationApi.setRouterConfiguration({
+  componentDidMount(): void {
+    this.apis.navigationApi.setRouterConfiguration({
       defaultNotFoundComponent: NotFound,
       root: {
         component: RootComp,
       },
       buildRoutes: (rootRoute, createRoute) => {
-        const authProtection = createRoute({
-          getParentRoute: () => rootRoute,
-          id: 'pathless_auth',
-          component: AuthProtection,
-        });
+        // const authProtection = createRoute({
+        //   getParentRoute: () => rootRoute,
+        //   id: 'pathless_auth',
+        //   component: AuthProtection,
+        // });
         const menu = createRoute({
-          getParentRoute: () => authProtection,
+          // getParentRoute: () => authProtection,
+          getParentRoute: () => rootRoute,
           path: 'menu',
           component: Menu,
         });
@@ -151,14 +149,14 @@ export class App extends React.Component<AppProps, AppState> {
         const createNewExercise = createRoute({
           getParentRoute: () => exercise,
           path: 'new-exercise',
-          component: withGoBack(apis, {
+          component: withGoBack(this.apis, {
             // to: apis.navigationApi.routes.createTraining,
-            to: '/trainings/$training/new',
+            // to: '/trainings/$training/new' as any,
             // params: (prev: any, curr: any) => {
             //   console.log('withGoBack - params', prev, curr);
             //   return prev;
             // },
-            // to: '../../new',
+            to: '../../new' as any,
             // replace: true,
           })(CreateExercise),
         });
@@ -174,8 +172,9 @@ export class App extends React.Component<AppProps, AppState> {
         });
 
         return [
-          authProtection.addChildren([menu]),
+          // authProtection.addChildren([menu]),
           home,
+          menu,
           dashboard,
           trainings.addChildren([
             trainingsIndex,
@@ -193,155 +192,6 @@ export class App extends React.Component<AppProps, AppState> {
           ]),
         ];
       },
-
-      // routes: [
-      //   {
-      //     getParentRoute: () => undefined,
-      //     id: 'pathless_auth',
-      //     component: AuthProtection,
-      //     children: [
-      //       {
-      //         getParentRoute: () => undefined,
-      //         path: this.apis.navigationApi.routes.menu,
-      //         component: Menu,
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     getParentRoute: () => undefined,
-      //     path: this.apis.navigationApi.routes.home,
-      //     component: Home,
-      //   },
-      //   {
-      //     getParentRoute: () => undefined,
-      //     path: this.apis.navigationApi.routes.trainings,
-      //     component: Trainings,
-      //   },
-      //   {
-      //     getParentRoute: () => undefined,
-      //     path: this.apis.navigationApi.routes.createTraining,
-      //     component: CreateTraining,
-      //   },
-      //   {
-      //     getParentRoute: () => undefined,
-      //     path: this.apis.navigationApi.routes.createExercise,
-      //     component: CreateExercise,
-      //   },
-      //   {
-      //     getParentRoute: () => undefined,
-      //     path: this.apis.navigationApi.routes.editNewExercise,
-      //     component: EditNewExercise,
-      //   },
-      //   {
-      //     getParentRoute: () => undefined,
-      //     path: this.apis.navigationApi.routes.editExistingExercise,
-      //     component: EditExistingExercise,
-      //   },
-      //   {
-      //     getParentRoute: () => undefined,
-      //     path: this.apis.navigationApi.routes.openTraining,
-      //     component: Training,
-      //   },
-      //   {
-      //     getParentRoute: () => undefined,
-      //     path: this.apis.navigationApi.routes.openExercise,
-      //     component: Exercise,
-      //   },
-
-      //   {
-      //     getParentRoute: () => undefined,
-      //     path: this.apis.navigationApi.routes.editTraining,
-      //     component: EditExistingTraining,
-      //   },
-      //   {
-      //     getParentRoute: () => undefined,
-      //     path: this.apis.navigationApi.routes.dashboard,
-      //     component: Dashboard,
-      //   },
-      // ],
-
-      // routes: [
-      //   {
-      //     getParentRoute: () => undefined,
-      //     id: 'pathless_auth',
-      //     component: AuthProtection,
-      //     children: [
-      //       {
-      //         getParentRoute: () => undefined,
-      //         path: 'menu',
-      //         component: Menu,
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     getParentRoute: () => undefined,
-      //     path: '/',
-      //     component: Home,
-      //   },
-      //   {
-      //     getParentRoute: () => undefined,
-      //     path: 'dashboard',
-      //     component: Dashboard,
-      //   },
-      //   {
-      //     getParentRoute: () => undefined,
-      //     path: 'trainings',
-      //     children: [
-      //       {
-      //         getParentRoute: () => undefined,
-      //         path: '/',
-      //         component: Trainings,
-      //       },
-      //       {
-      //         getParentRoute: () => undefined,
-      //         path: 'new',
-      //         component: CreateTraining,
-      //       },
-      //       {
-      //         getParentRoute: () => undefined,
-      //         path: '$training',
-      //         children: [
-      //           {
-      //             getParentRoute: () => undefined,
-      //             path: '/',
-      //             component: Training,
-      //           },
-      //           {
-      //             getParentRoute: () => undefined,
-      //             path: 'new-exercise',
-      //             component: CreateExercise,
-      //           },
-      //           {
-      //             getParentRoute: () => undefined,
-      //             path: 'edit',
-      //             component: EditExistingTraining,
-      //           },
-      //           {
-      //             getParentRoute: () => undefined,
-      //             path: '$exercise',
-      //             children: [
-      //               {
-      //                 getParentRoute: () => undefined,
-      //                 path: '/',
-      //                 component: Exercise,
-      //               },
-      //               {
-      //                 getParentRoute: () => undefined,
-      //                 path: 'editNew',
-      //                 component: EditNewExercise,
-      //               },
-      //               {
-      //                 getParentRoute: () => undefined,
-      //                 path: 'edit',
-      //                 component: EditExistingExercise,
-      //               },
-      //             ],
-      //           },
-      //         ],
-      //       },
-      //     ],
-      //   },
-      // ],
     });
   }
 
@@ -352,6 +202,10 @@ export class App extends React.Component<AppProps, AppState> {
         <div className={style.app}>
           <Notifications />
           <BlockingLayer />
+          <TanStackRouterDevtools
+            position="bottom-right"
+            router={this.apis.navigationApi.__router}
+          />
           <RouterProvider router={this.apis.navigationApi.__router} />
         </div>
       </AppContext.Provider>

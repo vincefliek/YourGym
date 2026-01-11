@@ -13,6 +13,7 @@ SAFE_PKGS=(
   "core-js-pure@3.42.0"
   "monorepo-symlink-test@0.0.0"
   "esbuild@0.21.5"
+  "esbuild@0.27.2"
 )
 
 # Find all packages with postinstall scripts

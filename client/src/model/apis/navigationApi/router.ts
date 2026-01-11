@@ -1,3 +1,4 @@
+// import React from 'react';
 import {
   createRouter,
   createRoute,
@@ -15,6 +16,7 @@ import { RouterConfiguration } from '../../types';
 declare module '@tanstack/react-router' {
   interface Register {
     router: ReturnType<typeof initRouter>['router'];
+    // router: any;
   }
 }
 
@@ -25,6 +27,7 @@ export const initRouter = () => {
   const history = createHashHistory();
 
   const router = createRouter({
+    routeTree: createRootRoute({}),
     history,
   });
 
@@ -43,6 +46,7 @@ export const initRouter = () => {
       routeTree,
       defaultNotFoundComponent,
     });
+    router.invalidate();
   };
 
   return {

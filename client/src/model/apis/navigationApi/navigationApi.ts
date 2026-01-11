@@ -34,7 +34,7 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
   const { router, setConfiguration } = initRouter();
 
   const getPathParams = (route: string) => {
-    const params = router.matchRoute({ to: route });
+    const params = router.matchRoute({ to: route }) as any;
     return { ...params };
   };
 
@@ -49,7 +49,7 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
       // from: router.state.matches[router.state.matches.length - 1]?.routeId,
       to: route,
       params,
-    });
+    } as any);
   };
 
   return {

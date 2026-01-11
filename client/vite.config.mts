@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import { VitePWA } from 'vite-plugin-pwa';
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
 
 import { version } from './package.json';
 
@@ -26,6 +27,10 @@ export default defineConfig({
     },
   },
   plugins: [
+    // make sure that '@tanstack/router-plugin' is passed before '@vitejs/plugin-react'
+    tanstackRouter({
+      enableRouteGeneration: false,
+    }),
     react(),
     svgr(),
     VitePWA({

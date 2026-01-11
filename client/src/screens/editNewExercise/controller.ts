@@ -108,10 +108,19 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
       if (trainingId && exerciseId) {
         trainingsApi.delete.exercise(trainingId, exerciseId);
       }
-      navigationApi.toCreateTraining();
+
+      const newTraining = getData().newTraining;
+
+      if (newTraining?.id) {
+        navigationApi.toCreateTraining(newTraining.id);
+      }
     },
     onSave: () => {
-      navigationApi.toCreateTraining();
+      const newTraining = getData().newTraining;
+
+      if (newTraining?.id) {
+        navigationApi.toCreateTraining(newTraining.id);
+      }
     },
   };
 };
