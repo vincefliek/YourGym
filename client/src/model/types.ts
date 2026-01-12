@@ -1,4 +1,5 @@
 import { Validator } from 'jsonschema';
+import { Router, RouterConfiguration } from './apis/navigationApi/router';
 
 export type TimestampTZ =
   `${string}-${string}-${string}T${string}:${string}:${string}+${string}:${string}`;
@@ -157,17 +158,10 @@ export type ApiFactory<T, D, M extends any[] = any[]> = (
   ...args: M
 ) => T;
 
-// TODO fix any
-export type RouteConfig = any;
-
-export interface RouterConfiguration {
-  root: RouteConfig;
-  buildRoutes: (root: any, createRoute: (...params: any[]) => any) => any;
-  defaultNotFoundComponent: () => React.ReactNode;
-}
+export type { RouterConfiguration };
 
 export interface NavigationApi {
-  __router: any;
+  __router: Router;
   routes: {
     home: string;
     trainings: string;
