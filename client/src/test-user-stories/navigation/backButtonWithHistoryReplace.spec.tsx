@@ -1,6 +1,5 @@
 import { act } from 'react';
 import userEventBuilder from '@testing-library/user-event';
-import { isMatch } from '../../model/navigation/router';
 
 import { createDriver, type TestDriver } from '../../test-utils';
 import { waitFor } from '@testing-library/react';

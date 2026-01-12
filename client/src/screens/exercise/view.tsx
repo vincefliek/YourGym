@@ -14,7 +14,7 @@ import style from './style.module.scss';
 interface Props {
   training: Training;
   exercise: ExerciseType;
-  // TODO implement
+  // TODO fix any
   setsHistory: any[];
   isInProgress: boolean;
   getCurrentExercise: (training: Training, exercise: ExerciseType) => number;
