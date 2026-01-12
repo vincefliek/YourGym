@@ -70,17 +70,17 @@ export const controller = (
       }
     },
     onDelete: async () => {
-      // await navigationApi.goBack({
-      //   replace: true,
-      // });
+      await navigationApi.goBack({
+        replace: true,
+      });
       trainingsApi.delete.newExercise();
     },
     onSave: async () => {
       const trainingId = getParams().training;
 
-      // await navigationApi.goBack({
-      //   replace: true,
-      // });
+      await navigationApi.goBack({
+        replace: true,
+      });
 
       if (trainingId) {
         trainingsApi.save.newExercise(trainingId);

@@ -27,7 +27,6 @@ class PureCreateExercise extends React.Component<Props, CreateExerciseState> {
       onAddSet,
       onDelete,
       onSave,
-      goBack,
     } = this.props;
 
     return (
@@ -39,14 +38,8 @@ class PureCreateExercise extends React.Component<Props, CreateExerciseState> {
         onChangeRepetitions={onChangeRepetitions}
         onChangeWeight={onChangeWeight}
         onAddSet={onAddSet}
-        onDelete={() => {
-          onDelete();
-          goBack();
-        }}
-        onSave={() => {
-          onSave();
-          goBack();
-        }}
+        onDelete={onDelete}
+        onSave={onSave}
       />
     );
   }

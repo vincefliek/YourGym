@@ -125,6 +125,7 @@ type RoutePathsToRouteDefinitions<T extends AnyRoute> = Record<RoutePaths, T>;
 
 export interface RouterConfiguration {
   routePathsToComponents: RoutePathsToComponents;
+  routePathsToGoBackPath: Partial<Record<RoutePaths, RoutePaths>>;
 }
 
 type AllRoutes =

@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  RouterProvider,
-  Outlet,
-  // NavigateOptions,
-} from '@tanstack/react-router';
+import { RouterProvider, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
 import { AppAPIs } from '../../model/types';
@@ -29,40 +25,6 @@ import style from './style.module.scss';
 
 const RootComp = () => <Outlet />;
 
-// interface WithGoBackProps {
-//   goBack: () => void;
-// }
-
-/**
- * HOC to inject a 'goBack' prop into a component.
- * @param navOptions - Standard TanStack NavigateOptions (e.g., { to: '..', replace: true })
- */
-// function withGoBack(apis: AppAPIs, navOptions: NavigateOptions) {
-//   return <TProps extends WithGoBackProps>(
-//     WrappedComponent: React.ComponentType<TProps>,
-//   ) => {
-//     // The resulting component takes all props of WrappedComponent MINUS goBack
-//     const ComponentWithGoBack = (
-//       props: Omit<TProps, keyof WithGoBackProps>,
-//     ) => {
-//       // const params = useParams({ strict: false });
-//       const goBack = () => {
-//         // console.log('goBack', params);
-//         apis.navigationApi.__router.navigate({ ...navOptions });
-//       };
-
-//       // Cast back to TProps because we are providing the missing goBack prop
-//       return <WrappedComponent {...(props as TProps)} goBack={goBack} />;
-//     };
-
-//     ComponentWithGoBack.displayName = `withGoBack(${
-//       WrappedComponent.displayName || WrappedComponent.name || 'Component'
-//     })`;
-
-//     return ComponentWithGoBack;
-//   };
-// }
-
 export class App extends React.Component<AppProps, AppState> {
   private apis: AppAPIs;
   private appContext: IAppContext;
@@ -76,30 +38,33 @@ export class App extends React.Component<AppProps, AppState> {
     this.appContext = appContext;
   }
 
-  componentDidMount(): void {
+  componentDidMount() {
     const routePathsToComponents = {
       DEFAULT_NOT_FOUND: NotFound,
       __root__: RootComp,
-      '/': Home,
-      '/dashboard': Dashboard,
-      '/pathless_auth': AuthProtection,
-      '/menu': Menu,
+      '/': () => <Home />,
+      '/dashboard': () => <Dashboard />,
+      '/pathless_auth': () => <AuthProtection />,
+      '/menu': () => <Menu />,
       '/trainings': undefined,
-      '/trainings/': Trainings,
+      '/trainings/': () => <Trainings />,
       '/trainings/$training': undefined,
-      '/trainings/$training/': Training,
-      '/trainings/$training/edit': EditExistingTraining,
-      '/trainings/$training/new': CreateTraining,
+      '/trainings/$training/': () => <Training />,
+      '/trainings/$training/edit': () => <EditExistingTraining />,
+      '/trainings/$training/new': () => <CreateTraining />,
       '/trainings/$training/$exercise': undefined,
-      '/trainings/$training/$exercise/': Exercise,
-      '/trainings/$training/$exercise/edit': EditExistingExercise,
-      '/trainings/$training/$exercise/editNew': EditNewExercise,
-      '/trainings/$training/$exercise/new-exercise': CreateExercise,
-      // TODO fix any !!!
-    } as any;
+      '/trainings/$training/$exercise/': () => <Exercise />,
+      '/trainings/$training/$exercise/edit': () => <EditExistingExercise />,
+      '/trainings/$training/$exercise/editNew': () => <EditNewExercise />,
+      '/trainings/$training/$exercise/new-exercise': () => <CreateExercise />,
+    };
 
     this.apis.navigationApi.setRouterConfiguration({
       routePathsToComponents,
+      routePathsToGoBackPath: {
+        '/trainings/$training/$exercise/new-exercise':
+          '/trainings/$training/new',
+      },
     });
   }
 

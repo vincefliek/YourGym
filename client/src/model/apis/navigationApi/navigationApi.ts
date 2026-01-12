@@ -38,6 +38,8 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
     return { ...params };
   };
 
+  const getCurrentPath = () => router.state.location.pathname;
+
   const isRouteOpenedRightNow = (route: string): boolean =>
     Boolean(router.matchRoute({ to: route }));
 
@@ -46,28 +48,47 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
     params: Record<string, string> = {},
   ) => {
     await router.navigate({
-      // from: router.state.matches[router.state.matches.length - 1]?.routeId,
       to: route,
       params,
-    } as any);
+    });
+  };
+
+  let routePathsToGoBackPath: any = {};
+  const setRouteBackPath = (backPathsMap: any) => {
+    routePathsToGoBackPath = { ...backPathsMap };
+  };
+  const getRouteBackPath = (path: string) => {
+    return routePathsToGoBackPath[path];
   };
 
   return {
     __router: router,
     routes,
-    setRouterConfiguration: setConfiguration,
+    setRouterConfiguration: (config) => {
+      setConfiguration(config);
+      setRouteBackPath(config.routePathsToGoBackPath);
+    },
     goBack: async ({ replace } = {}) => {
-      // if (replace) {
-      //   router.history.replace(router.state.location.pathname);
-      // }
-      // if (router.history.canGoBack()) {
-      //   router.history.back();
-      // }
-      return router.navigate({
-        // from: router.state.matches[router.state.matches.length - 1]?.routeId,
-        to: '..',
-        replace,
-      });
+      const currentPath = getCurrentPath();
+      const to = getRouteBackPath(currentPath);
+      const params = getPathParams(to);
+
+      if (to) {
+        return router.navigate({
+          // from: router.state.matches[router.state.matches.length - 1]?.routeId,
+          to,
+          params,
+          replace,
+        });
+      } else {
+        // TODO chech how to handle "replace" in this flow
+        // if (replace) {
+        //   router.history.replace(getCurrentPath());
+        // }
+        if (router.history.canGoBack()) {
+          router.history.back();
+        }
+      }
     },
     toHome: () => {
       return setRoute(routes.home);

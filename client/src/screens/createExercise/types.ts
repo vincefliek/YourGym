@@ -1,8 +1,6 @@
 import { Exercise } from '../../model/types';
 
-export interface CreateExerciseOwnProps {
-  goBack: () => void;
-}
+export interface CreateExerciseOwnProps {}
 
 export interface CreateExerciseStateProps {
   data: Exercise;
