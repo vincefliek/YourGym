@@ -39,6 +39,13 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
   };
 
   const getCurrentPath = () => router.state.location.pathname;
+  const getCurrentRoutePath = () => {
+    const currentPath = getCurrentPath();
+    const matches = router.matchRoutes(currentPath);
+    // The last match in the array is usually the most specific leaf route
+    const currentRoutePath = matches[matches.length - 1]?.routeId;
+    return currentRoutePath;
+  };
 
   const isRouteOpenedRightNow = (route: string): boolean =>
     Boolean(router.matchRoute({ to: route }));
@@ -69,8 +76,7 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
       setRouteBackPath(config.routePathsToGoBackPath);
     },
     goBack: async ({ replace } = {}) => {
-      const currentPath = getCurrentPath();
-      const to = getRouteBackPath(currentPath);
+      const to = getRouteBackPath(getCurrentRoutePath());
       const params = getPathParams(to);
 
       if (to) {
@@ -81,7 +87,7 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
           replace,
         });
       } else {
-        // TODO chech how to handle "replace" in this flow
+        // TODO check how to handle "replace" in this flow
         // if (replace) {
         //   router.history.replace(getCurrentPath());
         // }
@@ -151,5 +157,7 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
       return isRouteOpenedRightNow(routes.menu);
     },
     getPathParams,
+    getCurrentPath,
+    getCurrentRoutePath,
   };
 };

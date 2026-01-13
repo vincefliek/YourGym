@@ -24,6 +24,18 @@ import { AppProps, AppState, AppContext as IAppContext } from '../../types';
 import style from './style.module.scss';
 
 const RootComp = () => <Outlet />;
+const WrappedHome = () => <Home />;
+const WrappedDashboard = () => <Dashboard />;
+const WrappedAuthProtection = () => <AuthProtection />;
+const WrappedMenu = () => <Menu />;
+const WrappedTrainings = () => <Trainings />;
+const WrappedTraining = () => <Training />;
+const WrappedEditExistingTraining = () => <EditExistingTraining />;
+const WrappedCreateTraining = () => <CreateTraining />;
+const WrappedExercise = () => <Exercise />;
+const WrappedEditExistingExercise = () => <EditExistingExercise />;
+const WrappedEditNewExercise = () => <EditNewExercise />;
+const WrappedCreateExercise = () => <CreateExercise />;
 
 export class App extends React.Component<AppProps, AppState> {
   private apis: AppAPIs;
@@ -42,21 +54,21 @@ export class App extends React.Component<AppProps, AppState> {
     const routePathsToComponents = {
       DEFAULT_NOT_FOUND: NotFound,
       __root__: RootComp,
-      '/': () => <Home />,
-      '/dashboard': () => <Dashboard />,
-      '/pathless_auth': () => <AuthProtection />,
-      '/menu': () => <Menu />,
+      '/': WrappedHome,
+      '/dashboard': WrappedDashboard,
+      '/pathless_auth': WrappedAuthProtection,
+      '/menu': WrappedMenu,
       '/trainings': undefined,
-      '/trainings/': () => <Trainings />,
+      '/trainings/': WrappedTrainings,
       '/trainings/$training': undefined,
-      '/trainings/$training/': () => <Training />,
-      '/trainings/$training/edit': () => <EditExistingTraining />,
-      '/trainings/$training/new': () => <CreateTraining />,
+      '/trainings/$training/': WrappedTraining,
+      '/trainings/$training/edit': WrappedEditExistingTraining,
+      '/trainings/$training/new': WrappedCreateTraining,
       '/trainings/$training/$exercise': undefined,
-      '/trainings/$training/$exercise/': () => <Exercise />,
-      '/trainings/$training/$exercise/edit': () => <EditExistingExercise />,
-      '/trainings/$training/$exercise/editNew': () => <EditNewExercise />,
-      '/trainings/$training/$exercise/new-exercise': () => <CreateExercise />,
+      '/trainings/$training/$exercise/': WrappedExercise,
+      '/trainings/$training/$exercise/edit': WrappedEditExistingExercise,
+      '/trainings/$training/$exercise/editNew': WrappedEditNewExercise,
+      '/trainings/$training/$exercise/new-exercise': WrappedCreateExercise,
     };
 
     this.apis.navigationApi.setRouterConfiguration({

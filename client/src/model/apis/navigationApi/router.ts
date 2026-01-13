@@ -2,11 +2,11 @@ import {
   createRouter,
   createRoute,
   createRootRoute,
-  createHashHistory,
   Register,
   RouteComponent,
   AnyRoute,
 } from '@tanstack/react-router';
+import { getRouterParams } from './getRouterParams';
 
 const rootRoute = createRootRoute();
 
@@ -95,12 +95,9 @@ const routeTree = rootRoute.addChildren([
   ]),
 ]);
 
-// TODO Think of externalizing "history" for tests
-const history = createHashHistory();
-
 const router = createRouter({
   routeTree,
-  history,
+  ...getRouterParams(),
 });
 
 // Typesafety - https://tanstack.com/router/latest/docs/framework/react/guide/type-safety#exported-hooks-components-and-utilities

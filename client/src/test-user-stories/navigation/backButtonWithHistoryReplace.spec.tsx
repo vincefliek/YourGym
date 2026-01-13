@@ -1,17 +1,20 @@
 import { act } from 'react';
 import userEventBuilder from '@testing-library/user-event';
+import { createMemoryHistory } from '@tanstack/react-router';
 
 import { createDriver, type TestDriver } from '../../test-utils';
 import { waitFor } from '@testing-library/react';
 
 describe('navigation - back with history replace', () => {
   let driver: TestDriver;
+  // let history: ReturnType<typeof createMemoryHistory>;
 
   beforeEach(async () => {
     driver = createDriver();
   });
 
   afterEach(() => {
+    jest.resetModules();
     jest.resetAllMocks();
     jest.clearAllMocks();
   });
@@ -19,7 +22,15 @@ describe('navigation - back with history replace', () => {
   test('navigating from edit-training -> edit-exercise and saving goes back to edit-training', async () => {
     const userEvent = userEventBuilder.setup();
 
-    const { apis, appContext, getUrlNavPath } = await driver.render.app();
+    // mock router history
+    jest.doMock('../../model/apis/navigationApi/getRouterParams.ts', () => ({
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+      defaultPreload: false, // Disable preloading entirely for tests
+      defaultPreloadStaleTime: 0,
+      defaultPendingMinMs: 0,
+    }));
+
+    const { apis, getRouteNavPath } = await driver.render.app();
 
     await driver.create.firstTemplateTraining();
 
@@ -54,28 +65,11 @@ describe('navigation - back with history replace', () => {
       await driver.waitFor.byTestId('edit-existing-exercise-screen'),
     ).toBeInTheDocument();
 
-    await waitFor(
-      async () => {
-        const store = appContext.serviceLocator.getStore();
-
-        expect(
-          isMatch(
-            apis.navigationApi.routes.editExistingExercise,
-            getUrlNavPath(),
-          ),
-        ).toBe(true);
-
-        expect(
-          isMatch(
-            apis.navigationApi.routes.editTraining,
-            store.backRouteWithHistoryReplace ?? '',
-          ),
-        ).toBe(true);
-      },
-      {
-        timeout: 1000,
-      },
-    );
+    await waitFor(() => {
+      expect(getRouteNavPath()).toBe(
+        apis.navigationApi.routes.editExistingExercise,
+      );
+    });
 
     // click save which should trigger navigationApi.goBack() and return to edit training
     const saveExerciseBtn = await driver.waitFor.byTestId(
@@ -88,33 +82,19 @@ describe('navigation - back with history replace', () => {
       await driver.waitFor.byTestId('edit-existing-training-screen'),
     ).toBeInTheDocument();
 
-    await waitFor(
-      async () => {
-        await new Promise((res) => setTimeout(res, 1000));
-
-        const store = appContext.serviceLocator.getStore();
-
-        // `backRouteWithHistoryReplace` must be reset
-        expect(store.backRouteWithHistoryReplace).toBe(undefined);
-
-        // path should remain and match editTraining
-        expect(
-          isMatch(apis.navigationApi.routes.editTraining, getUrlNavPath()),
-        ).toBe(true);
-      },
-      {
-        timeout: 2000,
-      },
-    );
+    await waitFor(() => {
+      expect(getRouteNavPath()).toBe(apis.navigationApi.routes.editTraining);
+    });
 
     // simulate browser go back btn, but agnostically to the implementation
     // details (e.g. react-router-dom or any another solution).
     //
-    // the following doesn't work in the test env with the existing setup
-    // of the app routing methanism...
+    // the following works, but not stably...
     //
-    // await act(() => {
-    //   apis.navigationApi.goBack();
-    // });
+    await act(() => apis.navigationApi.goBack());
+
+    await waitFor(() => {
+      expect(getRouteNavPath()).toBe(apis.navigationApi.routes.editTraining);
+    });
   });
 });

@@ -1,7 +1,8 @@
 import { act } from 'react';
 import userEventBuilder from '@testing-library/user-event';
 import { TestDriver, createDriver } from '../../test-utils';
-import { waitFor } from '@testing-library/react';
+import { logDOM, waitFor } from '@testing-library/react';
+import { createMemoryHistory } from '@tanstack/react-router';
 
 describe('in progress training', () => {
   let driver: TestDriver;
@@ -11,6 +12,7 @@ describe('in progress training', () => {
   });
 
   afterEach(() => {
+    jest.resetModules();
     jest.resetAllMocks();
     jest.clearAllMocks();
   });
@@ -18,7 +20,15 @@ describe('in progress training', () => {
   test('add exercise during training and finish', async () => {
     const userEvent = userEventBuilder.setup();
 
-    await driver.render.app();
+    // mock router history
+    jest.doMock('../../model/apis/navigationApi/getRouterParams.ts', () => ({
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+      defaultPreload: false, // Disable preloading entirely for tests
+      defaultPreloadStaleTime: 0,
+      defaultPendingMinMs: 0,
+    }));
+
+    const { getRouteNavPath } = await driver.render.app();
 
     // inside of home screen
     expect(await driver.waitFor.byTestId('home-screen')).toBeInTheDocument();
@@ -79,10 +89,14 @@ describe('in progress training', () => {
     );
     await act(() => userEvent.click(saveExerciseBtn));
 
-    // back to edit training screen and check exercise added
-    expect(
-      await driver.waitFor.byTestId('edit-existing-training-screen'),
-    ).toBeInTheDocument();
+    await waitFor(async () => {
+      logDOM();
+      console.log('getRouteNavPath()', getRouteNavPath());
+      // back to edit training screen and check exercise added
+      expect(
+        await driver.waitFor.byTestId('edit-existing-training-screen'),
+      ).toBeInTheDocument();
+    });
 
     await waitFor(async () => {
       const exercises = await driver.waitFor.allByTestId('exercise-item');
