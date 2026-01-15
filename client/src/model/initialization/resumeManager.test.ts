@@ -33,14 +33,12 @@ describe('ResumeManager', () => {
     // should schedule a 500ms delayed run
     expect(onResume).not.toHaveBeenCalled();
 
-    jest.advanceTimersByTime(500);
-    // wait for any microtasks
-    await Promise.resolve();
+    await jest.advanceTimersByTimeAsync(500);
 
     expect(onResume).toHaveBeenCalledTimes(1);
   });
 
-  test('does not trigger when visibility is not visible', () => {
+  test('does not trigger when visibility is not visible', async () => {
     const onResume = jest.fn().mockResolvedValue(undefined);
 
     Object.defineProperty(document, 'visibilityState', {
@@ -52,7 +50,7 @@ describe('ResumeManager', () => {
 
     document.dispatchEvent(new Event('visibilitychange'));
 
-    jest.advanceTimersByTime(1000);
+    await jest.advanceTimersByTimeAsync(1000);
 
     expect(onResume).not.toHaveBeenCalled();
   });
@@ -73,15 +71,14 @@ describe('ResumeManager', () => {
 
     // first signal
     document.dispatchEvent(new Event('visibilitychange'));
-    jest.advanceTimersByTime(500);
-    await Promise.resolve();
+    await jest.advanceTimersByTimeAsync(500);
+
     expect(onResume).toHaveBeenCalledTimes(1);
 
     // simulate time passing 1s (<2000) and fire another signal
     now += 1000;
     document.dispatchEvent(new Event('visibilitychange'));
-    jest.advanceTimersByTime(500);
-    await Promise.resolve();
+    await jest.advanceTimersByTimeAsync(500);
 
     // should still be only one call because of spam guard
     expect(onResume).toHaveBeenCalledTimes(1);
@@ -112,8 +109,7 @@ describe('ResumeManager', () => {
     document.dispatchEvent(new Event('visibilitychange'));
 
     // advance to trigger first attempt
-    jest.advanceTimersByTime(500);
-    await Promise.resolve();
+    await jest.advanceTimersByTimeAsync(500);
 
     // after failure the manager waits for an `online` event; still only one call so far
     expect(onResume).toHaveBeenCalledTimes(1);
@@ -153,13 +149,10 @@ describe('ResumeManager', () => {
     document.dispatchEvent(new Event('visibilitychange'));
 
     // first attempt
-    jest.advanceTimersByTime(500);
-    await Promise.resolve();
+    await jest.advanceTimersByTimeAsync(500);
 
     // sleep/backoff of 1s before retry
-    jest.advanceTimersByTime(1000);
-    await Promise.resolve();
-    await Promise.resolve();
+    await jest.advanceTimersByTimeAsync(1000);
 
     // retry failed -> onRetryFailed should be called with the second error
     expect(onResume).toHaveBeenCalledTimes(2);
@@ -182,17 +175,13 @@ describe('ResumeManager', () => {
 
     // trigger first run
     document.dispatchEvent(new Event('visibilitychange'));
-
-    jest.advanceTimersByTime(500);
-    await Promise.resolve();
+    await jest.advanceTimersByTimeAsync(500);
 
     expect(onResume).toHaveBeenCalledTimes(1);
 
     // before the first resolves, trigger another signal -> should schedule but then skip because isRunning
     document.dispatchEvent(new Event('visibilitychange'));
-
-    jest.advanceTimersByTime(500);
-    await Promise.resolve();
+    await jest.advanceTimersByTimeAsync(500);
 
     // still only the initial call
     expect(onResume).toHaveBeenCalledTimes(1);

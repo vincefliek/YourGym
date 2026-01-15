@@ -24,7 +24,7 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
   const { router, setConfiguration } = initRouter();
 
   const getPathParams = (route: string) => {
-    const params = router.matchRoute({ to: route }) as any;
+    const params = router.matchRoute({ to: route });
     return { ...params };
   };
 
