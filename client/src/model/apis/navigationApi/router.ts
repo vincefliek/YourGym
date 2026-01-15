@@ -109,7 +109,7 @@ declare module '@tanstack/react-router' {
 
 export type Router = Register['router'];
 
-type RoutePaths = Exclude<
+export type RoutePaths = Exclude<
   keyof Router['routesByPath'] | keyof Router['routesById'],
   '/pathless_auth/menu'
 >;
@@ -122,7 +122,6 @@ type RoutePathsToRouteDefinitions<T extends AnyRoute> = Record<RoutePaths, T>;
 
 export interface RouterConfiguration {
   routePathsToComponents: RoutePathsToComponents;
-  routePathsToGoBackPath: Partial<Record<RoutePaths, RoutePaths>>;
 }
 
 type AllRoutes =

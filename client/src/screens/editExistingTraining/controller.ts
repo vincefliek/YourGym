@@ -66,7 +66,9 @@ export const controller: Controller<ControllerType> = (
       const newExerciseId = getData().newExercise?.id;
 
       if (params.training && newExerciseId) {
-        await navigationApi.toCreateExercise(params.training, newExerciseId);
+        await navigationApi.toCreateExercise(params.training, newExerciseId, {
+          goBackTo: navigationApi.routes.editTraining,
+        });
       }
     },
     onDeleteExercise: (trainingId: string, exerciseId: string) => {

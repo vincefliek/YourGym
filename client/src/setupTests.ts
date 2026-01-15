@@ -20,6 +20,7 @@ import 'jest-fetch-mock/setupJest';
  */
 import 'core-js/actual/structured-clone';
 import 'fake-indexeddb/auto';
+import { createMemoryHistory } from '@tanstack/react-router';
 
 import { IDBFactory } from 'fake-indexeddb';
 
@@ -46,6 +47,20 @@ jest.mock(
 jest.mock('./utils/isIOS.ts', () => ({
   isIOS: () => true,
 }));
+
+// mock router history
+jest.mock('./model/apis/navigationApi/getRouterParams.ts', () => {
+  const mockedHistory = createMemoryHistory({ initialEntries: ['/'] });
+  return {
+    mockedHistory,
+    getRouterParams: () => ({
+      history: mockedHistory,
+      defaultPreload: false, // Disable preloading entirely for tests
+      defaultPreloadStaleTime: 0,
+      defaultPendingMinMs: 0,
+    }),
+  };
+});
 
 export const apiMocks = createApiMocks();
 

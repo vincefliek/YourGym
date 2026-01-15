@@ -22,7 +22,6 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
       }
     },
     onNoData: () => {
-      console.log('[onNoData] createTraining');
       navigationApi.toTrainings();
     },
     onChangeName: (name: string) => {
@@ -38,7 +37,9 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
         const newExerciseId = getData().newExercise?.id;
 
         if (newExerciseId) {
-          await navigationApi.toCreateExercise(trainingId, newExerciseId);
+          await navigationApi.toCreateExercise(trainingId, newExerciseId, {
+            goBackTo: navigationApi.routes.createTraining,
+          });
         }
       }
     },

@@ -1,5 +1,9 @@
 import { Validator } from 'jsonschema';
-import { Router, RouterConfiguration } from './apis/navigationApi/router';
+import {
+  Router,
+  RouterConfiguration,
+  RoutePaths,
+} from './apis/navigationApi/router';
 
 export type TimestampTZ =
   `${string}-${string}-${string}T${string}:${string}:${string}+${string}:${string}`;
@@ -160,50 +164,56 @@ export type ApiFactory<T, D, M extends any[] = any[]> = (
 
 export type { RouterConfiguration };
 
+interface NavOptions {
+  // template path as in definition, e.g. `/trainings/$training/new`
+  goBackTo?: string;
+}
+
 export interface NavigationApi {
   __router: Router;
-  routes: {
-    home: string;
-    trainings: string;
-    menu: string;
-    createTraining: string;
-    createExercise: string;
-    editNewExercise: string;
-    editExistingExercise: string;
-    openTraining: string;
-    openExercise: string;
-    editTraining: string;
-    dashboard: string;
-  };
+  routes: Record<string, RoutePaths>;
   setRouterConfiguration: (config: RouterConfiguration) => void;
   goBack: (params?: { replace?: boolean }) => void;
-  toTrainings: () => Promise<unknown>;
-  toHome: () => Promise<unknown>;
-  toMenu: () => Promise<unknown>;
-  toCreateTraining: (newTrainingId: string) => Promise<unknown>;
+  toTrainings: (options?: NavOptions) => Promise<unknown>;
+  toHome: (options?: NavOptions) => Promise<unknown>;
+  toMenu: (options?: NavOptions) => Promise<unknown>;
+  toCreateTraining: (
+    newTrainingId: string,
+    options?: NavOptions,
+  ) => Promise<unknown>;
   toCreateExercise: (
     trainingId: string,
     exerciseId: string,
+    options?: NavOptions,
   ) => Promise<unknown>;
   toEditNewExercise: (
     trainingId: string,
     exerciseId: string,
+    options?: NavOptions,
   ) => Promise<unknown>;
   toEditExistingExercise: (
     trainingId: string,
     exerciseId: string,
+    options?: NavOptions,
   ) => Promise<unknown>;
-  toTraining: (trainingId: string) => Promise<unknown>;
-  toExercise: (trainingId: string, exerciseId: string) => Promise<unknown>;
-  toEditTraining: (trainingId: string) => Promise<unknown>;
-  toDashboard: () => Promise<unknown>;
-  isHomeUrl: () => boolean;
+  toTraining: (trainingId: string, options?: NavOptions) => Promise<unknown>;
+  toExercise: (
+    trainingId: string,
+    exerciseId: string,
+    options?: NavOptions,
+  ) => Promise<unknown>;
+  toEditTraining: (
+    trainingId: string,
+    options?: NavOptions,
+  ) => Promise<unknown>;
+  toDashboard: (options?: NavOptions) => Promise<unknown>;
+  isHomeUrl: (options?: NavOptions) => boolean;
   isTrainingsUrl: () => boolean;
   isMenuUrl: () => boolean;
   // live as in URL, e.g. `/trainings/dac07736-f441-4ae8-96a2-ff1a0c9febf7/new`
   getCurrentPath: () => string;
   // template as in definition, e.g. `/trainings/$training/new`
-  getCurrentRoutePath: () => string;
+  getCurrentRoutePath: () => string | undefined;
   getPathParams: (route: string) => { [key: string]: string | undefined };
 }
 

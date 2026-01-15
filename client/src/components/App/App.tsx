@@ -73,10 +73,6 @@ export class App extends React.Component<AppProps, AppState> {
 
     this.apis.navigationApi.setRouterConfiguration({
       routePathsToComponents,
-      routePathsToGoBackPath: {
-        '/trainings/$training/$exercise/new-exercise':
-          '/trainings/$training/new',
-      },
     });
   }
 

@@ -2,22 +2,13 @@
 import { ApiFactory, NavigationApi } from '../../types';
 import { initRouter } from './router';
 
-interface Routes {
-  home: string;
-  trainings: string;
-  menu: string;
-  createTraining: string;
-  openTraining: string;
-  editTraining: string;
-  createExercise: string;
-  editNewExercise: string;
-  editExistingExercise: string;
-  openExercise: string;
-  dashboard: string;
+interface StateInRoute extends Partial<Record<string, string>> {
+  // TODO how to add types?
+  // goBackTo?: string;
 }
 
 export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
-  const routes: Routes = {
+  const routes: NavigationApi['routes'] = {
     home: '/',
     menu: '/menu',
     dashboard: '/dashboard',
@@ -38,13 +29,21 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
     return { ...params };
   };
 
+  const removeTrailingSlash = (path?: string): string | undefined => {
+    if (path && path !== '/') {
+      return path.replace(/\/$/, '');
+    }
+    return path;
+  };
+
   const getCurrentPath = () => router.state.location.pathname;
+
   const getCurrentRoutePath = () => {
     const currentPath = getCurrentPath();
     const matches = router.matchRoutes(currentPath);
     // The last match in the array is usually the most specific leaf route
     const currentRoutePath = matches[matches.length - 1]?.routeId;
-    return currentRoutePath;
+    return removeTrailingSlash(currentRoutePath);
   };
 
   const isRouteOpenedRightNow = (route: string): boolean =>
@@ -53,19 +52,17 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
   const setRoute = async (
     route: string,
     params: Record<string, string> = {},
+    state: StateInRoute = {},
   ) => {
     await router.navigate({
       to: route,
       params,
+      state,
     });
   };
 
-  let routePathsToGoBackPath: any = {};
-  const setRouteBackPath = (backPathsMap: any) => {
-    routePathsToGoBackPath = { ...backPathsMap };
-  };
-  const getRouteBackPath = (path: string) => {
-    return routePathsToGoBackPath[path];
+  const getRouteBackPath = () => {
+    return (router.state.location.state as unknown as StateInRoute)?.goBackTo;
   };
 
   return {
@@ -73,15 +70,13 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
     routes,
     setRouterConfiguration: (config) => {
       setConfiguration(config);
-      setRouteBackPath(config.routePathsToGoBackPath);
     },
     goBack: async ({ replace } = {}) => {
-      const to = getRouteBackPath(getCurrentRoutePath());
-      const params = getPathParams(to);
+      const to = getRouteBackPath();
 
       if (to) {
+        const params = getPathParams(to);
         return router.navigate({
-          // from: router.state.matches[router.state.matches.length - 1]?.routeId,
           to,
           params,
           replace,
@@ -89,7 +84,7 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
       } else {
         // TODO check how to handle "replace" in this flow
         // if (replace) {
-        //   router.history.replace(getCurrentPath());
+        //   router.history.replace(...);
         // }
         if (router.history.canGoBack()) {
           router.history.back();
@@ -110,11 +105,15 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
         training: newTrainingId,
       });
     },
-    toCreateExercise: (trainingId: string, exerciseId: string) => {
-      return setRoute(routes.createExercise, {
-        training: trainingId,
-        exercise: exerciseId,
-      });
+    toCreateExercise: (trainingId: string, exerciseId: string, options) => {
+      return setRoute(
+        routes.createExercise,
+        {
+          training: trainingId,
+          exercise: exerciseId,
+        },
+        { goBackTo: options?.goBackTo },
+      );
     },
     toEditNewExercise: (trainingId: string, exerciseId: string) => {
       return setRoute(routes.editNewExercise, {

@@ -1,8 +1,7 @@
 import { act } from 'react';
 import userEventBuilder from '@testing-library/user-event';
 import { TestDriver, createDriver } from '../../test-utils';
-import { logDOM, waitFor } from '@testing-library/react';
-import { createMemoryHistory } from '@tanstack/react-router';
+import { waitFor } from '@testing-library/react';
 
 describe('in progress training', () => {
   let driver: TestDriver;
@@ -20,15 +19,7 @@ describe('in progress training', () => {
   test('add exercise during training and finish', async () => {
     const userEvent = userEventBuilder.setup();
 
-    // mock router history
-    jest.doMock('../../model/apis/navigationApi/getRouterParams.ts', () => ({
-      history: createMemoryHistory({ initialEntries: ['/'] }),
-      defaultPreload: false, // Disable preloading entirely for tests
-      defaultPreloadStaleTime: 0,
-      defaultPendingMinMs: 0,
-    }));
-
-    const { getRouteNavPath } = await driver.render.app();
+    await driver.render.app();
 
     // inside of home screen
     expect(await driver.waitFor.byTestId('home-screen')).toBeInTheDocument();
@@ -54,7 +45,7 @@ describe('in progress training', () => {
     const backBtn = await driver.waitFor.byTestId('back-button');
     await act(() => userEvent.click(backBtn));
 
-    // inside of create training screen
+    // inside of existing training screen
     expect(
       await driver.waitFor.byTestId('existing-training-screen'),
     ).toBeInTheDocument();
@@ -89,14 +80,10 @@ describe('in progress training', () => {
     );
     await act(() => userEvent.click(saveExerciseBtn));
 
-    await waitFor(async () => {
-      logDOM();
-      console.log('getRouteNavPath()', getRouteNavPath());
-      // back to edit training screen and check exercise added
-      expect(
-        await driver.waitFor.byTestId('edit-existing-training-screen'),
-      ).toBeInTheDocument();
-    });
+    // back to edit training screen and check exercise added
+    expect(
+      await driver.waitFor.byTestId('edit-existing-training-screen'),
+    ).toBeInTheDocument();
 
     await waitFor(async () => {
       const exercises = await driver.waitFor.allByTestId('exercise-item');

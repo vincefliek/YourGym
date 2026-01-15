@@ -1,13 +1,11 @@
 import { act } from 'react';
 import userEventBuilder from '@testing-library/user-event';
-import { createMemoryHistory } from '@tanstack/react-router';
 
 import { createDriver, type TestDriver } from '../../test-utils';
 import { waitFor } from '@testing-library/react';
 
 describe('navigation - back with history replace', () => {
   let driver: TestDriver;
-  // let history: ReturnType<typeof createMemoryHistory>;
 
   beforeEach(async () => {
     driver = createDriver();
@@ -21,14 +19,6 @@ describe('navigation - back with history replace', () => {
 
   test('navigating from edit-training -> edit-exercise and saving goes back to edit-training', async () => {
     const userEvent = userEventBuilder.setup();
-
-    // mock router history
-    jest.doMock('../../model/apis/navigationApi/getRouterParams.ts', () => ({
-      history: createMemoryHistory({ initialEntries: ['/'] }),
-      defaultPreload: false, // Disable preloading entirely for tests
-      defaultPreloadStaleTime: 0,
-      defaultPendingMinMs: 0,
-    }));
 
     const { apis, getRouteNavPath } = await driver.render.app();
 
@@ -87,14 +77,13 @@ describe('navigation - back with history replace', () => {
     });
 
     // simulate browser go back btn, but agnostically to the implementation
-    // details (e.g. react-router-dom or any another solution).
-    //
-    // the following works, but not stably...
-    //
+    // details (e.g. any router from NPM)
     await act(() => apis.navigationApi.goBack());
 
+    // must be previous of the previous path,
+    // this means router history replace works!
     await waitFor(() => {
-      expect(getRouteNavPath()).toBe(apis.navigationApi.routes.editTraining);
+      expect(getRouteNavPath()).toBe(apis.navigationApi.routes.openTraining);
     });
   });
 });

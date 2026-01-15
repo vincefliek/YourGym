@@ -1,9 +1,11 @@
 import { render, RenderResult } from '@testing-library/react';
+import { RouterHistory } from '@tanstack/react-router';
 
 import { App } from '../components/App/App';
 import { initApp } from '../model';
 import { AppAPIs } from '../model/types';
 import { AppContext } from '../types';
+import * as AllInGetRouterParams from '../model/apis/navigationApi/getRouterParams';
 
 export interface RenderAppResult {
   app: RenderResult;
@@ -12,7 +14,9 @@ export interface RenderAppResult {
   // live as in URL, e.g. `/trainings/dac07736-f441-4ae8-96a2-ff1a0c9febf7/new`
   getUrlNavPath: () => string;
   // template as in definition, e.g. `/trainings/$training/new`
-  getRouteNavPath: () => string;
+  getRouteNavPath: () => string | undefined;
+  // https://tanstack.com/router/latest/docs/framework/react/guide/history-types
+  mockedHistory: RouterHistory;
 }
 
 export const renderApp = async (): Promise<RenderAppResult> => {
@@ -23,8 +27,14 @@ export const renderApp = async (): Promise<RenderAppResult> => {
   const app = render(<App apis={apis} appContext={appContext} />);
 
   const getUrlNavPath = (): string => apis.navigationApi.getCurrentPath();
-  const getRouteNavPath = (): string =>
-    apis.navigationApi.getCurrentRoutePath();
+  const getRouteNavPath = () => apis.navigationApi.getCurrentRoutePath();
 
-  return { app, apis, appContext, getUrlNavPath, getRouteNavPath };
+  return {
+    app,
+    apis,
+    appContext,
+    getUrlNavPath,
+    getRouteNavPath,
+    mockedHistory: (AllInGetRouterParams as any).mockedHistory,
+  };
 };

@@ -38,33 +38,31 @@ interface Controller {
   onOpenExercise: (exerciseId: string) => void;
 }
 
-class PureCreateTraining extends React.Component<Props> {
-  render() {
-    const {
-      data,
-      onChangeName,
-      onAddExercise,
-      onDelete,
-      onSave,
-      onDeleteExercise,
-      onOpenExercise,
-    } = this.props;
-    return (
-      <Training
-        dataTestId="create-training-screen"
-        id={data.id}
-        name={data.name}
-        exercises={data.exercises}
-        onChangeName={onChangeName}
-        onAddExercise={onAddExercise}
-        onDelete={onDelete}
-        onSave={onSave}
-        onDeleteExercise={onDeleteExercise}
-        onOpenExercise={onOpenExercise}
-      />
-    );
-  }
-}
+const PureCreateTraining: React.FC<Props> = (props) => {
+  const {
+    data,
+    onChangeName,
+    onAddExercise,
+    onDelete,
+    onSave,
+    onDeleteExercise,
+    onOpenExercise,
+  } = props;
+  return (
+    <Training
+      dataTestId="create-training-screen"
+      id={data.id}
+      name={data.name}
+      exercises={data.exercises}
+      onChangeName={onChangeName}
+      onAddExercise={onAddExercise}
+      onDelete={onDelete}
+      onSave={onSave}
+      onDeleteExercise={onDeleteExercise}
+      onOpenExercise={onOpenExercise}
+    />
+  );
+};
 
 export const CreateTraining = connect<Controller, Props>(
   {
