@@ -1,4 +1,3 @@
-// import { waitForCondition } from '../../../utils';
 import { ApiFactory, NavigationApi } from '../../types';
 import { initRouter } from './router';
 
