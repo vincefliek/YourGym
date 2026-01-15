@@ -60,7 +60,7 @@
     "start": "git add .husky/pre-commit && vite",
     "dev": "vite",
     "dev-build": "vite build",
-    "build": "npm run ts-check && npm version patch --no-git-tag-version && vite build",
+    "deploy-build": "npm run ts-check && npm run test && npm version patch --no-git-tag-version && vite build",
     "preview": "vite preview",
     "test": "NODE_ENV=test jest",
     "test:watch": "jest --watchAll",
@@ -69,8 +69,7 @@
     "lint:fix": "eslint --fix --ext .ts,.tsx ./src",
     "prettier:fix": "prettier --write \"src/**/*.{ts,tsx,scss,css}\"",
     "safe-check": "./scripts/safe-check.sh",
-    "pre-commit-hook": "npm run safe-check && npm run lint:fix && npm run prettier:fix",
-    "predeploy": "npm run build"
+    "pre-commit-hook": "npm run safe-check && npm run lint:fix && npm run prettier:fix"
   },
   "browserslist": {
     "production": [
