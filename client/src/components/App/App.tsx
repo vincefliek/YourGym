@@ -1,6 +1,9 @@
 import React from 'react';
 import { RouterProvider, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { MantineProvider } from '@mantine/core';
+
+import '@mantine/core/styles.css';
 
 import { AppAPIs } from '../../model/types';
 import {
@@ -79,16 +82,18 @@ export class App extends React.Component<AppProps, AppState> {
   render() {
     return (
       <AppContext.Provider value={this.appContext}>
-        <div className={style.releaseVersion}>v{__APP_VERSION__}</div>
-        <div className={style.app}>
-          <Notifications />
-          <BlockingLayer />
-          <TanStackRouterDevtools
-            position="bottom-right"
-            router={this.apis.navigationApi.__router}
-          />
-          <RouterProvider router={this.apis.navigationApi.__router} />
-        </div>
+        <MantineProvider>
+          <div className={style.releaseVersion}>v{__APP_VERSION__}</div>
+          <div className={style.app}>
+            <Notifications />
+            <BlockingLayer />
+            <TanStackRouterDevtools
+              position="bottom-right"
+              router={this.apis.navigationApi.__router}
+            />
+            <RouterProvider router={this.apis.navigationApi.__router} />
+          </div>
+        </MantineProvider>
       </AppContext.Provider>
     );
   }
