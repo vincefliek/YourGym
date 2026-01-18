@@ -59,6 +59,10 @@
   color: $disabledColor;
   border-color: $disabledColor;
   cursor: not-allowed;
+
+  &.icon > svg {
+    fill: $disabledColor;
+  }
 }
 
 /* skins - end */
