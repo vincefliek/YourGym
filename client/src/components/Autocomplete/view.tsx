@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Combobox, InputBase, useCombobox } from '@mantine/core';
 import { v4 as uuidv4 } from 'uuid';
-// import classnames from 'classnames';
 
 import { AutocompleteProps } from './types';
-// import style from './style.module.scss';
+import style from './style.module.scss';
 
 export const Autocomplete: React.FC<AutocompleteProps> = ({
   // value,
@@ -25,7 +24,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   const filteredOptions = exactOptionMatch
     ? data
     : data.filter((item) =>
-        item.value.toLowerCase().includes(search.toLowerCase().trim()),
+        item.label.toLowerCase().includes(search.toLowerCase().trim()),
       );
 
   const dropdownOptions = filteredOptions.map((item) => (
@@ -34,21 +33,26 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     </Combobox.Option>
   ));
 
+  // const handleChange = useCallback(
+  //   (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //     onChange(event.target.value);
+  //   },
+  //   [onChange],
+  // );
+
   return (
     <Combobox
       store={combobox}
       withinPortal={false}
       onOptionSubmit={(val) => {
         if (val === '$create') {
-          setData((current) => [
-            ...current,
-            { value: uuidv4(), label: search },
-          ]);
-          setValue(search);
+          const value = uuidv4();
+          setData((current) => [...current, { value, label: search }]);
+          setValue(value);
         } else {
           const label = data.find((item) => item.value === val)?.label;
           if (label) {
-            setValue(label);
+            setValue(val);
             setSearch(label);
           }
         }
@@ -58,6 +62,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     >
       <Combobox.Target>
         <InputBase
+          className={style.input}
           rightSection={<Combobox.Chevron />}
           value={search}
           onChange={(event) => {
@@ -69,7 +74,8 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
           onFocus={() => combobox.openDropdown()}
           onBlur={() => {
             combobox.closeDropdown();
-            setSearch(localValue || '');
+            const label = data.find((item) => item.value === localValue)?.label;
+            setSearch(label || '');
           }}
           placeholder="Search value"
           rightSectionPointerEvents="none"
@@ -87,33 +93,3 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     </Combobox>
   );
 };
-
-// export const Autocomplete: React.FC<AutocompleteProps> = ({
-//   value,
-//   onChange,
-//   options,
-//   className,
-//   ...props
-// }) => {
-//   const handleChange = useCallback(
-//     (event: React.ChangeEvent<HTMLSelectElement>) => {
-//       onChange(event.target.value);
-//     },
-//     [onChange],
-//   );
-
-//   return (
-//     <select
-//       className={classnames(style.select, className)}
-//       value={value}
-//       onChange={handleChange}
-//       {...props}
-//     >
-//       {options.map((option) => (
-//         <option key={option.value} value={option.value}>
-//           {option.label}
-//         </option>
-//       ))}
-//     </select>
-//   );
-// };
