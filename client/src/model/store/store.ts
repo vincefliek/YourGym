@@ -8,6 +8,7 @@ import {
   ActiveTraining,
   Notification,
   UiBlockingLayerState,
+  ExerciseType,
 } from '../types';
 
 import { get as idbGet, set as idbSet } from 'idb-keyval';
@@ -15,6 +16,7 @@ import { get as idbGet, set as idbSet } from 'idb-keyval';
 interface State {
   trainings: Training[];
   completedTrainings: CompletedTraining[];
+  exerciseTypes: ExerciseType[];
   activeTraining: ActiveTraining | null;
   newTraining: Training | null;
   newExercise: Exercise | null;
@@ -30,11 +32,30 @@ interface Subscribers {
   newExercise: Array<() => void>;
   auth: Array<() => void>;
   completedTrainings: Array<() => void>;
+  exerciseTypes: Array<() => void>;
   activeTraining: Array<() => void>;
   sync: Array<() => void>;
   notifications: Array<() => void>;
   uiBlockingLayer: Array<() => void>;
 }
+
+const defaultExerciseTypes: ExerciseType[] = [
+  {
+    label: 'Barbell Bench Press',
+    value: 'barbellBenchPress',
+    group: 'chest',
+  },
+  {
+    label: 'Squat',
+    value: 'squat',
+    group: 'legs',
+  },
+  {
+    label: 'Deadlift',
+    value: 'deadlift',
+    group: 'compound',
+  },
+];
 
 export class Store implements StoreInterface {
   private state: State;
@@ -49,6 +70,7 @@ export class Store implements StoreInterface {
     this.state = {
       trainings: [],
       completedTrainings: [],
+      exerciseTypes: defaultExerciseTypes,
       activeTraining: null,
       newTraining: null,
       newExercise: null,
@@ -73,6 +95,7 @@ export class Store implements StoreInterface {
     this.subscribers = {
       trainings: [],
       completedTrainings: [],
+      exerciseTypes: [],
       activeTraining: [],
       newTraining: [],
       newExercise: [],
@@ -144,6 +167,8 @@ export class Store implements StoreInterface {
         return this.state.trainings;
       case 'completedTrainings':
         return this.state.completedTrainings;
+      case 'exerciseTypes':
+        return this.state.exerciseTypes;
       case 'activeTraining':
         return this.state.activeTraining;
       case 'newTraining':
@@ -183,6 +208,9 @@ export class Store implements StoreInterface {
             break;
           case 'completedTrainings':
             this.completedTrainings = persisted as CompletedTraining[];
+            break;
+          case 'exerciseTypes':
+            this.exerciseTypes = persisted as ExerciseType[];
             break;
           case 'activeTraining':
             this.activeTraining = persisted as ActiveTraining | null;
@@ -296,6 +324,7 @@ export class Store implements StoreInterface {
     ({
       trainings: state.trainings,
       completedTrainings: state.completedTrainings,
+      exerciseTypes: state.exerciseTypes,
       activeTraining: state.activeTraining,
       newTraining: state.newTraining,
       newExercise: state.newExercise,
@@ -335,6 +364,10 @@ export class Store implements StoreInterface {
 
   get completedTrainings(): CompletedTraining[] {
     return this.state.completedTrainings;
+  }
+
+  get exerciseTypes(): ExerciseType[] {
+    return this.state.exerciseTypes;
   }
 
   get notifications(): Notification[] {
@@ -395,6 +428,14 @@ export class Store implements StoreInterface {
     this._updateStoreData(fn, ['completedTrainings']);
   }
 
+  set exerciseTypes(data: ExerciseType[]) {
+    const fn = () => ({
+      exerciseTypes: data,
+    });
+
+    this._updateStoreData(fn, ['exerciseTypes']);
+  }
+
   set activeTraining(data) {
     const fn = () => ({
       activeTraining: data,
@@ -438,6 +479,7 @@ export class Store implements StoreInterface {
 const allPublicDataAccessors = [
   'trainings',
   'completedTrainings',
+  'exerciseTypes',
   'activeTraining',
   'newTraining',
   'newExercise',

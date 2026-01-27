@@ -1,7 +1,8 @@
 export interface AutocompleteProps {
-  value: string;
-  onChange: (value: string) => void;
-  options: { label: string; value: string }[];
+  initialValue: string;
+  onSelectOption: (value: string) => void;
+  onCreateOption: (label: string) => void;
+  options: { label: string; value: string; group: string }[];
   className?: string;
   'data-testid'?: string;
 }

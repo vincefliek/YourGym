@@ -19,9 +19,26 @@ export interface Set {
 export interface Exercise {
   id: string;
   name: string;
+  // TODO add "type" for exercise
+  // type: ExerciseType['value'] | 'unset-type';
   sets: Set[];
   /** @deprecated - calculate on the fly */
   setsPreview?: string;
+}
+
+export interface ExerciseType {
+  group:
+    | 'compound' // several muscle groups work together (e.g. Deadlift)
+    | 'miscellaneous' // may be not directly gym related (e.g. Plank, Farmer’s walk)
+    | 'chest'
+    | 'legs'
+    | 'back'
+    | 'shoulders'
+    | 'biceps'
+    | 'triceps'
+    | 'abs';
+  value: string;
+  label: string;
 }
 
 export interface Training {
@@ -77,6 +94,8 @@ export interface Store {
   set trainings(value: Training[]);
   get completedTrainings(): CompletedTraining[];
   set completedTrainings(value: CompletedTraining[]);
+  get exerciseTypes(): ExerciseType[];
+  set exerciseTypes(value: ExerciseType[]);
   get activeTraining(): ActiveTraining | null;
   set activeTraining(value: ActiveTraining | null);
   get newTraining(): Training | null;
@@ -218,6 +237,9 @@ export interface NavigationApi {
 }
 
 export interface TrainingsApi {
+  get: {
+    exerciseTypes: () => ExerciseType[];
+  };
   create: {
     newTraining: () => void;
     newActiveTraining: (trainingId: string) => void;
@@ -243,6 +265,7 @@ export interface TrainingsApi {
     ) => void;
     allTrainings: (trainings: Training[]) => void;
     completedTrainings: (trainings: CompletedTraining[]) => void;
+    exerciseTypes: (exerciseTypes: ExerciseType[]) => void;
   };
   delete: {
     newTraining: () => void;
@@ -331,7 +354,7 @@ export namespace ServerRead {
     created_at: TimestampTZ;
     updated_at: TimestampTZ | null;
     date: TimestampTZ;
-    // TODO create all types of exercises and delete "custom"
+    // TODO delete "custom" after "type" migration is completed
     type: 'custom' | string;
     reps: number;
     weight: number;
@@ -349,8 +372,7 @@ export namespace ServerWrite {
   export interface sw_CompletedExcercise {
     name: string;
     date: TimestampTZ;
-    // TODO create all types of exercises and delete "custom"
-    type: 'custom' | string;
+    type: string;
     reps: number;
     weight: number;
   }

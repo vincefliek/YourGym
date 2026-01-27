@@ -62,7 +62,7 @@
   },
   "scripts": {
     "prepare": "cd .. && husky install client/.husky",
-    "start": "git add .husky/pre-commit && vite",
+    "start": "git add .husky/pre-commit && vite --host",
     "dev": "vite",
     "dev-build": "vite build",
     "deploy-build": "npm run ts-check && npm run test && npm version patch --no-git-tag-version && vite build",

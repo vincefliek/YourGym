@@ -1,6 +1,14 @@
-import { Exercise } from '../../model/types';
+import { Exercise, ExerciseType } from '../../model/types';
 
-export interface ExerciseProps {
+export type ExerciseProps = ExerciseStateProps & ExerciseOwnProps;
+
+export type ExerciseStateProps = {
+  exerciseTypes: ExerciseType[];
+  onCreateNewType: (label: string, group: string) => void;
+  getSelectedTypeLabel: (value: string) => string | undefined;
+};
+
+export type ExerciseOwnProps = {
   data: Exercise;
   dataTestId?: string;
   onChangeName: (value: string) => void;
@@ -10,6 +18,12 @@ export interface ExerciseProps {
   onAddSet: () => void;
   onDelete: () => void;
   onSave: () => void;
-}
+  disabledDelete?: boolean;
+  disabledSave?: boolean;
+};
 
-export interface ExerciseState {}
+export interface Controller {
+  getExerciseTypes: () => ExerciseType[];
+  onCreateNewType: (label: string, group: string) => void;
+  getSelectedTypeLabel: (value: string) => string | undefined;
+}

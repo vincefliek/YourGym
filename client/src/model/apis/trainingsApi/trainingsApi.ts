@@ -10,6 +10,8 @@ import {
   CompletedTraining,
   TimestampTZ,
   ActiveTraining,
+  ExerciseType,
+  CompletedTrainingExcercise,
 } from '../../types';
 import {
   allTrainingsSchema,
@@ -19,6 +21,8 @@ import {
   completedTrainingSchema,
   completedTrainingsSchema,
   completedExerciseSchema,
+  exerciseTypeSchema,
+  exerciseTypesSchema,
 } from './schemas';
 import { getTimestampWithTimeZone } from '../../../utils';
 
@@ -33,6 +37,8 @@ export const createTrainingsApi: ApiFactory<
   validator.addSchema(completedTrainingsSchema);
   validator.addSchema(completedTrainingSchema);
   validator.addSchema(completedExerciseSchema);
+  validator.addSchema(exerciseTypeSchema);
+  validator.addSchema(exerciseTypesSchema);
 
   const { trainingsServerApi, notificationsApi } = dependencies;
 
@@ -60,6 +66,7 @@ export const createTrainingsApi: ApiFactory<
       'activeTraining',
       'newTraining',
       'newExercise',
+      'exerciseTypes',
     ]);
 
   const deleteNewTraining = () => {
@@ -140,7 +147,7 @@ export const createTrainingsApi: ApiFactory<
           id: uuidv4(),
           name: data.name,
           sets: [],
-        }),
+        } as CompletedTrainingExcercise),
       } as CompletedTraining;
 
       try {
@@ -282,6 +289,10 @@ export const createTrainingsApi: ApiFactory<
     return currentTime;
   };
 
+  const _get: TrainingsApi['get'] = {
+    exerciseTypes: () => getData().exerciseTypes,
+  };
+
   const _create: TrainingsApi['create'] = {
     newTraining: () => {
       const data: Training = {
@@ -358,6 +369,10 @@ export const createTrainingsApi: ApiFactory<
     completedTrainings: (trainings: CompletedTraining[]) => {
       validate(trainings, completedTrainingsSchema);
       store.completedTrainings = trainings;
+    },
+    exerciseTypes: (exerciseTypes: ExerciseType[]) => {
+      validate(exerciseTypes, exerciseTypesSchema);
+      store.exerciseTypes = exerciseTypes;
     },
     newTraining: (input: Partial<Training>) => {
       const data = {
@@ -555,6 +570,7 @@ export const createTrainingsApi: ApiFactory<
   };
 
   return {
+    get: _get,
     create: _create,
     update: _update,
     save: _save,

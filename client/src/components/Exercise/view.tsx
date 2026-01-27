@@ -1,32 +1,91 @@
 import React from 'react';
 import classnames from 'classnames';
+import { Modal, Select } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import sortBy from 'lodash/sortBy';
 
-import { Button, Input, Layout, NavbarContainer } from '../../components';
+import {
+  Button,
+  Input,
+  Layout,
+  NavbarContainer,
+  Autocomplete,
+} from '../../components';
+import { connect } from '../../utils';
+import { controller } from './controller';
 import DoneIcon from '../../assets/done.svg?react';
 import DeleteIcon from '../../assets/delete.svg?react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { ExerciseProps, ExerciseState } from './types';
+import {
+  ExerciseProps,
+  ExerciseStateProps,
+  ExerciseOwnProps,
+  Controller,
+} from './types';
 
 import style from './style.module.scss';
+import { ExerciseType } from '../../model/types';
 
-export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
-  renderTopBar = () => {
-    const { data, onChangeName } = this.props;
+const exerciseGroups: ExerciseType['group'][] = sortBy([
+  'compound',
+  'miscellaneous',
+  'chest',
+  'legs',
+  'back',
+  'shoulders',
+  'biceps',
+  'triceps',
+  'abs',
+]);
+
+const PureExercise: React.FC<ExerciseProps> = (props) => {
+  const [opened, modalHandlers] = useDisclosure(false);
+  const [createdOptionLabel, setCreatedOptionLabel] = React.useState<
+    string | null
+  >(null);
+  const [createdOptionGroup, setCreatedOptionGroup] = React.useState<
+    string | null
+  >(null);
+
+  const { exerciseTypes, onChangeName, onCreateNewType, getSelectedTypeLabel } =
+    props;
+
+  const finishCreatingOption = async () => {
+    if (createdOptionLabel && createdOptionGroup) {
+      await onCreateNewType(createdOptionLabel, createdOptionGroup);
+      onChangeName(createdOptionLabel);
+    }
+    modalHandlers.close();
+    setCreatedOptionGroup(null);
+    setCreatedOptionLabel(null);
+  };
+
+  const renderTopBar = () => {
     return (
       <div className={style.topBar}>
-        <Input
-          type="text"
-          value={data.name}
-          onBlur={onChangeName}
+        <Autocomplete
+          initialValue={data.name}
+          onSelectOption={(value) => {
+            const selectedLabel = getSelectedTypeLabel(value);
+            if (selectedLabel) {
+              onChangeName(selectedLabel);
+            }
+          }}
+          onCreateOption={async (label) => {
+            setCreatedOptionLabel(label);
+            setCreatedOptionGroup(null);
+            modalHandlers.open();
+          }}
+          options={exerciseTypes}
           className={style.input}
-          data-testid="exercise-name-input"
+          data-testid="exercise-name-autocomplete"
         />
       </div>
     );
   };
 
-  renderBottomBar = () => {
-    const { onDelete, onSave } = this.props;
+  const renderBottomBar = () => {
+    const { onDelete, onSave, disabledDelete, disabledSave } = props;
     return (
       <NavbarContainer className={style.navbarContainer}>
         <Button
@@ -34,6 +93,7 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
           size="large"
           onClick={onDelete}
           data-testid="exercise-delete-button"
+          disabled={disabledDelete}
         >
           <DeleteIcon />
         </Button>
@@ -42,6 +102,7 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
           size="large"
           onClick={onSave}
           data-testid="exercise-save-button"
+          disabled={disabledSave}
         >
           <DoneIcon />
         </Button>
@@ -49,9 +110,8 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     );
   };
 
-  renderSets = () => {
-    const { data, onDeleteSet, onChangeRepetitions, onChangeWeight } =
-      this.props;
+  const renderSets = () => {
+    const { data, onDeleteSet, onChangeRepetitions, onChangeWeight } = props;
     return (
       <TransitionGroup
         component={'ul'}
@@ -111,34 +171,71 @@ export class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     );
   };
 
-  render() {
-    const { data, onAddSet, dataTestId } = this.props;
+  const { data, onAddSet, dataTestId } = props;
 
-    const areSets = Boolean(data.sets.length);
+  const areSets = Boolean(data.sets.length);
 
-    return (
-      <Layout
-        dataTestId={dataTestId}
-        topBar={this.renderTopBar()}
-        bottomBar={this.renderBottomBar()}
+  return (
+    <Layout
+      dataTestId={dataTestId}
+      topBar={renderTopBar()}
+      bottomBar={renderBottomBar()}
+    >
+      <div
+        className={classnames(style.screen, {
+          [style.screenNoData]: !areSets,
+        })}
       >
-        <div
-          className={classnames(style.screen, {
-            [style.screenNoData]: !areSets,
-          })}
+        {renderSets()}
+        <Button
+          skin="primary"
+          font="nunito"
+          className={style.button}
+          onClick={onAddSet}
+          data-testid="add-set-button"
         >
-          {this.renderSets()}
+          Add set
+        </Button>
+        <Modal
+          opened={opened}
+          onClose={modalHandlers.close}
+          overlayProps={{
+            backgroundOpacity: 0.55,
+            blur: 3,
+          }}
+        >
+          <Select
+            label="Choose group for new exercise type"
+            placeholder="Pick value"
+            data={exerciseGroups}
+            onChange={setCreatedOptionGroup}
+          />
           <Button
-            skin="primary"
-            font="nunito"
-            className={style.button}
-            onClick={onAddSet}
-            data-testid="add-set-button"
+            skin="icon"
+            size="large"
+            onClick={finishCreatingOption}
+            // data-testid="exercise-save-button"
+            disabled={!createdOptionGroup}
           >
-            Add set
+            <DoneIcon />
           </Button>
-        </div>
-      </Layout>
-    );
-  }
-}
+        </Modal>
+      </div>
+    </Layout>
+  );
+};
+
+export const Exercise = connect<
+  Controller,
+  ExerciseStateProps,
+  ExerciseOwnProps
+>(
+  {
+    controller,
+  },
+  (ctrl) => ({
+    exerciseTypes: ctrl.getExerciseTypes(),
+    onCreateNewType: ctrl.onCreateNewType,
+    getSelectedTypeLabel: ctrl.getSelectedTypeLabel,
+  }),
+)(PureExercise);

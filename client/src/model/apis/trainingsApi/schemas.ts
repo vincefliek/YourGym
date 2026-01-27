@@ -119,3 +119,28 @@ export const completedExerciseSchema = {
   },
   required: ['id', 'name', 'sets'],
 };
+
+export const exerciseTypesSchema = {
+  id: '/ExerciseTypesSchema',
+  type: 'array',
+  items: {
+    $ref: '/ExerciseTypeSchema',
+  },
+};
+
+export const exerciseTypeSchema = {
+  id: '/ExerciseTypeSchema',
+  type: 'object',
+  properties: {
+    group: {
+      type: 'string',
+    },
+    value: {
+      type: 'string',
+    },
+    label: {
+      type: 'string',
+    },
+  },
+  required: ['group', 'value', 'label'],
+};

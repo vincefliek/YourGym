@@ -123,6 +123,7 @@ export const createTrainingsServerApi: ApiFactory<
       const exercises = Object.values(grouped).map((gr) => ({
         /* "id" - only for client, not used on the server */
         id: uuidv4(),
+        // TODO use exercise type instead of name? (it's stable)
         name: gr?.[0]?.name,
         sets:
           gr?.map((it) => ({
