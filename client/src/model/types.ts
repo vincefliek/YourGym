@@ -248,6 +248,7 @@ export interface TrainingsApi {
     setsPreview: (sets: Set[]) => string;
     datePreview: (timestamptz: TimestampTZ) => string;
     timePreview: (timestamptz: TimestampTZ) => string;
+    exerciseType: (exerciseType: Pick<ExerciseType, 'label' | 'group'>) => void;
   };
   update: {
     newTraining: (input: Partial<Training>) => void;

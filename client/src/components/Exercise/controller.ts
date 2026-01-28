@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
-
 import { AppContext } from '../../types';
 import { Controller } from './types';
 import { ExerciseType } from '../../model/types';
@@ -36,17 +34,11 @@ export const controller = (
       const exerciseTypes = getExerciseTypes();
       return [...defaultExerciseTypes, ...exerciseTypes];
     },
-    onCreateNewType: async (label: string, group: string) => {
-      /**
-       * TODO: Move UUID generation to the trainingsApi
-       */
-      const typeId = `type::${uuidv4()}`;
-      const exerciseTypes = getExerciseTypes();
-
-      await trainingsApi.update.exerciseTypes([
-        ...exerciseTypes,
-        { value: typeId, label, group: group as ExerciseType['group'] },
-      ]);
+    onCreateNewType: (label: string, group: string) => {
+      trainingsApi.create.exerciseType({
+        label,
+        group: group as ExerciseType['group'],
+      });
     },
     getSelectedTypeLabel: (value: string) => {
       const exerciseTypes = getExerciseTypes();

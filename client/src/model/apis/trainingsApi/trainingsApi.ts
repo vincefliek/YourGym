@@ -354,6 +354,19 @@ export const createTrainingsApi: ApiFactory<
       validate(data, setSchema);
       addSet(trainingId, exerciseId, data);
     },
+    exerciseType: ({ label, group }) => {
+      const typeId = `type::${uuidv4()}`;
+      const newExerciseType: ExerciseType = {
+        value: typeId,
+        label,
+        group,
+      };
+
+      const existingTypes = getData().exerciseTypes;
+      const updatedTypes = [...existingTypes, newExerciseType];
+
+      _update.exerciseTypes(updatedTypes);
+    },
     setsPreview: (sets: Set[]): string => {
       return createSetsPreview(sets);
     },

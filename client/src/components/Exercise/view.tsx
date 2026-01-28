@@ -47,12 +47,32 @@ const PureExercise: React.FC<ExerciseProps> = (props) => {
     string | null
   >(null);
 
-  const { exerciseTypes, onChangeName, onCreateNewType, getSelectedTypeLabel } =
-    props;
+  const {
+    data,
+    dataTestId,
+    exerciseTypes,
+    disabledDelete,
+    disabledSave,
+    onAddSet,
+    onChangeName,
+    onCreateNewType,
+    getSelectedTypeLabel,
+    onDelete,
+    onSave,
+    onDeleteSet,
+    onChangeRepetitions,
+    onChangeWeight,
+  } = props;
 
-  const finishCreatingOption = async () => {
+  const startCreatingOption = (label: string) => {
+    setCreatedOptionLabel(label);
+    setCreatedOptionGroup(null);
+    modalHandlers.open();
+  };
+
+  const finishCreatingOption = () => {
     if (createdOptionLabel && createdOptionGroup) {
-      await onCreateNewType(createdOptionLabel, createdOptionGroup);
+      onCreateNewType(createdOptionLabel, createdOptionGroup);
       onChangeName(createdOptionLabel);
     }
     modalHandlers.close();
@@ -71,10 +91,8 @@ const PureExercise: React.FC<ExerciseProps> = (props) => {
               onChangeName(selectedLabel);
             }
           }}
-          onCreateOption={async (label) => {
-            setCreatedOptionLabel(label);
-            setCreatedOptionGroup(null);
-            modalHandlers.open();
+          onCreateOption={(label) => {
+            startCreatingOption(label);
           }}
           options={exerciseTypes}
           className={style.input}
@@ -85,7 +103,6 @@ const PureExercise: React.FC<ExerciseProps> = (props) => {
   };
 
   const renderBottomBar = () => {
-    const { onDelete, onSave, disabledDelete, disabledSave } = props;
     return (
       <NavbarContainer className={style.navbarContainer}>
         <Button
@@ -111,7 +128,6 @@ const PureExercise: React.FC<ExerciseProps> = (props) => {
   };
 
   const renderSets = () => {
-    const { data, onDeleteSet, onChangeRepetitions, onChangeWeight } = props;
     return (
       <TransitionGroup
         component={'ul'}
@@ -171,8 +187,6 @@ const PureExercise: React.FC<ExerciseProps> = (props) => {
     );
   };
 
-  const { data, onAddSet, dataTestId } = props;
-
   const areSets = Boolean(data.sets.length);
 
   return (
@@ -214,7 +228,7 @@ const PureExercise: React.FC<ExerciseProps> = (props) => {
             skin="icon"
             size="large"
             onClick={finishCreatingOption}
-            // data-testid="exercise-save-button"
+            data-testid="finish-create-exercise-type-button"
             disabled={!createdOptionGroup}
           >
             <DoneIcon />
