@@ -1,30 +1,13 @@
 import { AppContext } from '../../types';
 import { Controller } from './types';
 import { ExerciseType } from '../../model/types';
+import { defaultExerciseTypes } from './constants';
 
 export const controller = (
   serviceLocator: AppContext['serviceLocator'],
 ): Controller => {
   const { getStoreData } = serviceLocator.getStore();
   const { trainingsApi } = serviceLocator.getAPIs();
-
-  const defaultExerciseTypes: ExerciseType[] = [
-    {
-      label: 'Barbell Bench Press',
-      value: 'barbellBenchPress',
-      group: 'chest',
-    },
-    {
-      label: 'Squat',
-      value: 'squat',
-      group: 'legs',
-    },
-    {
-      label: 'Deadlift',
-      value: 'deadlift',
-      group: 'compound',
-    },
-  ];
 
   const getExerciseTypes = () =>
     getStoreData(controller.storeDataAccessors).exerciseTypes as ExerciseType[];
