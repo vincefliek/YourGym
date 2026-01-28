@@ -9,14 +9,19 @@ export const controller = (
   const { getStoreData } = serviceLocator.getStore();
   const { trainingsApi } = serviceLocator.getAPIs();
 
-  const getExerciseTypes = () =>
+  const getStoreExerciseTypes = () =>
     getStoreData(controller.storeDataAccessors).exerciseTypes as ExerciseType[];
 
+  const getExerciseTypes = () => {
+    const exerciseTypes = getStoreExerciseTypes();
+    const sortedByGroup = [...defaultExerciseTypes, ...exerciseTypes].sort(
+      (a, b) => a.group.localeCompare(b.group),
+    );
+    return sortedByGroup;
+  };
+
   return {
-    getExerciseTypes: () => {
-      const exerciseTypes = getExerciseTypes();
-      return [...defaultExerciseTypes, ...exerciseTypes];
-    },
+    getExerciseTypes: () => getExerciseTypes(),
     onCreateNewType: (label: string, group: string) => {
       trainingsApi.create.exerciseType({
         label,
