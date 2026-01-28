@@ -52,6 +52,9 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
 
         combobox.closeDropdown();
       }}
+      classNames={{
+        dropdown: style.dropdown,
+      }}
     >
       <Combobox.Target>
         <InputBase
