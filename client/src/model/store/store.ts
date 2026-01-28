@@ -39,24 +39,6 @@ interface Subscribers {
   uiBlockingLayer: Array<() => void>;
 }
 
-const defaultExerciseTypes: ExerciseType[] = [
-  {
-    label: 'Barbell Bench Press',
-    value: 'barbellBenchPress',
-    group: 'chest',
-  },
-  {
-    label: 'Squat',
-    value: 'squat',
-    group: 'legs',
-  },
-  {
-    label: 'Deadlift',
-    value: 'deadlift',
-    group: 'compound',
-  },
-];
-
 export class Store implements StoreInterface {
   private state: State;
   private subscribers: Subscribers;
@@ -70,7 +52,7 @@ export class Store implements StoreInterface {
     this.state = {
       trainings: [],
       completedTrainings: [],
-      exerciseTypes: defaultExerciseTypes,
+      exerciseTypes: [],
       activeTraining: null,
       newTraining: null,
       newExercise: null,

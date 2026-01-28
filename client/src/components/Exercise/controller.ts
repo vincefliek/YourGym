@@ -10,11 +10,32 @@ export const controller = (
   const { getStoreData } = serviceLocator.getStore();
   const { trainingsApi } = serviceLocator.getAPIs();
 
+  const defaultExerciseTypes: ExerciseType[] = [
+    {
+      label: 'Barbell Bench Press',
+      value: 'barbellBenchPress',
+      group: 'chest',
+    },
+    {
+      label: 'Squat',
+      value: 'squat',
+      group: 'legs',
+    },
+    {
+      label: 'Deadlift',
+      value: 'deadlift',
+      group: 'compound',
+    },
+  ];
+
   const getExerciseTypes = () =>
     getStoreData(controller.storeDataAccessors).exerciseTypes as ExerciseType[];
 
   return {
-    getExerciseTypes,
+    getExerciseTypes: () => {
+      const exerciseTypes = getExerciseTypes();
+      return [...defaultExerciseTypes, ...exerciseTypes];
+    },
     onCreateNewType: async (label: string, group: string) => {
       /**
        * TODO: Move UUID generation to the trainingsApi
