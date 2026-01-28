@@ -39,7 +39,8 @@ export const createFirstTemplateTraining = async (
   await act(() => userEvent.click(addTrainingBtn));
 
   // inside of create training screen
-  expect(await waitForByTestId('training-name-input')).toBeInTheDocument();
+  expect(await waitForByTestId('create-training-screen')).toBeInTheDocument();
+
   // check there are no exercises yet
   await expect(waitForByTestId('exercise-item')).rejects.toThrow();
 
@@ -53,15 +54,14 @@ export const createFirstTemplateTraining = async (
     // inside of create exercise screen
     expect(await waitForByTestId('create-exercise-screen')).toBeInTheDocument();
 
-    // change name for 2+ exercise to be "New Exercise 2", "New Exercise 3" and so on.
     if (exercises.indexOf(ex) > 0) {
-      const nameInput = await waitForByTestId('exercise-name-input');
-      const exIndex = exercises.indexOf(ex) + 1;
-      const name = `New Exercise ${exIndex}`;
+      const nameInput = await waitForByTestId('autocomplete-input');
+      const exIndex = exercises.indexOf(ex);
+
       await act(() => userEvent.clear(nameInput));
-      await act(() => userEvent.type(nameInput, name));
-      // blur to trigger onBlur handlers
-      await act(() => nameInput.blur());
+
+      const optionBtns = await waitForAllByTestId('autocomplete-option');
+      await act(() => userEvent.click(optionBtns[exIndex]));
     }
 
     for (const set of sets) {

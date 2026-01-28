@@ -54,17 +54,25 @@ describe('in progress training', () => {
     await act(() => userEvent.click(nextBtn1));
 
     // second exercise shown
-    expect(await driver.waitFor.byText(/New Exercise 2/i)).toBeInTheDocument();
+    expect(
+      await driver.waitFor.byText(/Plate Loaded Lat Pulldown/i),
+    ).toBeInTheDocument();
 
     // navigate to next exercise (third)
     const nextBtn2 = await driver.waitFor.byTestId('next-exercise-button');
     await act(() => userEvent.click(nextBtn2));
-    expect(await driver.waitFor.byText(/New Exercise 3/i)).toBeInTheDocument();
+
+    // third exercise shown
+    expect(
+      await driver.waitFor.byText(/Single Arm Dumbbell Row/i),
+    ).toBeInTheDocument();
 
     // navigate back to second
     const prevBtn1 = await driver.waitFor.byTestId('prev-exercise-button');
     await act(() => userEvent.click(prevBtn1));
-    expect(await driver.waitFor.byText(/New Exercise 2/i)).toBeInTheDocument();
+    expect(
+      await driver.waitFor.byText(/Plate Loaded Lat Pulldown/i),
+    ).toBeInTheDocument();
 
     // go back to first
     const prevBtn2 = await driver.waitFor.byTestId('prev-exercise-button');
