@@ -32,6 +32,9 @@ export const controller = (
       const exerciseTypes = getExerciseTypes();
       return exerciseTypes.find((type) => type.value === value)?.label;
     },
+    isSaveDisabledDefault: (data) => {
+      return !data.name.trim().length;
+    },
   };
 };
 

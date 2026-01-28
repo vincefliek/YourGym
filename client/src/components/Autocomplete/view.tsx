@@ -7,9 +7,10 @@ import style from './style.module.scss';
 
 export const Autocomplete: React.FC<AutocompleteProps> = ({
   initialValue,
+  options,
   onSelectOption,
   onCreateOption,
-  options,
+  onClearSelection,
 }) => {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -26,14 +27,27 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
 
   const grouped = groupBy(filteredOptions, (it) => it.group);
   const dropdownOptions = Object.entries(grouped).map(([group, items]) => (
-    <Combobox.Group key={group} label={group}>
+    <Combobox.Group
+      data-testid="autocomplete-option-group"
+      key={group}
+      label={group}
+    >
       {items.map((item) => (
-        <Combobox.Option value={item.value} key={item.value}>
+        <Combobox.Option
+          data-testid="autocomplete-option"
+          value={item.value}
+          key={item.value}
+        >
           {item.label}
         </Combobox.Option>
       ))}
     </Combobox.Group>
   ));
+
+  const onClearBtn = () => {
+    setSearch('');
+    onClearSelection?.();
+  };
 
   return (
     <Combobox
@@ -41,7 +55,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
       withinPortal={false}
       onOptionSubmit={(val) => {
         if (val === '$create') {
-          onCreateOption(search);
+          onCreateOption?.(search);
         } else {
           const label = options.find((item) => item.value === val)?.label;
           if (label) {
@@ -58,8 +72,9 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     >
       <Combobox.Target>
         <InputBase
+          data-testid="autocomplete-input"
           className={style.input}
-          leftSection={<Combobox.ClearButton onClear={() => setSearch('')} />}
+          leftSection={<Combobox.ClearButton onClear={onClearBtn} />}
           rightSection={<Combobox.Chevron />}
           value={search}
           onChange={(event) => {
@@ -77,11 +92,15 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
         />
       </Combobox.Target>
 
-      <Combobox.Dropdown>
+      <Combobox.Dropdown data-testid="autocomplete-dropdown">
         <Combobox.Options>
           {dropdownOptions}
           {!exactOptionMatch && search.trim().length > 0 && (
-            <Combobox.Option value="$create">
+            <Combobox.Option
+              data-testid="autocomplete-option-create"
+              key="create-option"
+              value="$create"
+            >
               + Create: "{search}"
             </Combobox.Option>
           )}

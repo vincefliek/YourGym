@@ -62,6 +62,7 @@ const PureExercise: React.FC<ExerciseProps> = (props) => {
     onDeleteSet,
     onChangeRepetitions,
     onChangeWeight,
+    isSaveDisabledDefault,
   } = props;
 
   const startCreatingOption = (label: string) => {
@@ -85,6 +86,8 @@ const PureExercise: React.FC<ExerciseProps> = (props) => {
       <div className={style.topBar}>
         <Autocomplete
           initialValue={data.name}
+          options={exerciseTypes}
+          className={style.input}
           onSelectOption={(value) => {
             const selectedLabel = getSelectedTypeLabel(value);
             if (selectedLabel) {
@@ -94,9 +97,9 @@ const PureExercise: React.FC<ExerciseProps> = (props) => {
           onCreateOption={(label) => {
             startCreatingOption(label);
           }}
-          options={exerciseTypes}
-          className={style.input}
-          data-testid="exercise-name-autocomplete"
+          onClearSelection={() => {
+            onChangeName('');
+          }}
         />
       </div>
     );
@@ -119,7 +122,7 @@ const PureExercise: React.FC<ExerciseProps> = (props) => {
           size="large"
           onClick={onSave}
           data-testid="exercise-save-button"
-          disabled={disabledSave}
+          disabled={disabledSave ?? isSaveDisabledDefault(data)}
         >
           <DoneIcon />
         </Button>
@@ -251,5 +254,6 @@ export const Exercise = connect<
     exerciseTypes: ctrl.getExerciseTypes(),
     onCreateNewType: ctrl.onCreateNewType,
     getSelectedTypeLabel: ctrl.getSelectedTypeLabel,
+    isSaveDisabledDefault: ctrl.isSaveDisabledDefault,
   }),
 )(PureExercise);

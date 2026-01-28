@@ -6,6 +6,7 @@ export type ExerciseStateProps = {
   exerciseTypes: ExerciseType[];
   onCreateNewType: (label: string, group: string) => void;
   getSelectedTypeLabel: (value: string) => string | undefined;
+  isSaveDisabledDefault: (data: Exercise) => boolean;
 };
 
 export type ExerciseOwnProps = {
@@ -26,4 +27,5 @@ export interface Controller {
   getExerciseTypes: () => ExerciseType[];
   onCreateNewType: (label: string, group: string) => void;
   getSelectedTypeLabel: (value: string) => string | undefined;
+  isSaveDisabledDefault: (data: Exercise) => boolean;
 }
