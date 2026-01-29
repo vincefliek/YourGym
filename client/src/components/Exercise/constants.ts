@@ -39,12 +39,12 @@ export const defaultExerciseTypes: ExerciseType[] = [
   {
     label: 'Chest Supported Machine Row (Traps)',
     value: 'chestSupportedMachineRowTraps',
-    group: 'chest',
+    group: 'back',
   },
   {
     label: 'Close-grip Barbell Bench Press',
     value: 'closeGripBarbellBenchPress',
-    group: 'chest',
+    group: 'triceps',
   },
   {
     label: 'Dumbbell Incline Bench Press',
