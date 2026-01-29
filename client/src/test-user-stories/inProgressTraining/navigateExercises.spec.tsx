@@ -55,7 +55,7 @@ describe('in progress training', () => {
 
     // second exercise shown
     expect(
-      await driver.waitFor.byText(/Plate Loaded Lat Pulldown/i),
+      await driver.waitFor.byText(/Chest Supported Machine Row \(Traps\)/i),
     ).toBeInTheDocument();
 
     // navigate to next exercise (third)
@@ -64,14 +64,14 @@ describe('in progress training', () => {
 
     // third exercise shown
     expect(
-      await driver.waitFor.byText(/Single Arm Dumbbell Row/i),
+      await driver.waitFor.byText(/Plate Loaded Lat Pulldown/i),
     ).toBeInTheDocument();
 
     // navigate back to second
     const prevBtn1 = await driver.waitFor.byTestId('prev-exercise-button');
     await act(() => userEvent.click(prevBtn1));
     expect(
-      await driver.waitFor.byText(/Plate Loaded Lat Pulldown/i),
+      await driver.waitFor.byText(/Chest Supported Machine Row \(Traps\)/i),
     ).toBeInTheDocument();
 
     // go back to first
