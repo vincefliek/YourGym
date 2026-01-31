@@ -114,11 +114,15 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
         { goBackTo: options?.goBackTo },
       );
     },
-    toEditNewExercise: (trainingId: string, exerciseId: string) => {
-      return setRoute(routes.editNewExercise, {
-        training: trainingId,
-        exercise: exerciseId,
-      });
+    toEditNewExercise: (trainingId: string, exerciseId: string, options) => {
+      return setRoute(
+        routes.editNewExercise,
+        {
+          training: trainingId,
+          exercise: exerciseId,
+        },
+        { goBackTo: options?.goBackTo },
+      );
     },
     toEditExistingExercise: (trainingId: string, exerciseId: string) => {
       return setRoute(routes.editExistingExercise, {

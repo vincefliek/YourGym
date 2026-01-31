@@ -101,7 +101,7 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
         trainingsApi.delete.set(trainingId, exerciseId, setId);
       }
     },
-    onDelete: () => {
+    onDelete: async () => {
       const trainingId = getParams().training;
       const exerciseId = getParams().exercise;
 
@@ -109,18 +109,14 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
         trainingsApi.delete.exercise(trainingId, exerciseId);
       }
 
-      const newTraining = getData().newTraining;
-
-      if (newTraining?.id) {
-        navigationApi.toCreateTraining(newTraining.id);
-      }
+      await navigationApi.goBack({
+        replace: true,
+      });
     },
-    onSave: () => {
-      const newTraining = getData().newTraining;
-
-      if (newTraining?.id) {
-        navigationApi.toCreateTraining(newTraining.id);
-      }
+    onSave: async () => {
+      await navigationApi.goBack({
+        replace: true,
+      });
     },
   };
 };

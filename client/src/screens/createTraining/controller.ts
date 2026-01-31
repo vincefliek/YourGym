@@ -57,7 +57,9 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
     onOpenExercise: (exerciseId: string) => {
       const trainingId = getData().newTraining?.id;
       if (trainingId) {
-        navigationApi.toEditNewExercise(trainingId, exerciseId);
+        navigationApi.toEditNewExercise(trainingId, exerciseId, {
+          goBackTo: navigationApi.routes.createTraining,
+        });
       }
     },
   };

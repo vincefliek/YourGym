@@ -29,10 +29,6 @@ export const requireData = <P extends object>(
         this.check();
       }
 
-      componentDidUpdate() {
-        this.check();
-      }
-
       check() {
         const { isData, onNoData } = getInfo(this.props);
 
