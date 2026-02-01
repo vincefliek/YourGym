@@ -1,9 +1,10 @@
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, type PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import { VitePWA } from 'vite-plugin-pwa';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 import { version } from './package.json';
 
@@ -14,6 +15,7 @@ export default defineConfig({
   build: {
     outDir: 'build',
     sourcemap: true,
+    cssCodeSplit: true,
     rollupOptions: {
       // Prevent Vite from trying to bundle test files
       external: [
@@ -24,6 +26,15 @@ export default defineConfig({
         '**/__tests__',
         '**/test-utils',
       ],
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          router: ['@tanstack/react-router'],
+          mantine: ['@mantine/core', '@mantine/hooks'],
+          charts: ['recharts'],
+          utils: ['jsonschema', 'date-fns-tz'], // 'lodash',
+        },
+      },
     },
   },
   plugins: [
@@ -38,6 +49,7 @@ export default defineConfig({
       manifest: false,
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,txt}'],
+        cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
             // Cache the Google Fonts stylesheets (the CSS)
@@ -69,6 +81,11 @@ export default defineConfig({
         type: 'module', // Required for Vite's HMR to work with SW
       },
     }),
+    visualizer({
+      gzipSize: true,
+      brotliSize: true,
+      filename: 'dev-dist/stats.html',
+    }) as PluginOption,
   ],
   server: {
     port: 3000,
