@@ -11,3 +11,4 @@ export { Notifications } from './Notifications';
 export { BlockingLayer } from './BlockingLayer';
 export { TrainingProgressCard } from './TrainingProgressCard';
 export { TrainingProgressChart } from './TrainingProgressChart';
+export { DndList } from './DndList';
