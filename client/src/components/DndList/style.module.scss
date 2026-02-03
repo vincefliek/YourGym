@@ -1,3 +1,11 @@
 .dragging {
   touch-action: none;
 }
+
+.dragHandle {
+  touch-action: none;
+  // Disable magnifying glass on touch devices and text selection
+  -webkit-user-select: none; /* Safari */
+  user-select: none;
+  -webkit-touch-callout: none; /* Disables the long-press context menu */
+}

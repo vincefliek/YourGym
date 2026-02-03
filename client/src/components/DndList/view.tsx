@@ -120,10 +120,16 @@ function SortableItem({
   const { setNodeRef, attributes, listeners, transform, transition } =
     useSortable({ id });
 
-  const style = {
+  const _style = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
 
-  return children({ ref: setNodeRef, style, ...attributes, ...listeners });
+  return children({
+    ref: setNodeRef,
+    style: _style,
+    className: style.dragHandle,
+    ...attributes,
+    ...listeners,
+  });
 }

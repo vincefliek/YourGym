@@ -70,7 +70,7 @@
     "dev": "vite",
     "dev-build": "vite build",
     "deploy-build": "npm run ts-check && npm run test && npm version patch --no-git-tag-version && vite build",
-    "preview": "vite preview",
+    "preview": "vite preview --host",
     "test": "NODE_ENV=test jest",
     "test:watch": "jest --watchAll",
     "test:ci": "jest --runInBand --coverage",

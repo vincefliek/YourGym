@@ -73,9 +73,9 @@ export const Training: React.FC<TrainingProps> = ({
           onReorder={({ newData }) => onReorderExercises(id, newData)}
           renderItem={(exercise, props) => (
             <li
-              className={style.exercise}
-              data-testid="exercise-item"
               {...props}
+              className={classnames(style.exercise, props.className)}
+              data-testid="exercise-item"
             >
               <Button
                 skin="icon"
