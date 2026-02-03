@@ -1,20 +1,9 @@
-import { AppContext } from '../../types';
+import { Controller } from '../../types';
 import { Training } from '../../model/types';
-import { Controller } from '../../utils/HOCs/types';
+import { ControllerReturnType } from './types';
 
-interface ControllerType {
-  getTraining: () => Training;
-  onSave: () => Promise<void>;
-  onDelete: () => Promise<void>;
-  onNoData: () => void;
-  onChangeName: (name: string) => void;
-  onAddExercise: () => void;
-  onDeleteExercise: (trainingId: string, exerciseId: string) => void;
-  onEditExercise: (exerciseId: string) => void;
-}
-
-export const controller: Controller<ControllerType> = (
-  serviceLocator: AppContext['serviceLocator'],
+export const controller: Controller<ControllerReturnType> = (
+  serviceLocator,
 ) => {
   const { getStoreData } = serviceLocator.getStore();
   const { navigationApi, trainingsApi } = serviceLocator.getAPIs();
@@ -22,22 +11,22 @@ export const controller: Controller<ControllerType> = (
   const getData = () => getStoreData(controller.storeDataAccessors);
   const getParams = () =>
     navigationApi.getPathParams(navigationApi.routes.editTraining);
+  const findTraining = (): Training | undefined => {
+    const params = getParams();
+    const trainings = getData().trainings;
+    const training = trainings.find(
+      (training: Training) => training.id === params.training,
+    );
+
+    return training;
+  };
 
   return {
     getTraining: () => {
-      const params = getParams();
-      const trainings = getData().trainings;
-      const training = trainings.find(
-        (training: Training) => training.id === params.training,
-      );
-      return training;
+      return findTraining();
     },
     onSave: async () => {
-      const params = getParams();
-      const trainings = getData().trainings;
-      const training = trainings.find(
-        (training: Training) => training.id === params.training,
-      );
+      const training = findTraining();
 
       if (training) {
         await navigationApi.toTraining(training.id);
@@ -49,11 +38,7 @@ export const controller: Controller<ControllerType> = (
       void navigationApi.toTrainings();
     },
     onChangeName: (name: string) => {
-      const params = getParams();
-      const trainings = getData().trainings;
-      const training = trainings.find(
-        (training: Training) => training.id === params.training,
-      );
+      const training = findTraining();
 
       if (training) {
         trainingsApi.update.training(training.id, { name });
@@ -88,6 +73,9 @@ export const controller: Controller<ControllerType> = (
       if (params.training) {
         trainingsApi.delete.training(params.training);
       }
+    },
+    onReorderExercises: (trainingId, reorderedExercises) => {
+      trainingsApi.update.exercisesOrder(trainingId, reorderedExercises);
     },
   };
 };

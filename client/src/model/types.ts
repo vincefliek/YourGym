@@ -267,6 +267,7 @@ export interface TrainingsApi {
     allTrainings: (trainings: Training[]) => void;
     completedTrainings: (trainings: CompletedTraining[]) => void;
     exerciseTypes: (exerciseTypes: ExerciseType[]) => void;
+    exercisesOrder: (trainingId: string, exercises: { id: string }[]) => void;
   };
   delete: {
     newTraining: () => void;

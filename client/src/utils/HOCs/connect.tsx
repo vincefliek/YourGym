@@ -4,12 +4,12 @@ import { AppContext } from '../context';
 import { ConnectParams, MapToProps } from './types';
 
 export const connect = <
-  Controller extends object,
+  ControllerReturnType extends object,
   StateProps extends object,
   OwnProps extends object = {},
 >(
-  params: ConnectParams<Controller>,
-  mapToProps: MapToProps<Controller, StateProps>,
+  params: ConnectParams<ControllerReturnType>,
+  mapToProps: MapToProps<ControllerReturnType, StateProps>,
 ) => {
   if (typeof params !== 'object') {
     throw new Error('First argument in `connect` function is mandatory');
@@ -34,7 +34,7 @@ export const connect = <
     class ConnectedView extends React.Component<WrappedProps> {
       static contextType = AppContext;
       private unsubscribe?: () => void;
-      private controller: Controller;
+      private controller: ControllerReturnType;
       private stateToProps: ReturnType<typeof mapToProps>;
 
       constructor(

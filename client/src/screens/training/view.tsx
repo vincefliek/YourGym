@@ -7,42 +7,7 @@ import EditIcon from '../../assets/edit.svg?react';
 import BackIcon from '../../assets/backArrow.svg?react';
 
 import style from './style.module.scss';
-
-interface Exercise {
-  id: string;
-  name: string;
-  setsPreview: string;
-}
-
-interface Training {
-  id: string;
-  name: string;
-  exercises: Exercise[];
-}
-
-interface Props {
-  data: Training;
-  isAnyTrainingInProgress: boolean;
-  isCurrentTrainingInProgress: boolean;
-  onNoData: () => void;
-  onStart: () => void;
-  onFinish: () => void;
-  onBack: () => void;
-  onEdit: () => void;
-  onOpenExercise: (training: Training, exercise: Exercise) => void;
-}
-
-interface Controller {
-  isAnyTrainingInProgress: () => boolean;
-  isCurrentTrainingInProgress: () => boolean;
-  getTraining: () => Training;
-  onNoData: () => void;
-  onStart: () => void;
-  onFinish: () => void;
-  onBack: () => void;
-  onEdit: () => void;
-  onOpenExercise: (training: Training, exercise: Exercise) => void;
-}
+import { Props, ControllerReturnType } from './types';
 
 class PureTraining extends React.Component<Props> {
   renderTopBar = () => {
@@ -146,12 +111,12 @@ class PureTraining extends React.Component<Props> {
   }
 }
 
-export const Training = connect<Controller, Props>(
+export const Training = connect<ControllerReturnType, Props>(
   {
     controller,
   },
   (ctrl) => ({
-    data: ctrl.getTraining(),
+    data: ctrl.getTraining()!,
     isAnyTrainingInProgress: ctrl.isAnyTrainingInProgress(),
     isCurrentTrainingInProgress: ctrl.isCurrentTrainingInProgress(),
     onNoData: ctrl.onNoData,

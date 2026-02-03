@@ -1,9 +1,9 @@
-import { AppContext } from '../../types';
-import { Training, Exercise, Set } from '../../model/types';
-import { Controller } from '../../utils/HOCs/types';
+import { Controller } from '../../types';
+import { Training } from '../../model/types';
+import { ControllerReturnType } from './types';
 
-export const controller: Controller = (
-  serviceLocator: AppContext['serviceLocator'],
+export const controller: Controller<ControllerReturnType> = (
+  serviceLocator,
 ) => {
   const { getStoreData } = serviceLocator.getStore();
   const { navigationApi, trainingsApi } = serviceLocator.getAPIs();
@@ -11,11 +11,14 @@ export const controller: Controller = (
   const getData = () => getStoreData(controller.storeDataAccessors);
   const getParams = () =>
     navigationApi.getPathParams(navigationApi.routes.openTraining);
+  const getTrainings = (): Training[] => {
+    return getData().trainings;
+  };
   const findTraining = () => {
     const params = getParams();
-    const trainings: Training[] = getData().trainings;
+    const trainings = getTrainings();
     const training = trainings.find(
-      (training: Training) => training.id === params.training,
+      (training) => training.id === params.training,
     );
 
     return training;
@@ -36,14 +39,17 @@ export const controller: Controller = (
     getTraining: () => {
       const training = findTraining();
 
-      if (training !== undefined) {
-        training.exercises = training.exercises.map((exercise: Exercise) => ({
-          ...exercise,
-          setsPreview: trainingsApi.create.setsPreview(exercise.sets),
-        }));
+      if (!training) {
+        return;
       }
 
-      return training;
+      return {
+        ...training,
+        exercises: training.exercises.map((exercise) => ({
+          ...exercise,
+          setsPreview: trainingsApi.create.setsPreview(exercise.sets),
+        })),
+      };
     },
     onNoData: () => {
       navigationApi.toTrainings();
@@ -73,14 +79,14 @@ export const controller: Controller = (
         }
 
         // iterate over all exercises => set `done: false` for all sets
-        const trainings = getData().trainings.map((training: Training) => {
+        const trainings = getTrainings().map((training) => {
           if (training.id === trainingId) {
             return {
               ...training,
-              exercises: training.exercises.map((exercise: Exercise) => {
+              exercises: training.exercises.map((exercise) => {
                 return {
                   ...exercise,
-                  sets: exercise.sets.map((set: Set) => {
+                  sets: exercise.sets.map((set) => {
                     if (set.done) {
                       trainingsApi.update.newActiveTraining(
                         trainingId,
@@ -117,7 +123,7 @@ export const controller: Controller = (
         navigationApi.toEditTraining(training.id);
       }
     },
-    onOpenExercise: (training: Training, exercise: Exercise) => {
+    onOpenExercise: (training, exercise) => {
       navigationApi.toExercise(training.id, exercise.id);
     },
   };

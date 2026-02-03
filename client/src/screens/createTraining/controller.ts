@@ -1,7 +1,10 @@
-import { AppContext } from '../../types';
+import { Controller } from '../../types';
 import { Exercise } from '../../model/types';
+import { Controller as ControllerReturnType } from './types';
 
-export const controller = (serviceLocator: AppContext['serviceLocator']) => {
+export const controller: Controller<ControllerReturnType> = (
+  serviceLocator,
+) => {
   const { getStoreData } = serviceLocator.getStore();
   const { trainingsApi, navigationApi } = serviceLocator.getAPIs();
 
@@ -61,6 +64,9 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
           goBackTo: navigationApi.routes.createTraining,
         });
       }
+    },
+    onReorderExercises: (trainingId, reorderedExercises) => {
+      trainingsApi.update.exercisesOrder(trainingId, reorderedExercises);
     },
   };
 };

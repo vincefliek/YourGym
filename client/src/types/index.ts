@@ -17,3 +17,8 @@ export interface AppProps {
   appContext: AppContext;
   currentPath?: string;
 }
+
+export interface Controller<T = any> {
+  (serviceLocator: AppContext['serviceLocator']): T;
+  storeDataAccessors: string[];
+}

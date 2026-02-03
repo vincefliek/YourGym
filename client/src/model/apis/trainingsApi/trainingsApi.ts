@@ -494,6 +494,30 @@ export const createTrainingsApi: ApiFactory<
 
       _update.allTrainings(trainings);
     },
+    exercisesOrder: (trainingId, reorderedExercises) => {
+      const trainings = getData().trainings.map((training: Training) => {
+        if (training.id !== trainingId) {
+          return training;
+        }
+
+        const exercises = reorderedExercises
+          .map(({ id }) =>
+            training.exercises.find((exercise) => exercise.id === id),
+          )
+          .filter((exercise): exercise is Exercise => Boolean(exercise));
+
+        if (exercises.length !== training.exercises.length) {
+          return training;
+        }
+
+        return {
+          ...training,
+          exercises,
+        };
+      });
+
+      _update.allTrainings(trainings);
+    },
   };
 
   const _save: TrainingsApi['save'] = {

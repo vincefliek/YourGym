@@ -3,6 +3,7 @@ import { connect, requireData } from '../../utils';
 import { controller } from './controller';
 import { Training } from '../../model/types';
 import { Training as TrainingComp } from '../../components';
+import { ControllerReturnType } from './types';
 
 interface Props {
   data: Training;
@@ -13,9 +14,13 @@ interface Props {
   onAddExercise: () => void;
   onDeleteExercise: (trainingId: string, exerciseId: string) => void;
   onEditExercise: (exerciseId: string) => void;
+  onReorderExercises: (
+    trainingId: string,
+    exercises: {
+      id: string;
+    }[],
+  ) => void;
 }
-
-type ControllerType = ReturnType<typeof controller>;
 
 const PureEditExistingTraining: React.FC<Props> = (props) => {
   const {
@@ -26,6 +31,7 @@ const PureEditExistingTraining: React.FC<Props> = (props) => {
     onSave,
     onDeleteExercise,
     onEditExercise,
+    onReorderExercises,
   } = props;
   return (
     <TrainingComp
@@ -39,16 +45,17 @@ const PureEditExistingTraining: React.FC<Props> = (props) => {
       onSave={onSave}
       onDeleteExercise={onDeleteExercise}
       onOpenExercise={onEditExercise}
+      onReorderExercises={onReorderExercises}
     />
   );
 };
 
-export const EditExistingTraining = connect<ControllerType, Props>(
+export const EditExistingTraining = connect<ControllerReturnType, Props>(
   {
     controller,
   },
   (ctrl) => ({
-    data: ctrl.getTraining(),
+    data: ctrl.getTraining()!,
     onSave: ctrl.onSave,
     onDelete: ctrl.onDelete,
     onNoData: ctrl.onNoData,
@@ -56,6 +63,7 @@ export const EditExistingTraining = connect<ControllerType, Props>(
     onAddExercise: ctrl.onAddExercise,
     onDeleteExercise: ctrl.onDeleteExercise,
     onEditExercise: ctrl.onEditExercise,
+    onReorderExercises: ctrl.onReorderExercises,
   }),
 )(
   requireData<Props>((props) => ({

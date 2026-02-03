@@ -3,40 +3,7 @@ import React from 'react';
 import { Training } from '../../components';
 import { connect, requireData } from '../../utils';
 import { controller } from './controller';
-
-interface Exercise {
-  id: string;
-  name: string;
-  setsPreview: string;
-}
-
-interface TrainingType {
-  id: string;
-  name: string;
-  exercises: Exercise[];
-}
-
-interface Props {
-  data: TrainingType;
-  onNoData: () => void;
-  onChangeName: (name: string) => void;
-  onAddExercise: () => void;
-  onDelete: () => Promise<void>;
-  onSave: () => Promise<void>;
-  onDeleteExercise: (trainingId: string, exerciseId: string) => void;
-  onOpenExercise: (exerciseId: string) => void;
-}
-
-interface Controller {
-  getData: () => TrainingType;
-  onNoData: () => void;
-  onChangeName: (name: string) => void;
-  onAddExercise: () => void;
-  onDelete: () => Promise<void>;
-  onSave: () => Promise<void>;
-  onDeleteExercise: (trainingId: string, exerciseId: string) => void;
-  onOpenExercise: (exerciseId: string) => void;
-}
+import { Props, Controller } from './types';
 
 const PureCreateTraining: React.FC<Props> = (props) => {
   const {
@@ -47,6 +14,7 @@ const PureCreateTraining: React.FC<Props> = (props) => {
     onSave,
     onDeleteExercise,
     onOpenExercise,
+    onReorderExercises,
   } = props;
   return (
     <Training
@@ -60,6 +28,7 @@ const PureCreateTraining: React.FC<Props> = (props) => {
       onSave={onSave}
       onDeleteExercise={onDeleteExercise}
       onOpenExercise={onOpenExercise}
+      onReorderExercises={onReorderExercises}
     />
   );
 };
@@ -69,7 +38,7 @@ export const CreateTraining = connect<Controller, Props>(
     controller,
   },
   (ctrl) => ({
-    data: ctrl.getData(),
+    data: ctrl.getData()!,
     onNoData: ctrl.onNoData,
     onChangeName: ctrl.onChangeName,
     onAddExercise: ctrl.onAddExercise,
@@ -77,6 +46,7 @@ export const CreateTraining = connect<Controller, Props>(
     onSave: ctrl.onSave,
     onDeleteExercise: ctrl.onDeleteExercise,
     onOpenExercise: ctrl.onOpenExercise,
+    onReorderExercises: ctrl.onReorderExercises,
   }),
 )(
   requireData<Props>((props) => ({

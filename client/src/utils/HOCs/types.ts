@@ -1,9 +1,4 @@
-import { AppContext } from '../../types';
-
-export interface Controller<T = any> {
-  (serviceLocator: AppContext['serviceLocator']): T;
-  storeDataAccessors: string[];
-}
+import { Controller } from '../../types';
 
 export interface ConnectParams<T = any> {
   controller: Controller<T>;

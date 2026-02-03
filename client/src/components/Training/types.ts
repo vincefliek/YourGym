@@ -15,4 +15,5 @@ export interface TrainingProps {
   onSave: () => Promise<void>;
   onDeleteExercise: (trainingId: string, exerciseId: string) => void;
   onOpenExercise: (exerciseId: string) => void;
+  onReorderExercises: (trainingId: string, exercises: { id: string }[]) => void;
 }

@@ -1,9 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
-import { Button, Input, Layout, NavbarContainer } from '../index';
+import { Button, DndList, Input, Layout, NavbarContainer } from '../index';
 import DoneIcon from '../../assets/done.svg?react';
 import DeleteIcon from '../../assets/delete.svg?react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import style from './style.module.scss';
 import { TrainingProps } from './types';
 
@@ -18,6 +17,7 @@ export const Training: React.FC<TrainingProps> = ({
   onSave,
   onDeleteExercise,
   onOpenExercise,
+  onReorderExercises,
 }) => {
   const areExercises = Boolean(exercises.length);
 
@@ -60,45 +60,44 @@ export const Training: React.FC<TrainingProps> = ({
           [style.screenNoData]: !areExercises,
         })}
       >
-        <TransitionGroup
-          component={'ul'}
-          className={style.exercises}
-          data-testid="exercises-list"
-        >
-          {exercises.map((exercise) => (
-            <CSSTransition
-              key={exercise.id}
-              timeout={250}
-              classNames={{
-                enter: style.setEnter,
-                enterActive: style.setActiveEnter,
-                exit: style.setExit,
-                exitActive: style.setActiveExit,
-              }}
+        <DndList
+          data={exercises}
+          containerClassName={style.exercises}
+          containerDataTestId="exercises-list"
+          animationClassNames={{
+            enter: style.setEnter,
+            enterActive: style.setActiveEnter,
+            exit: style.setExit,
+            exitActive: style.setActiveExit,
+          }}
+          onReorder={({ newData }) => onReorderExercises(id, newData)}
+          renderItem={(exercise, props) => (
+            <li
+              className={style.exercise}
+              data-testid="exercise-item"
+              {...props}
             >
-              <li className={style.exercise} data-testid="exercise-item">
-                <Button
-                  skin="icon"
-                  size="medium"
-                  className={style.exerciseDelete}
-                  onClick={() => onDeleteExercise(id, exercise.id)}
-                  data-testid="delete-exercise-button"
-                >
-                  <DeleteIcon />
-                </Button>
-                <div
-                  className={style.exerciseBox}
-                  onClick={() => onOpenExercise(exercise.id)}
-                  data-testid="open-exercise-button"
-                >
-                  {exercise.name}
-                  <br />
-                  {exercise.setsPreview}
-                </div>
-              </li>
-            </CSSTransition>
-          ))}
-        </TransitionGroup>
+              <Button
+                skin="icon"
+                size="medium"
+                className={style.exerciseDelete}
+                onClick={() => onDeleteExercise(id, exercise.id)}
+                data-testid="delete-exercise-button"
+              >
+                <DeleteIcon />
+              </Button>
+              <div
+                className={style.exerciseBox}
+                onClick={() => onOpenExercise(exercise.id)}
+                data-testid="open-exercise-button"
+              >
+                {exercise.name}
+                <br />
+                {exercise.setsPreview}
+              </div>
+            </li>
+          )}
+        />
         <Button
           skin="primary"
           font="nunito"
