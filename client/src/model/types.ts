@@ -258,6 +258,7 @@ export interface TrainingsApi {
       templateExerciseId: string,
       set: Set,
     ) => void;
+    activeTraining: (input: Partial<ActiveTraining>) => void;
     training: (trainingId: string, input: Partial<Training>) => void;
     exercise: (
       trainingId: string,

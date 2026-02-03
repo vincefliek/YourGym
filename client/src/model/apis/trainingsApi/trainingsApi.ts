@@ -140,19 +140,15 @@ export const createTrainingsApi: ApiFactory<
     // Use `templateTrainingId` for a reliable match.
     const activeTraining = getData().activeTraining;
 
-    if (activeTraining && activeTraining.templateTrainingId === trainingId) {
-      const updatedActive = {
-        ...activeTraining,
-        exercises: activeTraining.exercises.concat({
-          id: uuidv4(),
-          name: data.name,
-          sets: [],
-        } as CompletedTrainingExcercise),
-      } as CompletedTraining;
-
+    if (activeTraining?.templateTrainingId === trainingId) {
       try {
-        validate(updatedActive, completedTrainingSchema);
-        store.activeTraining = updatedActive;
+        _update.activeTraining({
+          exercises: activeTraining.exercises.concat({
+            id: uuidv4(),
+            name: data.name,
+            sets: [],
+          } as CompletedTrainingExcercise),
+        });
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         if (process.env.NODE_ENV !== 'production') {
@@ -401,7 +397,8 @@ export const createTrainingsApi: ApiFactory<
       templateExerciseId: string,
       set: Set,
     ) => {
-      const activeTraining: CompletedTraining = getData().activeTraining;
+      const activeTraining: ActiveTraining | undefined =
+        getData().activeTraining;
 
       if (!activeTraining) {
         return;
@@ -422,9 +419,9 @@ export const createTrainingsApi: ApiFactory<
         return;
       }
 
-      const data: CompletedTraining = {
-        ...activeTraining,
+      _update.activeTraining({
         exercises: activeTraining.exercises.map((ex) => {
+          // TODO migrate to "type" instead of "name"
           if (ex.name !== templateExercise.name) {
             return ex;
           }
@@ -438,10 +435,21 @@ export const createTrainingsApi: ApiFactory<
             }),
           };
         }),
+      });
+    },
+    activeTraining: (input: Partial<ActiveTraining>) => {
+      const activeTraining = getData().activeTraining;
+
+      if (!activeTraining) {
+        return;
+      }
+
+      const data: ActiveTraining = {
+        ...activeTraining,
+        ...input,
       };
 
       validate(data, completedTrainingSchema);
-
       store.activeTraining = data;
     },
     newExercise: (input: Partial<Exercise>) => {
@@ -495,28 +503,72 @@ export const createTrainingsApi: ApiFactory<
       _update.allTrainings(trainings);
     },
     exercisesOrder: (trainingId, reorderedExercises) => {
-      const trainings = getData().trainings.map((training: Training) => {
-        if (training.id !== trainingId) {
-          return training;
-        }
-
+      const _changeExercisesOrder = <AnyEx extends Pick<Exercise, 'id'>>(
+        _exercises: AnyEx[],
+        comparator: (ex: AnyEx, reorderedId: string) => boolean,
+        updater: (_reorderedExercises: AnyEx[]) => void,
+      ) => {
         const exercises = reorderedExercises
           .map(({ id }) =>
-            training.exercises.find((exercise) => exercise.id === id),
+            _exercises.find((exercise) => comparator(exercise, id)),
           )
-          .filter((exercise): exercise is Exercise => Boolean(exercise));
-
-        if (exercises.length !== training.exercises.length) {
-          return training;
+          .filter((exercise): exercise is AnyEx => Boolean(exercise));
+        if (exercises.length !== _exercises.length) {
+          return;
         }
 
-        return {
-          ...training,
-          exercises,
-        };
-      });
+        updater(exercises);
+      };
 
-      _update.allTrainings(trainings);
+      const newTraining: Training | undefined = getData().newTraining;
+      const activeTraining: ActiveTraining | undefined =
+        getData().activeTraining;
+      const templateTraining: Training | undefined = getData().trainings.find(
+        (training: Training) => training.id === trainingId,
+      );
+
+      if (newTraining?.id === trainingId) {
+        _changeExercisesOrder(
+          newTraining.exercises,
+          (ex, reorderedId) => ex.id === reorderedId,
+          (ex) => {
+            _update.newTraining({
+              exercises: ex,
+            });
+          },
+        );
+      } else if (templateTraining) {
+        _changeExercisesOrder(
+          templateTraining.exercises,
+          (ex, reorderedId) => ex.id === reorderedId,
+          (ex) => {
+            _update.training(trainingId, {
+              exercises: ex,
+            });
+          },
+        );
+      }
+
+      // Keep `activeTraining` in sync with reordered exercises
+      // in the template training that corresponds to the currently active one.
+      // Use `templateTrainingId` for a reliable match.
+      if (activeTraining?.templateTrainingId === trainingId) {
+        _changeExercisesOrder(
+          activeTraining.exercises,
+          (ex, reorderedId) => {
+            const templateExerciseName = templateTraining?.exercises.find(
+              (exercise) => exercise.id === reorderedId,
+            )?.name;
+            // TODO migrate to "type" instead of "name"
+            return ex.name === templateExerciseName;
+          },
+          (ex) => {
+            _update.activeTraining({
+              exercises: ex,
+            });
+          },
+        );
+      }
     },
   };
 
