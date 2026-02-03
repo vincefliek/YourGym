@@ -6,7 +6,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {
   SortableContext,
   arrayMove,
@@ -20,7 +20,9 @@ import style from './style.module.scss';
 
 export function DndList<T extends ListItem>({
   data,
-  ItemsWrapper = ({ children }) => <>{children}</>,
+  containerClassName,
+  containerDataTestId,
+  animationClassNames,
   onReorder,
   renderItem,
 }: DndListProps<T>) {
@@ -39,6 +41,38 @@ export function DndList<T extends ListItem>({
       },
     }),
   );
+
+  const isAnimated = Boolean(animationClassNames);
+  const containerCommonProps = {
+    className: containerClassName,
+    'data-testid': containerDataTestId,
+  };
+
+  const renderedItems = data.map((item) => {
+    if (isAnimated) {
+      return (
+        <CSSTransition
+          key={item.id}
+          timeout={250}
+          classNames={{
+            enter: animationClassNames?.enter,
+            enterActive: animationClassNames?.enterActive,
+            exit: animationClassNames?.exit,
+            exitActive: animationClassNames?.exitActive,
+          }}
+        >
+          <SortableItem id={item.id}>
+            {(props) => renderItem(item, props)}
+          </SortableItem>
+        </CSSTransition>
+      );
+    }
+    return (
+      <SortableItem key={item.id} id={item.id}>
+        {(props) => renderItem(item, props)}
+      </SortableItem>
+    );
+  });
 
   return (
     <DndContext
@@ -64,13 +98,13 @@ export function DndList<T extends ListItem>({
       }}
     >
       <SortableContext items={data} strategy={verticalListSortingStrategy}>
-        <ItemsWrapper>
-          {data.map((item) => (
-            <SortableItem key={item.id} id={item.id}>
-              {renderItem(item)}
-            </SortableItem>
-          ))}
-        </ItemsWrapper>
+        {isAnimated ? (
+          <TransitionGroup component={'ul'} {...containerCommonProps}>
+            {renderedItems}
+          </TransitionGroup>
+        ) : (
+          <ul {...containerCommonProps}>{renderedItems}</ul>
+        )}
       </SortableContext>
     </DndContext>
   );
@@ -81,7 +115,7 @@ function SortableItem({
   children,
 }: {
   id: string;
-  children: React.ReactNode;
+  children: (props: any) => React.ReactNode;
 }) {
   const { setNodeRef, attributes, listeners, transform, transition } =
     useSortable({ id });
@@ -91,9 +125,5 @@ function SortableItem({
     transition,
   };
 
-  return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {children}
-    </div>
-  );
+  return children({ ref: setNodeRef, style, ...attributes, ...listeners });
 }

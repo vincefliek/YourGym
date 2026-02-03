@@ -5,12 +5,19 @@ export interface ListItem {
 
 export interface DndListProps<T extends ListItem> {
   data: T[];
-  ItemsWrapper?: React.ComponentType<any>;
+  containerClassName?: string;
+  containerDataTestId?: string;
+  animationClassNames?: {
+    enter?: string;
+    enterActive?: string;
+    exit?: string;
+    exitActive?: string;
+  };
   onReorder: (params: {
     active: T;
     oldIndex: number;
     newIndex: number;
     newData: T[];
   }) => void;
-  renderItem: (item: T) => React.ReactNode;
+  renderItem: (item: T, props: any) => React.ReactNode;
 }
