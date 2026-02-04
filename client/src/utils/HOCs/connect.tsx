@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 
 import { AppContext } from '../context';
 import { ConnectParams, MapToProps } from './types';
@@ -31,50 +31,39 @@ export const connect = <
     OwnProps;
 
   return (Wrapped: React.ComponentType<StateProps & OwnProps>) => {
-    class ConnectedView extends React.Component<WrappedProps> {
-      static contextType = AppContext;
-      private unsubscribe?: () => void;
-      private controller: ControllerReturnType;
-      private stateToProps: ReturnType<typeof mapToProps>;
+    const ConnectedView: React.FC<WrappedProps> = (props) => {
+      const context = useContext(AppContext);
+      const controller = useMemo(
+        () => params.controller(context.serviceLocator),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [],
+      );
+      const [stateToProps, setStateToProps] = useState(() =>
+        mapToProps(controller),
+      );
 
-      constructor(
-        props: WrappedProps,
-        context: React.ContextType<typeof AppContext>,
-      ) {
-        super(props);
-        this.controller = params.controller(context.serviceLocator);
-        this.stateToProps = mapToProps(this.controller);
-
+      useEffect(() => {
         const store = context.serviceLocator.getStore();
 
         if (params.controller.storeDataAccessors.length) {
-          this.unsubscribe = store.subscribe(
-            this._update,
+          const _update = () => {
+            setStateToProps(mapToProps(controller));
+          };
+          const unsubscribe = store.subscribe(
+            _update,
             params.controller.storeDataAccessors,
           );
+          return () => {
+            unsubscribe();
+          };
         }
-      }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, []);
 
-      componentWillUnmount() {
-        if (this.unsubscribe) {
-          this.unsubscribe();
-        }
-      }
-
-      _update = () => {
-        this.stateToProps = mapToProps(this.controller);
-        this.forceUpdate();
-      };
-
-      render() {
-        return (
-          <Wrapped
-            {...(this.props as StateProps & OwnProps)}
-            {...this.stateToProps}
-          />
-        );
-      }
-    }
+      return (
+        <Wrapped {...(props as StateProps & OwnProps)} {...stateToProps} />
+      );
+    };
 
     return ConnectedView;
   };
