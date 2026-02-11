@@ -2,8 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 
 import { connect } from '../../utils';
-import Burger from '../../assets/burger.svg?react';
-import Dumbbell from '../../assets/dumbbell.svg?react';
+import { BurgerIcon, DumbbellIcon } from '../icons';
 import { controller } from './controller';
 import { Button } from '../Button';
 import { NavbarContainer } from '../NavbarContainer';
@@ -58,8 +57,8 @@ class PureNavbar extends React.Component<NavbarProps, NavbarState> {
           onClick={onBurgerClick}
           data-testid="nav-burger-button"
         >
-          <Burger />
-          <Dumbbell />
+          <BurgerIcon />
+          <DumbbellIcon />
         </Button>
       </NavbarContainer>
     );

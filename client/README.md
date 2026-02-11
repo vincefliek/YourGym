@@ -1,6 +1,6 @@
 ### TL;DR: `nvm use && npm ci && npm start`
 
-### - - - - - - - - - - - - - - - - - - - - - - - - - 
+### - - - - - - - - - - - - - - - - - - - - - - - - -
 
 This project is bundeled with Vite.
 
@@ -25,4 +25,4 @@ Builds the app for production to the `build` folder.\
 ### SVG
 
 1. locate into `/src/assets/`
-2. import in React like: `import DoneIcon from '../../assets/done.svg?react';`
+2. import in React like: `import Dumbbell from '../../assets/dumbbell.svg?react';`

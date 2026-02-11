@@ -1,11 +1,11 @@
 import React from 'react';
+import { Paper } from '@mantine/core';
 
 import { Button, Layout, Navbar, NavbarContainer } from '../../components';
 import { connect } from '../../utils';
 import { controller } from './controller';
 import { Training } from '../../model/types';
-import DeleteIcon from '../../assets/delete.svg?react';
-import AddIcon from '../../assets/add.svg?react';
+import { DeleteIcon, AddIcon } from '../../components/icons';
 
 import style from './style.module.scss';
 
@@ -58,13 +58,17 @@ const PureTrainings: React.FC<Props> = (props) => {
               >
                 <DeleteIcon />
               </Button>
-              <div
-                className={style.trainingBox}
+              {/* TODO refactor into a reusable component */}
+              <Paper
+                shadow="sm"
+                p="xs"
+                withBorder
+                className={style.paper}
                 onClick={() => onOpen(training.id)}
                 data-testid="open-training-button"
               >
                 {training.name}
-              </div>
+              </Paper>
             </li>
           );
         })}

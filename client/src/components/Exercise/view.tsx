@@ -11,10 +11,9 @@ import {
   NavbarContainer,
   Autocomplete,
 } from '../../components';
+import { DeleteIcon, DoneIcon } from '../../components/icons';
 import { connect } from '../../utils';
 import { controller } from './controller';
-import DoneIcon from '../../assets/done.svg?react';
-import DeleteIcon from '../../assets/delete.svg?react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {
   ExerciseProps,

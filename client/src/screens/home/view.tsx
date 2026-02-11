@@ -1,10 +1,10 @@
 import React from 'react';
-import { Button, Layout, Navbar } from '../../components';
 
+import { Button, Layout, Navbar } from '../../components';
+import { DeleteIcon } from '../../components/icons';
 import { connect } from '../../utils';
 import { controller } from './controller';
 import { HomeProps, HomeController } from './types';
-import DeleteIcon from '../../assets/delete.svg?react';
 import style from './style.module.scss';
 import classNames from 'classnames';
 

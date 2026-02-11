@@ -1,10 +1,9 @@
 import React from 'react';
 
 import { Button, Layout, NavbarContainer } from '../../components';
+import { BackArrowIcon, EditIcon } from '../../components/icons';
 import { connect, requireData } from '../../utils';
 import { controller } from './controller';
-import EditIcon from '../../assets/edit.svg?react';
-import BackIcon from '../../assets/backArrow.svg?react';
 
 import style from './style.module.scss';
 import { Props, ControllerReturnType } from './types';
@@ -25,7 +24,7 @@ class PureTraining extends React.Component<Props> {
           onClick={onBack}
           data-testid="training-back-button"
         >
-          <BackIcon />
+          <BackArrowIcon />
         </Button>
         <Button
           skin="icon"

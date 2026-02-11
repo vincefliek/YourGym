@@ -1,12 +1,14 @@
 import React from 'react';
 
 import { Button, Input, Layout, NavbarContainer } from '../../components';
+import {
+  DoneIcon,
+  BackArrowIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+} from '../../components/icons';
 import { connect, requireData } from '../../utils';
 import { controller } from './controller';
-import BackIcon from '../../assets/backArrow.svg?react';
-import ArrowLeft from '../../assets/arrowLeft.svg?react';
-import ArrowRight from '../../assets/arrowRight.svg?react';
-import DoneIcon from '../../assets/done.svg?react';
 import { Exercise as ExerciseType, Set, Training } from '../../model/types';
 
 import style from './style.module.scss';
@@ -58,7 +60,7 @@ class PureExercise extends React.Component<Props> {
           onClick={onBack}
           data-testid="back-button"
         >
-          <BackIcon />
+          <BackArrowIcon />
         </Button>
         {isInProgress && (
           <div className={style.switch}>
@@ -68,7 +70,7 @@ class PureExercise extends React.Component<Props> {
               onClick={() => onExercisePrev(training, exercise)}
               data-testid="prev-exercise-button"
             >
-              <ArrowLeft />
+              <ArrowLeftIcon />
             </Button>
             <div>
               {getCurrentExercise(training, exercise)}/
@@ -80,7 +82,7 @@ class PureExercise extends React.Component<Props> {
               onClick={() => onExerciseNext(training, exercise)}
               data-testid="next-exercise-button"
             >
-              <ArrowRight />
+              <ArrowRightIcon />
             </Button>
           </div>
         )}

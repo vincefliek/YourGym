@@ -1,8 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { Button, DndList, Input, Layout, NavbarContainer } from '../index';
-import DoneIcon from '../../assets/done.svg?react';
-import DeleteIcon from '../../assets/delete.svg?react';
+import { DeleteIcon, DoneIcon } from '../icons';
 import style from './style.module.scss';
 import { TrainingProps } from './types';
 
@@ -87,6 +86,8 @@ export const Training: React.FC<TrainingProps> = ({
                 <DeleteIcon />
               </Button>
               <div
+                // 1. wrap into button
+                // 2. or use Mantine's beautiful component
                 className={style.exerciseBox}
                 onClick={() => onOpenExercise(exercise.id)}
                 data-testid="open-exercise-button"
