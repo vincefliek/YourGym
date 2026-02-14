@@ -59,11 +59,11 @@ export const controller: Controller<ControllerReturnType> = (
     onDeleteExercise: (trainingId: string, exerciseId: string) => {
       trainingsApi.delete.exercise(trainingId, exerciseId);
     },
-    onEditExercise: async (exerciseId: string) => {
+    onEditExercise: (exerciseId: string) => {
       const params = getParams();
 
       if (params.training) {
-        await navigationApi.toEditExistingExercise(params.training, exerciseId);
+        navigationApi.toEditExistingExercise(params.training, exerciseId);
       }
     },
     onDelete: async () => {
