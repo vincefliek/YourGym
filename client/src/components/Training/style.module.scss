@@ -48,10 +48,6 @@
 
 .exerciseBox {
   flex: 1 1 auto;
-  padding: 10px;
-  border: 1.5px dashed colors.$regular;
-  border-radius: 4px;
-
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

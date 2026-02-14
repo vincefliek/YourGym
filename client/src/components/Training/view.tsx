@@ -1,5 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
+import { Paper } from '@mantine/core';
+
 import { Button, DndList, Input, Layout, NavbarContainer } from '../index';
 import { DeleteIcon, DoneIcon } from '../icons';
 import style from './style.module.scss';
@@ -85,9 +87,10 @@ export const Training: React.FC<TrainingProps> = ({
               >
                 <DeleteIcon />
               </Button>
-              <div
-                // 1. wrap into button
-                // 2. or use Mantine's beautiful component
+              <Paper
+                shadow="sm"
+                p="xs"
+                withBorder
                 className={style.exerciseBox}
                 onClick={() => onOpenExercise(exercise.id)}
                 data-testid="open-exercise-button"
@@ -95,7 +98,7 @@ export const Training: React.FC<TrainingProps> = ({
                 {exercise.name}
                 <br />
                 {exercise.setsPreview}
-              </div>
+              </Paper>
             </li>
           )}
         />

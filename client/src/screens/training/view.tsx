@@ -1,4 +1,5 @@
 import React from 'react';
+import { Paper } from '@mantine/core';
 
 import { Button, Layout, NavbarContainer } from '../../components';
 import { BackArrowIcon, EditIcon } from '../../components/icons';
@@ -50,11 +51,16 @@ class PureTraining extends React.Component<Props> {
               data-testid="training-exercise-item"
               onClick={() => onOpenExercise(data, exercise)}
             >
-              <div className={style.exerciseBox}>
+              <Paper
+                shadow="sm"
+                p="xs"
+                withBorder
+                className={style.exerciseBox}
+              >
                 {exercise.name}
                 <br />
                 {exercise.setsPreview}
-              </div>
+              </Paper>
             </li>
           );
         })}
