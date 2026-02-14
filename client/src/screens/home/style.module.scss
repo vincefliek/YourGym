@@ -82,6 +82,8 @@
   margin: 0;
 }
 
+$trainingLeftOffset: 40px;
+
 .training {
   display: flex;
   flex-direction: column;
@@ -93,30 +95,18 @@
 }
 
 .trainingDate {
-  margin-left: 40px;
+  margin-left: $trainingLeftOffset;
   margin-bottom: 10px;
 }
 
 .trainingBoxWrapper {
   display: flex;
   width: 100%;
+  padding-left: $trainingLeftOffset;
 }
 
 .trainingBox {
   flex: 1 1 auto;
-  padding: 10px;
-  border: 1px solid colors.$regular;
-  border-radius: 4px;
-  background: #fff;
-  overflow: hidden;
-  transition: box-shadow 180ms ease;
-  &:focus-within {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  }
-}
-
-.trainingDelete {
-  flex: 0 0 auto;
 }
 
 .trainingBoxHeader {
@@ -125,6 +115,15 @@
   align-items: center;
   justify-content: space-between;
   user-select: none;
+  position: relative;
+}
+
+.trainingDelete {
+  position: absolute;
+  top: 50%;
+  // 10px is padding of the Paper component
+  left: -$trainingLeftOffset - 10px;
+  transform: translateY(-50%);
 }
 
 .trainingName {
@@ -132,23 +131,9 @@
 }
 
 .expandIndicator {
-  margin-left: 12px;
-  font-size: 18px;
-  transition: transform 220ms ease;
-}
-
-.exerciseList {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition:
-    max-height 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    opacity 220ms ease;
-}
-
-.exerciseList.expanded {
-  max-height: 1000px; /* large enough for content */
-  opacity: 1;
+  flex: 0 0 auto;
+  // it's needed to decrease the height of the parent
+  margin: -5px;
 }
 
 .exerciseRow {

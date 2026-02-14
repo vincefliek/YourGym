@@ -1,7 +1,12 @@
 import React from 'react';
-import { Paper } from '@mantine/core';
 
-import { Button, Layout, Navbar, NavbarContainer } from '../../components';
+import {
+  Button,
+  Layout,
+  Navbar,
+  NavbarContainer,
+  Paper,
+} from '../../components';
 import { connect } from '../../utils';
 import { controller } from './controller';
 import { Training } from '../../model/types';

@@ -1,7 +1,6 @@
 import React from 'react';
-import { Paper } from '@mantine/core';
 
-import { Button, Layout, NavbarContainer } from '../../components';
+import { Button, Layout, NavbarContainer, Paper } from '../../components';
 import { BackArrowIcon, EditIcon } from '../../components/icons';
 import { connect, requireData } from '../../utils';
 import { controller } from './controller';

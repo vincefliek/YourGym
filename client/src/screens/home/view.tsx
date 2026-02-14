@@ -1,12 +1,16 @@
 import React from 'react';
+import classNames from 'classnames';
 
-import { Button, Layout, Navbar } from '../../components';
-import { DeleteIcon } from '../../components/icons';
+import { Button, Layout, Navbar, Paper, Collapse } from '../../components';
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  DeleteIcon,
+} from '../../components/icons';
 import { connect } from '../../utils';
 import { controller } from './controller';
 import { HomeProps, HomeController } from './types';
 import style from './style.module.scss';
-import classNames from 'classnames';
 
 interface AuthFormData {
   email: string;
@@ -106,20 +110,25 @@ const PureHome: React.FC<HomeProps> = (props) => {
                   {getDateAndTime(training.timestamptz).date}
                 </div>
                 <div className={style.trainingBoxWrapper}>
-                  <Button
-                    skin="icon"
-                    size="medium"
-                    className={style.trainingDelete}
-                    onClick={() => onDeleteCompletedTraining(training.id)}
-                    data-testid="delete-completed-training-button"
+                  <Paper
+                    shadow="sm"
+                    p="xs"
+                    withBorder
+                    className={style.trainingBox}
                   >
-                    <DeleteIcon />
-                  </Button>
-                  <div className={style.trainingBox}>
                     <div
                       className={style.trainingBoxHeader}
                       aria-expanded={isExpanded}
                     >
+                      <Button
+                        skin="icon"
+                        size="medium"
+                        className={style.trainingDelete}
+                        onClick={() => onDeleteCompletedTraining(training.id)}
+                        data-testid="delete-completed-training-button"
+                      >
+                        <DeleteIcon />
+                      </Button>
                       <div
                         className={classNames({
                           [style.trainingName]: isExpanded,
@@ -129,21 +138,16 @@ const PureHome: React.FC<HomeProps> = (props) => {
                       </div>
                       <Button
                         className={style.expandIndicator}
-                        skin="text"
+                        skin="icon"
                         size="medium"
                         onClick={() => toggleExpanded(training.id)}
                         aria-expanded={isExpanded}
                         data-testid="toggle-completed-training-details-button"
                       >
-                        {isExpanded ? '📖' : '📗'}
+                        {isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
                       </Button>
                     </div>
-                    <div
-                      className={classNames(style.exerciseList, {
-                        [style.expanded]: isExpanded,
-                        [style.collapsed]: !isExpanded,
-                      })}
-                    >
+                    <Collapse in={isExpanded}>
                       {training.exercises.map((ex) => {
                         return (
                           <div key={ex.id} className={style.exerciseRow}>
@@ -154,8 +158,8 @@ const PureHome: React.FC<HomeProps> = (props) => {
                           </div>
                         );
                       })}
-                    </div>
-                  </div>
+                    </Collapse>
+                  </Paper>
                 </div>
               </li>
             );

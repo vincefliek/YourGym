@@ -8,6 +8,8 @@ import {
   IconChevronRight,
   IconMenu2,
   IconBarbellFilled,
+  IconChevronDown,
+  IconChevronUp,
 } from '@tabler/icons-react';
 
 export const DeleteIcon = () => <IconTrash stroke={1.5} />;
@@ -27,3 +29,7 @@ export const ArrowRightIcon = () => <IconChevronRight stroke={1.5} />;
 export const BurgerIcon = () => <IconMenu2 stroke={1.5} />;
 
 export const DumbbellIcon = () => <IconBarbellFilled stroke={1.25} />;
+
+export const ChevronDownIcon = () => <IconChevronDown stroke={1.5} />;
+
+export const ChevronUpIcon = () => <IconChevronUp stroke={1.5} />;
