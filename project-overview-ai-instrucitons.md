@@ -40,6 +40,12 @@ npm run build
 - Model / API: client HTTP interactions are organized under [client/src/model/apis](client/src/model/apis) and a `store` folder for state logic.
 - Initialization & global tasks: see [client/src/model/initialization.ts](client/src/model/initialization.ts) and [client/src/model/globalTasks.ts](client/src/model/globalTasks.ts) for app startup hooks.
 
+## Third-party libraries & how to use them
+
+- `@mantine` (UI components library): re-export complete components from `client/src/components/index.ts`. NEVER import in consumers directly from, for example, `@mantine/core`.
+- if there's a need to compose/customise components from `@mantine`, then create a separate component folder (e.g., `client/src/components/Autocomplete`)
+- `@tabler/icons-react` (UI icons library): re-export complete or wrapped (see `client/src/components/icons/icons.ts`) components from `client/src/components/icons/index.ts`. NEVER import in consumers directly from, for example, `@tabler/icons-react`.
+
 ## Integration points & cross-component communication
 
 - APIs: server endpoints are declared in [server/src/routes.ts](server/src/routes.ts); client calls live in `client/src/model/apis`.
