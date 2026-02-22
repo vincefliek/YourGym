@@ -7,69 +7,73 @@ import style from './style.module.scss';
 
 const isIOS = _isIOS();
 
-export const Button: React.FC<ButtonProps> = ({
-  skin,
-  font,
-  size,
-  className,
-  children,
-  disabled,
-  onClick,
-  ...props
-}) => {
-  const skinClassName = {
-    [style.zeroStyle]: skin === 'zero-style',
-    [style.primary]: skin === 'primary',
-    [style.icon]: skin === 'icon',
-    [style.text]: skin === 'text',
-  };
-  const fontClassName = {
-    [style.nunito]: font === 'nunito',
-    [style.indieFlower]: font === 'indieFlower',
-  };
-  const sizeClassName = {
-    [style.small]: size === 'small',
-    [style.medium]: size === 'medium',
-    [style.large]: size === 'large',
-    [style.xLarge]: size === 'xLarge',
-  };
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    { skin, font, size, className, children, disabled, onClick, ...props },
+    ref,
+  ) => {
+    const skinClassName = {
+      [style.zeroStyle]: skin === 'zero-style',
+      [style.primary]: skin === 'primary',
+      [style.icon]: skin === 'icon',
+      [style.text]: skin === 'text',
+    };
+    const fontClassName = {
+      [style.nunito]: font === 'nunito',
+      [style.indieFlower]: font === 'indieFlower',
+    };
+    const sizeClassName = {
+      [style.small]: size === 'small',
+      [style.medium]: size === 'medium',
+      [style.large]: size === 'large',
+      [style.xLarge]: size === 'xLarge',
+    };
 
-  /**
-   * iOS fix:
-   * on iOS, onClick event is not always triggered.
-   * the issue was noticed when focus was on input and
-   * later un-focusing it by clicking in an empty space.
-   * after that, all buttons became unclickable.
-   */
-  const Component = isIOS ? IOSFixedOnClickButton : RegularButton;
+    /**
+     * iOS fix:
+     * on iOS, onClick event is not always triggered.
+     * the issue was noticed when focus was on input and
+     * later un-focusing it by clicking in an empty space.
+     * after that, all buttons became unclickable.
+     */
+    const Component = isIOS ? IOSFixedOnClickButton : RegularButton;
 
-  return (
-    <Component
-      type="button"
-      {...props}
-      onClick={disabled ? void 0 : onClick}
-      disabled={disabled}
-      className={classnames(
-        className,
-        style.button,
-        skinClassName,
-        fontClassName,
-        sizeClassName,
-        { [style.disabled]: disabled },
-      )}
-      children={children}
-    />
-  );
-};
+    return (
+      <Component
+        type="button"
+        {...props}
+        ref={ref}
+        onClick={disabled ? void 0 : onClick}
+        disabled={disabled}
+        className={classnames(
+          className,
+          style.button,
+          skinClassName,
+          fontClassName,
+          sizeClassName,
+          { [style.disabled]: disabled },
+        )}
+        children={children}
+      />
+    );
+  },
+);
 
-const RegularButton = (props: any) => <button {...props} />;
+Button.displayName = 'Button';
 
-const IOSFixedOnClickButton: React.FC<any> = ({
-  onClick,
-  children,
-  style,
-  ...props
-}) => {
+const RegularButton = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ ...props }, ref) => <button ref={ref} {...props} />);
+
+RegularButton.displayName = 'RegularButton';
+
+const IOSFixedOnClickButton = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement> & {
+    style?: React.CSSProperties;
+  }
+>(({ onClick, children, style, ...props }, ref) => {
   const isScrolling = React.useRef(false);
 
   // 1. Detect if the user starts moving (scrolling)
@@ -83,8 +87,8 @@ const IOSFixedOnClickButton: React.FC<any> = ({
   };
 
   // 3. Only fire the handler if they didn't scroll
-  const onPointerUp = (e: any) => {
-    if (!isScrolling.current) {
+  const onPointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (!isScrolling.current && onClick) {
       onClick(e);
     }
   };
@@ -92,6 +96,7 @@ const IOSFixedOnClickButton: React.FC<any> = ({
   return (
     <button
       {...props}
+      ref={ref}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
@@ -103,4 +108,6 @@ const IOSFixedOnClickButton: React.FC<any> = ({
       {children}
     </button>
   );
-};
+});
+
+IOSFixedOnClickButton.displayName = 'IOSFixedOnClickButton';

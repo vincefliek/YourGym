@@ -12,5 +12,6 @@ export { BlockingLayer } from './BlockingLayer';
 export { TrainingProgressCard } from './TrainingProgressCard';
 export { TrainingProgressChart } from './TrainingProgressChart';
 export { DndList } from './DndList';
+export { ContextMenu } from './ContextMenu/view';
 
 export { Paper, Collapse } from '@mantine/core';

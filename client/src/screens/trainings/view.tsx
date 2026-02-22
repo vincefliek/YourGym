@@ -6,11 +6,12 @@ import {
   Navbar,
   NavbarContainer,
   Paper,
+  ContextMenu,
 } from '../../components';
 import { connect } from '../../utils';
 import { controller } from './controller';
 import { Training } from '../../model/types';
-import { DeleteIcon, AddIcon } from '../../components/icons';
+import { AddIcon } from '../../components/icons';
 
 import style from './style.module.scss';
 
@@ -54,16 +55,6 @@ const PureTrainings: React.FC<Props> = (props) => {
               className={style.training}
               data-testid="training-item"
             >
-              <Button
-                skin="icon"
-                size="medium"
-                className={style.trainingDelete}
-                onClick={() => onDelete(training.id)}
-                data-testid="delete-training-button"
-              >
-                <DeleteIcon />
-              </Button>
-              {/* TODO refactor into a reusable component */}
               <Paper
                 shadow="sm"
                 p="xs"
@@ -74,6 +65,15 @@ const PureTrainings: React.FC<Props> = (props) => {
               >
                 {training.name}
               </Paper>
+              <ContextMenu
+                triggerButtonClassName={style.trainingContextMenu}
+                items={[
+                  {
+                    label: 'Delete',
+                    onClick: () => onDelete(training.id),
+                  },
+                ]}
+              />
             </li>
           );
         })}
