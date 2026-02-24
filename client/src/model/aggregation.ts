@@ -7,6 +7,21 @@ export interface TrainingAggregate {
   sessionsCount: number;
 }
 
+export interface ExerciseMetrics {
+  exerciseName: string;
+  maxWeight: number;
+  maxWeightDate: string; // ISO date (YYYY-MM-DD)
+  maxReps: number;
+  totalVolume: number; // Sum of weight × reps
+  frequency: number; // Times performed in period
+  volumeByDate: Array<{
+    date: string; // YYYY-MM-DD
+    volume: number;
+  }>;
+  lastPerformed: string; // ISO date
+  trend: 'improving' | 'stable' | 'declining';
+}
+
 function toDateKey(timestamptz: string): string {
   // Use UTC-normalized YYYY-MM-DD to avoid local TZ shifting the day.
   const d = new Date(timestamptz);
@@ -84,4 +99,126 @@ export const lastNDays = (
   }
 
   return result;
+};
+
+export const aggregateByExercise = (
+  completed: CompletedTraining[],
+  days = 30,
+): ExerciseMetrics[] => {
+  const exerciseMap = new Map<
+    string,
+    {
+      maxWeight: number;
+      maxWeightDate: string;
+      maxReps: number;
+      totalVolume: number;
+      frequency: number;
+      volumeByDate: Map<string, number>;
+      lastPerformed: string;
+    }
+  >();
+
+  const MS_DAY = 24 * 60 * 60 * 1000;
+  const cutoffDate = new Date(Date.now() - days * MS_DAY);
+
+  completed.forEach((ct) => {
+    const trainDate = toDateKey(ct.timestamptz);
+    const trainDateTime = new Date(ct.timestamptz);
+
+    // Skip if outside the date range
+    if (trainDateTime < cutoffDate) {
+      return;
+    }
+
+    ct.exercises.forEach((ex) => {
+      const name = ex.name;
+
+      if (!exerciseMap.has(name)) {
+        exerciseMap.set(name, {
+          maxWeight: 0,
+          maxWeightDate: trainDate,
+          maxReps: 0,
+          totalVolume: 0,
+          frequency: 0,
+          volumeByDate: new Map(),
+          lastPerformed: trainDate,
+        });
+      }
+
+      const metrics = exerciseMap.get(name)!;
+      metrics.frequency += 1;
+      metrics.lastPerformed = trainDate;
+
+      let dayVolume = metrics.volumeByDate.get(trainDate) || 0;
+
+      ex.sets.forEach((set) => {
+        const weight = typeof set.weight === 'number' ? set.weight : 0;
+        const reps = typeof set.repetitions === 'number' ? set.repetitions : 0;
+        const volume = weight * reps;
+
+        metrics.totalVolume += volume;
+        dayVolume += volume;
+
+        if (weight > metrics.maxWeight) {
+          metrics.maxWeight = weight;
+          metrics.maxWeightDate = trainDate;
+        }
+
+        if (reps > metrics.maxReps) {
+          metrics.maxReps = reps;
+        }
+      });
+
+      metrics.volumeByDate.set(trainDate, dayVolume);
+    });
+  });
+
+  // Convert to ExerciseMetrics array with trend calculation
+  const result: ExerciseMetrics[] = Array.from(exerciseMap.entries()).map(
+    ([name, data]) => {
+      // Calculate trend: compare first 10 days vs last 10 days
+      const volumeDates = Array.from(data.volumeByDate.entries()).sort(
+        (a, b) => (a[0] < b[0] ? -1 : 1),
+      );
+
+      let trend: 'improving' | 'stable' | 'declining' = 'stable';
+      if (volumeDates.length >= 2) {
+        const splitPoint = Math.ceil(volumeDates.length / 2);
+        const firstHalf = volumeDates.slice(0, splitPoint);
+        const secondHalf = volumeDates.slice(splitPoint);
+
+        const avgFirst =
+          firstHalf.reduce((sum, [, vol]) => sum + vol, 0) / firstHalf.length;
+        const avgSecond =
+          secondHalf.reduce((sum, [, vol]) => sum + vol, 0) / secondHalf.length;
+
+        const change = ((avgSecond - avgFirst) / avgFirst) * 100;
+        if (change > 5) {
+          trend = 'improving';
+        } else if (change < -5) {
+          trend = 'declining';
+        }
+      }
+
+      return {
+        exerciseName: name,
+        maxWeight: data.maxWeight,
+        maxWeightDate: data.maxWeightDate,
+        maxReps: data.maxReps,
+        totalVolume: Math.round(data.totalVolume),
+        frequency: data.frequency,
+        volumeByDate: Array.from(data.volumeByDate.entries())
+          .sort((a, b) => (a[0] < b[0] ? -1 : 1))
+          .map(([date, volume]) => ({
+            date,
+            volume: Math.round(volume),
+          })),
+        lastPerformed: data.lastPerformed,
+        trend,
+      };
+    },
+  );
+
+  // Sort by frequency (descending) so most-done exercises appear first
+  return result.sort((a, b) => b.frequency - a.frequency);
 };

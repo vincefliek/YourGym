@@ -1,9 +1,15 @@
 import { AppContext } from '../../types';
 import { CompletedTraining } from '../../model/types';
-import { aggregateByDay, TrainingAggregate } from '../../model/aggregation';
+import {
+  aggregateByDay,
+  aggregateByExercise,
+  TrainingAggregate,
+  ExerciseMetrics,
+} from '../../model/aggregation';
 
 interface DashboardController {
   getAggregates: () => TrainingAggregate[];
+  getExerciseMetrics: () => ExerciseMetrics[];
 }
 
 export const controller = (
@@ -18,6 +24,11 @@ export const controller = (
       const completed: CompletedTraining[] =
         getStore().completedTrainings || [];
       return aggregateByDay(completed);
+    },
+    getExerciseMetrics: () => {
+      const completed: CompletedTraining[] =
+        getStore().completedTrainings || [];
+      return aggregateByExercise(completed, 30);
     },
   };
 };
