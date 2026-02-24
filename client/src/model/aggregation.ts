@@ -20,6 +20,9 @@ export interface ExerciseMetrics {
   }>;
   lastPerformed: string; // ISO date
   trend: 'improving' | 'stable' | 'declining';
+  // Consistency metrics
+  currentStreak: number; // Consecutive weeks performed
+  volumeImprovement: { percent: number; vs: string }; // % change vs before period
 }
 
 function toDateKey(timestamptz: string): string {
@@ -100,6 +103,66 @@ export const lastNDays = (
 
   return result;
 };
+
+function calculateStreak(
+  volumeByDate: Array<{ date: string; volume: number }>,
+): number {
+  if (volumeByDate.length === 0) return 0;
+
+  const sortedDates = volumeByDate
+    .map((v) => v.date)
+    .sort()
+    .reverse(); // Most recent first
+
+  const MS_DAY = 24 * 60 * 60 * 1000;
+  let streak = 0;
+  let currentDate = new Date(sortedDates[0]);
+
+  for (const dateStr of sortedDates) {
+    const checkDate = new Date(dateStr);
+    const daysDiff = Math.floor(
+      (currentDate.getTime() - checkDate.getTime()) / MS_DAY,
+    );
+
+    // If dates are within streak tolerance (up to 7 days apart = within same week or 1 week gap)
+    if (daysDiff <= 7) {
+      const week = Math.floor(daysDiff / 7);
+      if (week === 0 || week === 1) {
+        streak = week + 1;
+        currentDate = checkDate;
+      } else {
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
+function calculateVolumeImprovement(
+  volumeByDate: Array<{ date: string; volume: number }>,
+  days: number,
+): { percent: number; vs: string } {
+  if (volumeByDate.length < 2) return { percent: 0, vs: 'N/A' };
+
+  const sortedDates = volumeByDate.sort((a, b) => (a.date < b.date ? -1 : 1));
+  const midpoint = Math.floor(sortedDates.length / 2);
+
+  const firstHalf = sortedDates.slice(0, midpoint);
+  const secondHalf = sortedDates.slice(midpoint);
+
+  const avgFirst =
+    firstHalf.reduce((sum, v) => sum + v.volume, 0) / firstHalf.length;
+  const avgSecond =
+    secondHalf.reduce((sum, v) => sum + v.volume, 0) / secondHalf.length;
+
+  const percent = Math.round(((avgSecond - avgFirst) / avgFirst) * 100);
+  const vsLabel = `${days} days ago`;
+
+  return { percent, vs: vsLabel };
+}
 
 export const aggregateByExercise = (
   completed: CompletedTraining[],
@@ -200,6 +263,13 @@ export const aggregateByExercise = (
         }
       }
 
+      const volumeDatesArray = Array.from(data.volumeByDate.entries())
+        .sort((a, b) => (a[0] < b[0] ? -1 : 1))
+        .map(([date, volume]) => ({
+          date,
+          volume: Math.round(volume),
+        }));
+
       return {
         exerciseName: name,
         maxWeight: data.maxWeight,
@@ -207,14 +277,11 @@ export const aggregateByExercise = (
         maxReps: data.maxReps,
         totalVolume: Math.round(data.totalVolume),
         frequency: data.frequency,
-        volumeByDate: Array.from(data.volumeByDate.entries())
-          .sort((a, b) => (a[0] < b[0] ? -1 : 1))
-          .map(([date, volume]) => ({
-            date,
-            volume: Math.round(volume),
-          })),
+        volumeByDate: volumeDatesArray,
         lastPerformed: data.lastPerformed,
         trend,
+        currentStreak: calculateStreak(volumeDatesArray),
+        volumeImprovement: calculateVolumeImprovement(volumeDatesArray, days),
       };
     },
   );

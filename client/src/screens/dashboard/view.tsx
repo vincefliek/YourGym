@@ -13,6 +13,7 @@ import {
   Badge,
   Text,
   Title,
+  ExerciseComparisonGrid,
 } from '../../components';
 import {
   IconTrendingUp,
@@ -162,6 +163,80 @@ const PureDashboard: React.FC<any> = ({ aggregates, exerciseMetrics }) => {
                   </Card>
                 ))}
               </Stack>
+            </div>
+          </Stack>
+        )}
+
+        {exerciseMetrics.length > 0 && (
+          <Stack gap="lg">
+            <div>
+              <Title order={3}>Exercise Strength Ranking</Title>
+              <Card
+                withBorder
+                shadow="sm"
+                radius="md"
+                style={{ marginTop: 12 }}
+              >
+                <ExerciseComparisonGrid exercises={exerciseMetrics} />
+              </Card>
+            </div>
+
+            <div>
+              <Title order={3}>Consistency & Improvement</Title>
+              <SimpleGrid
+                cols={{ base: 1, sm: 2 }}
+                spacing="md"
+                style={{ marginTop: 12 }}
+              >
+                {exerciseMetrics.map((exercise: ExerciseMetrics) => (
+                  <Card
+                    key={exercise.exerciseName}
+                    withBorder
+                    shadow="sm"
+                    radius="md"
+                  >
+                    <Stack gap="sm">
+                      <Text fw={700} size="md">
+                        {exercise.exerciseName}
+                      </Text>
+                      <Group justify="space-between">
+                        <Group>
+                          <Text size="sm">Weekly Streak:</Text>
+                          <Badge
+                            color={exercise.currentStreak > 0 ? 'blue' : 'gray'}
+                          >
+                            {exercise.currentStreak > 0
+                              ? `${exercise.currentStreak}w`
+                              : 'None'}
+                          </Badge>
+                        </Group>
+                      </Group>
+                      <Group justify="space-between">
+                        <Text size="sm">Last attempt:</Text>
+                        <Text size="sm" fw={600}>
+                          {exercise.lastPerformed}
+                        </Text>
+                      </Group>
+                      <Group justify="space-between">
+                        <Text size="sm">Volume trend:</Text>
+                        <Badge
+                          color={
+                            exercise.volumeImprovement.percent > 0
+                              ? 'green'
+                              : exercise.volumeImprovement.percent < 0
+                                ? 'red'
+                                : 'gray'
+                          }
+                        >
+                          {exercise.volumeImprovement.percent > 0 ? '+' : ''}
+                          {exercise.volumeImprovement.percent}% vs{' '}
+                          {exercise.volumeImprovement.vs}
+                        </Badge>
+                      </Group>
+                    </Stack>
+                  </Card>
+                ))}
+              </SimpleGrid>
             </div>
           </Stack>
         )}
