@@ -14,4 +14,14 @@ export { TrainingProgressChart } from './TrainingProgressChart';
 export { DndList } from './DndList';
 export { ContextMenu } from './ContextMenu/view';
 
-export { Paper, Collapse } from '@mantine/core';
+export {
+  Paper,
+  Collapse,
+  Card,
+  SimpleGrid,
+  Group,
+  Stack,
+  Badge,
+  Text,
+  Title,
+} from '@mantine/core';

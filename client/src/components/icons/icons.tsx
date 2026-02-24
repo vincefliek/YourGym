@@ -10,7 +10,12 @@ import {
   IconBarbellFilled,
   IconChevronDown,
   IconChevronUp,
+  IconTrendingUp,
+  IconTrendingDown,
+  IconArrowRight,
 } from '@tabler/icons-react';
+
+export { IconTrendingUp, IconTrendingDown, IconArrowRight };
 
 export const DeleteIcon = () => <IconTrash stroke={1.5} />;
 
