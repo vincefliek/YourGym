@@ -77,6 +77,16 @@ export const createTrainingsApi: ApiFactory<
     store.newExercise = null;
   };
 
+  const getTraining = (trainingId: string): Training | undefined => {
+    const newTraining = getData().newTraining;
+
+    if (newTraining?.id === trainingId) {
+      return newTraining;
+    }
+
+    return getData().trainings.find((tr: Training) => tr.id === trainingId);
+  };
+
   const deleteExercise = (trainingId: string, exerciseId: string) => {
     const newTraining = getData().newTraining;
 
@@ -423,6 +433,35 @@ export const createTrainingsApi: ApiFactory<
       validate(duplicatedTraining, trainingSchema);
 
       addTraining(duplicatedTraining);
+    },
+    duplicatedExercise: (trainingId: string, exerciseId: string) => {
+      const trainingToModify = getTraining(trainingId);
+
+      if (!trainingToModify) {
+        return;
+      }
+
+      const exerciseToClone = trainingToModify.exercises.find(
+        (ex: Exercise) => ex.id === exerciseId,
+      );
+
+      if (!exerciseToClone) {
+        return;
+      }
+
+      const duplicatedExercise: Exercise = {
+        id: uuidv4(),
+        name: exerciseToClone.name,
+        sets: exerciseToClone.sets.map((set: Set) => ({
+          id: uuidv4(),
+          repetitions: set.repetitions,
+          weight: set.weight,
+          done: false,
+        })),
+      };
+
+      validate(duplicatedExercise, exerciseSchema);
+      addExercise(trainingId, duplicatedExercise);
     },
     setsPreview: (sets: Set[]): string => {
       return createSetsPreview(sets);

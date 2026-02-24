@@ -19,6 +19,7 @@ export interface Props {
   onDelete: () => Promise<void>;
   onSave: () => Promise<void>;
   onDeleteExercise: (trainingId: string, exerciseId: string) => void;
+  onDuplicateExercise: (trainingId: string, exerciseId: string) => void;
   onOpenExercise: (exerciseId: string) => void;
   onReorderExercises: (trainingId: string, exercises: { id: string }[]) => void;
 }
@@ -31,6 +32,7 @@ export interface Controller {
   onDelete: () => Promise<void>;
   onSave: () => Promise<void>;
   onDeleteExercise: (trainingId: string, exerciseId: string) => void;
+  onDuplicateExercise: (trainingId: string, exerciseId: string) => void;
   onOpenExercise: (exerciseId: string) => void;
   onReorderExercises: (trainingId: string, exercises: { id: string }[]) => void;
 }

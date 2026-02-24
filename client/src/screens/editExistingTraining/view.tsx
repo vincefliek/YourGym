@@ -13,6 +13,7 @@ interface Props {
   onChangeName: (name: string) => void;
   onAddExercise: () => void;
   onDeleteExercise: (trainingId: string, exerciseId: string) => void;
+  onDuplicateExercise: (trainingId: string, exerciseId: string) => void;
   onEditExercise: (exerciseId: string) => void;
   onReorderExercises: (
     trainingId: string,
@@ -30,6 +31,7 @@ const PureEditExistingTraining: React.FC<Props> = (props) => {
     onDelete,
     onSave,
     onDeleteExercise,
+    onDuplicateExercise,
     onEditExercise,
     onReorderExercises,
   } = props;
@@ -44,6 +46,7 @@ const PureEditExistingTraining: React.FC<Props> = (props) => {
       onDelete={onDelete}
       onSave={onSave}
       onDeleteExercise={onDeleteExercise}
+      onDuplicateExercise={onDuplicateExercise}
       onOpenExercise={onEditExercise}
       onReorderExercises={onReorderExercises}
     />
@@ -62,6 +65,7 @@ export const EditExistingTraining = connect<ControllerReturnType, Props>(
     onChangeName: ctrl.onChangeName,
     onAddExercise: ctrl.onAddExercise,
     onDeleteExercise: ctrl.onDeleteExercise,
+    onDuplicateExercise: ctrl.onDuplicateExercise,
     onEditExercise: ctrl.onEditExercise,
     onReorderExercises: ctrl.onReorderExercises,
   }),

@@ -2,7 +2,14 @@ import React from 'react';
 import classnames from 'classnames';
 import { Paper } from '@mantine/core';
 
-import { Button, DndList, Input, Layout, NavbarContainer } from '../index';
+import {
+  Button,
+  DndList,
+  Input,
+  Layout,
+  NavbarContainer,
+  ContextMenu,
+} from '../index';
 import { DeleteIcon, DoneIcon } from '../icons';
 import style from './style.module.scss';
 import { TrainingProps } from './types';
@@ -17,6 +24,7 @@ export const Training: React.FC<TrainingProps> = ({
   onDelete,
   onSave,
   onDeleteExercise,
+  onDuplicateExercise,
   onOpenExercise,
   onReorderExercises,
 }) => {
@@ -78,15 +86,6 @@ export const Training: React.FC<TrainingProps> = ({
               className={classnames(style.exercise, props.className)}
               data-testid="exercise-item"
             >
-              <Button
-                skin="icon"
-                size="medium"
-                className={style.exerciseDelete}
-                onClick={() => onDeleteExercise(id, exercise.id)}
-                data-testid="delete-exercise-button"
-              >
-                <DeleteIcon />
-              </Button>
               <Paper
                 shadow="sm"
                 p="xs"
@@ -95,10 +94,27 @@ export const Training: React.FC<TrainingProps> = ({
                 onClick={() => onOpenExercise(exercise.id)}
                 data-testid="open-exercise-button"
               >
-                {exercise.name}
+                <span data-testid="exercise-name">{exercise.name}</span>
                 <br />
-                {exercise.setsPreview}
+                <span data-testid="exercise-sets-preview">
+                  {exercise.setsPreview}
+                </span>
               </Paper>
+              <ContextMenu
+                triggerButtonClassName={style.exerciseDelete}
+                items={[
+                  {
+                    label: 'Duplicate',
+                    dataTestId: 'duplicate-exercise-button',
+                    onClick: () => onDuplicateExercise(id, exercise.id),
+                  },
+                  {
+                    label: 'Delete',
+                    dataTestId: 'delete-exercise-button',
+                    onClick: () => onDeleteExercise(id, exercise.id),
+                  },
+                ]}
+              />
             </li>
           )}
         />

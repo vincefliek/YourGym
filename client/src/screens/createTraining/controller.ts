@@ -57,6 +57,9 @@ export const controller: Controller<ControllerReturnType> = (
     onDeleteExercise: (trainingId: string, exerciseId: string) => {
       trainingsApi.delete.exercise(trainingId, exerciseId);
     },
+    onDuplicateExercise: (trainingId: string, exerciseId: string) => {
+      trainingsApi.create.duplicatedExercise(trainingId, exerciseId);
+    },
     onOpenExercise: (exerciseId: string) => {
       const trainingId = getData().newTraining?.id;
       if (trainingId) {

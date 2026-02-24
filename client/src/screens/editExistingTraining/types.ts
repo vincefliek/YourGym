@@ -8,6 +8,7 @@ export interface ControllerReturnType {
   onChangeName: (name: string) => void;
   onAddExercise: () => void;
   onDeleteExercise: (trainingId: string, exerciseId: string) => void;
+  onDuplicateExercise: (trainingId: string, exerciseId: string) => void;
   onEditExercise: (exerciseId: string) => void;
   onReorderExercises: (trainingId: string, exercises: { id: string }[]) => void;
 }

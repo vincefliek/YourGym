@@ -1,8 +1,8 @@
 import { act } from 'react';
 import userEventBuilder from '@testing-library/user-event';
+import { waitFor } from '@testing-library/react';
 
 import { createDriver, type TestDriver } from '../../test-utils';
-import { waitFor } from '@testing-library/react';
 
 describe('existing training', () => {
   let driver: TestDriver;
@@ -16,12 +16,12 @@ describe('existing training', () => {
     jest.clearAllMocks();
   });
 
-  test('delete an exercise from an existing training', async () => {
+  test('duplicate an exercise from existing training', async () => {
     const userEvent = userEventBuilder.setup();
 
     await driver.render.app();
 
-    // create a training with two exercises
+    // create a training with exercises
     await driver.create.firstTemplateTraining({
       exercises: [
         { sets: [{ reps: 8, weight: 12 }] },
@@ -39,34 +39,39 @@ describe('existing training', () => {
     );
     await act(() => userEvent.click(editTrainingIcon));
 
-    // inside of edit existing training screen
+    // inside of edit-existing-training screen
     expect(
       await driver.waitFor.byTestId('edit-existing-training-screen'),
     ).toBeInTheDocument();
 
-    // ensure two exercises present
-    const itemsBefore = await driver.waitFor.allByTestId('exercise-item');
-    expect(itemsBefore.length).toBe(2);
+    // verify exercises present
+    const exerciseItemsBefore =
+      await driver.waitFor.allByTestId('exercise-item');
+    expect(exerciseItemsBefore.length).toBe(2);
 
     // click context menu button on the first exercise
+    const [contextMenuButton] = await driver.waitFor.allByTestId(
+      'context-menu-trigger',
+    );
+    await act(() => userEvent.click(contextMenuButton));
+
+    // find and click the "Duplicate" menu item
+    const duplicateMenuItem = await driver.waitFor.byTestId(
+      'duplicate-exercise-button',
+    );
+    await act(() => userEvent.click(duplicateMenuItem));
+
+    // wait for the duplicate to appear in the list
     await waitFor(async () => {
-      const [contextMenuButton] = await driver.waitFor.allByTestId(
-        'context-menu-trigger',
-      );
-      await act(() => userEvent.click(contextMenuButton));
+      const exerciseItemsAfter =
+        await driver.waitFor.allByTestId('exercise-item');
+      expect(exerciseItemsAfter.length).toBe(3);
     });
 
-    // find and click the "Delete" menu item
-    const deleteMenuItem = await driver.waitFor.byTestId(
-      'delete-exercise-button',
-    );
-    await act(() => userEvent.click(deleteMenuItem));
-
-    // wait for the delete to complete
+    // verify the diplicate has the same name as the original exercise
     await waitFor(async () => {
-      // expect one exercise remaining
-      const itemsAfter = await driver.waitFor.allByTestId('exercise-item');
-      expect(itemsAfter.length).toBe(1);
+      const exerciseNames = await driver.waitFor.allByTestId('exercise-name');
+      expect(exerciseNames[0].textContent).toBe(exerciseNames[2].textContent);
     });
   });
 });

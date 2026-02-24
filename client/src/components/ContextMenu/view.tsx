@@ -7,6 +7,7 @@ import styles from './style.module.scss';
 
 export interface MenuItem {
   label: string;
+  dataTestId?: string;
   onClick: () => void;
 }
 
@@ -51,7 +52,11 @@ export const ContextMenu = ({
       </Menu.Target>
       <Menu.Dropdown>
         {items.map((item) => (
-          <Menu.Item key={item.label} onClick={item.onClick}>
+          <Menu.Item
+            key={item.label}
+            onClick={item.onClick}
+            data-testid={item.dataTestId}
+          >
             {item.label}
           </Menu.Item>
         ))}

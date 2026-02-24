@@ -250,6 +250,7 @@ export interface TrainingsApi {
     timePreview: (timestamptz: TimestampTZ) => string;
     exerciseType: (exerciseType: Pick<ExerciseType, 'label' | 'group'>) => void;
     duplicatedTraining: (trainingId: string) => void;
+    duplicatedExercise: (trainingId: string, exerciseId: string) => void;
   };
   update: {
     newTraining: (input: Partial<Training>) => void;

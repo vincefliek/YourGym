@@ -13,6 +13,7 @@ const PureCreateTraining: React.FC<Props> = (props) => {
     onDelete,
     onSave,
     onDeleteExercise,
+    onDuplicateExercise,
     onOpenExercise,
     onReorderExercises,
   } = props;
@@ -27,6 +28,7 @@ const PureCreateTraining: React.FC<Props> = (props) => {
       onDelete={onDelete}
       onSave={onSave}
       onDeleteExercise={onDeleteExercise}
+      onDuplicateExercise={onDuplicateExercise}
       onOpenExercise={onOpenExercise}
       onReorderExercises={onReorderExercises}
     />
@@ -45,6 +47,7 @@ export const CreateTraining = connect<Controller, Props>(
     onDelete: ctrl.onDelete,
     onSave: ctrl.onSave,
     onDeleteExercise: ctrl.onDeleteExercise,
+    onDuplicateExercise: ctrl.onDuplicateExercise,
     onOpenExercise: ctrl.onOpenExercise,
     onReorderExercises: ctrl.onReorderExercises,
   }),
