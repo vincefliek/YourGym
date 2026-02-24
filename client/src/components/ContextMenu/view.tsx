@@ -40,7 +40,12 @@ export const ContextMenu = ({
       }}
     >
       <Menu.Target>
-        <Button skin="icon" size="medium" className={triggerButtonClassName}>
+        <Button
+          skin="icon"
+          size="medium"
+          className={triggerButtonClassName}
+          data-testid="context-menu-trigger"
+        >
           <IconDots size={16} />
         </Button>
       </Menu.Target>

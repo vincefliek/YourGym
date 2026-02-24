@@ -37,6 +37,15 @@ export const controller = (serviceLocator: AppContext['serviceLocator']) => {
         trainingsApi.delete.training(id);
       }
     },
+    onDuplicateTraining: (id: string) => {
+      const training = getById(id);
+
+      if (!training) {
+        throw new Error(`Training with ID "${id}" doesn't exist!`);
+      }
+
+      trainingsApi.create.duplicatedTraining(id);
+    },
     onOpenTraining: (trainingId: string) => {
       navigationApi.toTraining(trainingId);
     },

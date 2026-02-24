@@ -245,6 +245,34 @@ export const createTrainingsApi: ApiFactory<
     _update.allTrainings(data);
   };
 
+  const generateDuplicateName = (
+    originalName: string,
+    trainings: Training[],
+  ): string => {
+    const duplicatePrefix = 'Copy';
+    // space matters
+    const prefix = `${duplicatePrefix} `;
+    // space matters
+    const suffix = ` - ${originalName}`;
+
+    // Extract counters from all duplicates of this training
+    const counters = trainings
+      .filter((t) => t.name.startsWith(prefix) && t.name.endsWith(suffix))
+      .map((t) => {
+        const middle = t.name.slice(prefix.length, -suffix.length);
+        const counter = Number.parseInt(middle, 10);
+        return Number.isNaN(counter) ? 0 : counter;
+      });
+
+    const nextCounter = Math.max(...counters, -1) + 1;
+
+    if (nextCounter === 0) {
+      return `${duplicatePrefix}${suffix}`;
+    }
+
+    return `${prefix}${nextCounter}${suffix}`;
+  };
+
   const createSetsPreview = (sets: Set[]): string => {
     let setsPreview = '';
 
@@ -362,6 +390,39 @@ export const createTrainingsApi: ApiFactory<
       const updatedTypes = [...existingTypes, newExerciseType];
 
       _update.exerciseTypes(updatedTypes);
+    },
+    duplicatedTraining: (trainingId: string) => {
+      const trainingToClone = getData().trainings.find(
+        (tr: Training) => tr.id === trainingId,
+      );
+
+      if (!trainingToClone) {
+        return;
+      }
+
+      const newName = generateDuplicateName(
+        trainingToClone.name,
+        getData().trainings,
+      );
+
+      const duplicatedTraining: Training = {
+        id: uuidv4(),
+        name: newName,
+        exercises: trainingToClone.exercises.map((exercise: Exercise) => ({
+          id: uuidv4(),
+          name: exercise.name,
+          sets: exercise.sets.map((set: Set) => ({
+            id: uuidv4(),
+            repetitions: set.repetitions,
+            weight: set.weight,
+            done: false,
+          })),
+        })),
+      };
+
+      validate(duplicatedTraining, trainingSchema);
+
+      addTraining(duplicatedTraining);
     },
     setsPreview: (sets: Set[]): string => {
       return createSetsPreview(sets);

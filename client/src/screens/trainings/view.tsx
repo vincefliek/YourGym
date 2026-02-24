@@ -19,6 +19,7 @@ interface Props {
   data: Training[];
   onAdd: () => void;
   onDelete: (id: string) => void;
+  onDuplicate: (id: string) => void;
   onOpen: (id: string) => void;
 }
 
@@ -45,7 +46,7 @@ const PureTrainings: React.FC<Props> = (props) => {
   };
 
   const renderTrainings = () => {
-    const { data, onDelete, onOpen } = props;
+    const { data, onDelete, onDuplicate, onOpen } = props;
     return (
       <ul className={style.trainings} data-testid="trainings-list">
         {data.map((training) => {
@@ -68,6 +69,10 @@ const PureTrainings: React.FC<Props> = (props) => {
               <ContextMenu
                 triggerButtonClassName={style.trainingContextMenu}
                 items={[
+                  {
+                    label: 'Duplicate',
+                    onClick: () => onDuplicate(training.id),
+                  },
                   {
                     label: 'Delete',
                     onClick: () => onDelete(training.id),
@@ -124,6 +129,7 @@ export const Trainings = connect<Controller, Props>(
     data: ctrl.getTrainings(),
     onAdd: ctrl.onAddTraining,
     onDelete: ctrl.onDeleteTraining,
+    onDuplicate: ctrl.onDuplicateTraining,
     onOpen: ctrl.onOpenTraining,
   }),
 )(PureTrainings);
