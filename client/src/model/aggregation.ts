@@ -1,4 +1,8 @@
 import { CompletedTraining } from './types';
+import {
+  estimate1RepMax,
+  estimate_4_RepsWeight,
+} from '../utils/repsEstimators';
 
 export interface TrainingAggregate {
   dateISO: string; // YYYY-MM-DD
@@ -23,6 +27,15 @@ export interface ExerciseMetrics {
   // Consistency metrics
   currentStreak: number; // Consecutive weeks performed
   volumeImprovement: { percent: number; vs: string }; // % change vs before period
+  // Phase 3: Advanced Analytics
+  maxWeightProgression: Array<{
+    date: string; // YYYY-MM-DD
+    weight: number;
+  }>;
+  weightPrediction: {
+    weights: Array<{ date: string; weight: number }>;
+    daysForecasted: number;
+  };
 }
 
 function toDateKey(timestamptz: string): string {
@@ -164,6 +177,120 @@ function calculateVolumeImprovement(
   return { percent, vs: vsLabel };
 }
 
+interface LinearRegressionResult {
+  slope: number;
+  intercept: number;
+  r2: number;
+}
+
+function linearRegression(
+  points: Array<{ x: number; y: number }>,
+): LinearRegressionResult {
+  if (points.length < 2) return { slope: 0, intercept: 0, r2: 0 };
+
+  const n = points.length;
+  const sumX = points.reduce((sum, p) => sum + p.x, 0);
+  const sumY = points.reduce((sum, p) => sum + p.y, 0);
+  const sumXY = points.reduce((sum, p) => sum + p.x * p.y, 0);
+  const sumX2 = points.reduce((sum, p) => sum + p.x * p.x, 0);
+
+  const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+  const intercept = (sumY - slope * sumX) / n;
+
+  // Calculate R²
+  const yMean = sumY / n;
+  const ssTotal = points.reduce((sum, p) => sum + Math.pow(p.y - yMean, 2), 0);
+  const ssRes = points.reduce((sum, p) => {
+    const predicted = slope * p.x + intercept;
+    return sum + Math.pow(p.y - predicted, 2);
+  }, 0);
+
+  const r2 = ssTotal === 0 ? 0 : 1 - ssRes / ssTotal;
+
+  return { slope, intercept, r2 };
+}
+
+function buildMaxWeightProgression(
+  completed: CompletedTraining[],
+  exerciseName: string,
+  days: number,
+): Array<{ date: string; weight: number }> {
+  const MS_DAY = 24 * 60 * 60 * 1000;
+  const cutoffDate = new Date(Date.now() - days * MS_DAY);
+  const maxByDate = new Map<string, { weight: number; reps: number }>();
+
+  completed.forEach((ct) => {
+    const trainDate = toDateKey(ct.timestamptz);
+    const trainDateTime = new Date(ct.timestamptz);
+
+    if (trainDateTime < cutoffDate) return;
+
+    ct.exercises.forEach((ex) => {
+      if (ex.name !== exerciseName) return;
+
+      ex.sets.forEach((set) => {
+        const weight = typeof set.weight === 'number' ? set.weight : 0;
+        const reps = typeof set.repetitions === 'number' ? set.repetitions : 1;
+        const current = maxByDate.get(trainDate);
+
+        // Track the heaviest weight lifted that day
+        if (!current || weight > current.weight) {
+          maxByDate.set(trainDate, { weight, reps });
+        }
+      });
+    });
+  });
+
+  // Convert to 4RM estimates using Epley formula (safer than 1RM)
+  return Array.from(maxByDate.entries())
+    .sort((a, b) => (a[0] < b[0] ? -1 : 1))
+    .map(([date, { weight, reps }]) => {
+      const oneRepMax = estimate1RepMax(weight, reps);
+      const fourRm = estimate_4_RepsWeight(oneRepMax);
+      return {
+        date,
+        weight: fourRm,
+      };
+    });
+}
+
+function predictWeightProgression(
+  maxWeightProgression: Array<{ date: string; weight: number }>,
+  daysForecasted = 30,
+): Array<{ date: string; weight: number }> {
+  if (maxWeightProgression.length < 2) return [];
+
+  // Linear regression on 4RM estimates to forecast future strength gains
+  const points = maxWeightProgression.map((p, idx) => ({
+    x: idx,
+    y: p.weight,
+  }));
+
+  const regression = linearRegression(points);
+  const { slope, intercept } = regression;
+
+  // Generate forecast
+  const lastDate = new Date(
+    maxWeightProgression[maxWeightProgression.length - 1].date,
+  );
+  const MS_DAY = 24 * 60 * 60 * 1000;
+  const forecast: Array<{ date: string; weight: number }> = [];
+
+  for (let i = 1; i <= daysForecasted / 7; i += 1) {
+    // Forecast weekly
+    const forecastDate = new Date(lastDate.getTime() + i * 7 * MS_DAY);
+    const x = maxWeightProgression.length - 1 + i;
+    const predictedWeight = slope * x + intercept;
+
+    forecast.push({
+      date: forecastDate.toISOString().slice(0, 10),
+      weight: Math.max(0, Math.round(predictedWeight * 10) / 10), // Don't go negative
+    });
+  }
+
+  return forecast;
+}
+
 export const aggregateByExercise = (
   completed: CompletedTraining[],
   days = 30,
@@ -270,6 +397,17 @@ export const aggregateByExercise = (
           volume: Math.round(volume),
         }));
 
+      // Phase 3: Calculate strength curve and prediction
+      const maxWeightProgression = buildMaxWeightProgression(
+        completed,
+        name,
+        days,
+      );
+      const weightPrediction = predictWeightProgression(
+        maxWeightProgression,
+        30,
+      );
+
       return {
         exerciseName: name,
         maxWeight: data.maxWeight,
@@ -282,6 +420,11 @@ export const aggregateByExercise = (
         trend,
         currentStreak: calculateStreak(volumeDatesArray),
         volumeImprovement: calculateVolumeImprovement(volumeDatesArray, days),
+        maxWeightProgression,
+        weightPrediction: {
+          weights: weightPrediction,
+          daysForecasted: 30,
+        },
       };
     },
   );

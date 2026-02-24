@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 
 import { connect } from '../../utils';
 import { controller } from './controller';
+import { aggregateByExercise } from '../../model/aggregation';
+import type { ExerciseMetrics } from '../../model/aggregation';
+import type { CompletedTraining } from '../../model/types';
 import {
   Layout,
   Navbar,
@@ -20,7 +23,6 @@ import {
   IconTrendingDown,
   IconArrowRight,
 } from '../../components/icons';
-import type { ExerciseMetrics } from '../../model/aggregation';
 
 const trendIcons = {
   improving: <IconTrendingUp size={16} />,
@@ -34,13 +36,56 @@ const trendColors = {
   declining: 'red',
 };
 
-const PureDashboard: React.FC<any> = ({ aggregates, exerciseMetrics }) => {
+const PureDashboard: React.FC<{
+  aggregates: any[];
+  completedTrainings: CompletedTraining[];
+}> = ({ aggregates, completedTrainings }) => {
+  const [timeRange, setTimeRange] = useState<number>(30);
+
+  // Memoize exercise metrics calculation to avoid recalculating on every render
+  const exerciseMetrics = useMemo(
+    () => aggregateByExercise(completedTrainings, timeRange),
+    [completedTrainings, timeRange],
+  );
+
   const topExercises = exerciseMetrics.slice(0, 5);
 
   return (
     <Layout bottomBar={<Navbar />} dataTestId="dashboard-screen">
       <Stack style={{ padding: 12 }} gap="lg">
         <Title order={2}>Progress dashboard</Title>
+
+        {/* Time Range Selector */}
+        <Card withBorder shadow="sm" radius="md" style={{ marginBottom: 8 }}>
+          <Group>
+            <Text fw={500} size="sm">
+              Time Range:
+            </Text>
+            <Group gap="xs">
+              {[7, 14, 30, 60, 90].map((days) => (
+                <button
+                  key={days}
+                  onClick={() => setTimeRange(days)}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: 4,
+                    border:
+                      timeRange === days
+                        ? '2px solid #228be6'
+                        : '1px solid #dee2e6',
+                    backgroundColor: timeRange === days ? '#e7f5ff' : '#fff',
+                    color: timeRange === days ? '#228be6' : '#495057',
+                    fontWeight: timeRange === days ? 600 : 400,
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                  }}
+                >
+                  {days}d
+                </button>
+              ))}
+            </Group>
+          </Group>
+        </Card>
 
         <Stack gap="md">
           <div>
@@ -69,7 +114,7 @@ const PureDashboard: React.FC<any> = ({ aggregates, exerciseMetrics }) => {
         {exerciseMetrics.length > 0 && (
           <Stack gap="lg">
             <div>
-              <Title order={3}>Personal Records (last 30 days)</Title>
+              <Title order={3}>Personal Records (last {timeRange} days)</Title>
               <SimpleGrid
                 cols={{ base: 1, sm: 2, md: 3 }}
                 spacing="md"
@@ -164,6 +209,132 @@ const PureDashboard: React.FC<any> = ({ aggregates, exerciseMetrics }) => {
                 ))}
               </Stack>
             </div>
+
+            {/* Phase 3: Strength Curve Visualization */}
+            <div>
+              <Title order={3}>
+                Strength Curve (Estimated 4RM Progression)
+              </Title>
+              <Stack gap="md" style={{ marginTop: 12 }}>
+                {topExercises.slice(0, 3).map((exercise: ExerciseMetrics) => {
+                  const hasData =
+                    exercise.maxWeightProgression &&
+                    exercise.maxWeightProgression.length > 0;
+                  return (
+                    <Card
+                      key={`strength-${exercise.exerciseName}`}
+                      withBorder
+                      shadow="sm"
+                      radius="md"
+                    >
+                      <Stack gap="md">
+                        <Text fw={700} size="md">
+                          {exercise.exerciseName}
+                        </Text>
+                        {hasData ? (
+                          <div style={{ height: 200 }}>
+                            <TrainingProgressChart
+                              data={exercise.maxWeightProgression.map(
+                                (item) => ({
+                                  dateISO: item.date,
+                                  totalVolumeKg: item.weight,
+                                  totalReps: 0,
+                                  sessionsCount: 0,
+                                }),
+                              )}
+                              variant="detailed"
+                              height={200}
+                            />
+                          </div>
+                        ) : (
+                          <Text size="sm" c="dimmed">
+                            Not enough data for strength curve
+                          </Text>
+                        )}
+                        <Group justify="space-between">
+                          <Text size="xs" c="dimmed">
+                            Data points:{' '}
+                            {exercise.maxWeightProgression?.length || 0}
+                          </Text>
+                          <Text size="xs" c="dimmed">
+                            Estimated 4RM: {exercise.maxWeight.toFixed(1)}kg
+                          </Text>
+                        </Group>
+                      </Stack>
+                    </Card>
+                  );
+                })}
+              </Stack>
+            </div>
+
+            {/* Phase 3: Weight Progression Prediction */}
+            <div>
+              <Title order={3}>4RM Forecast (30-day prediction)</Title>
+              <Stack gap="md" style={{ marginTop: 12 }}>
+                {topExercises.slice(0, 3).map((exercise: ExerciseMetrics) => {
+                  const hasData =
+                    exercise.weightPrediction &&
+                    exercise.weightPrediction.weights.length > 0;
+                  const combinedData = hasData
+                    ? [
+                        ...exercise.maxWeightProgression,
+                        ...exercise.weightPrediction.weights,
+                      ]
+                    : [];
+
+                  return (
+                    <Card
+                      key={`prediction-${exercise.exerciseName}`}
+                      withBorder
+                      shadow="sm"
+                      radius="md"
+                    >
+                      <Stack gap="md">
+                        <Group justify="space-between">
+                          <Text fw={700} size="md">
+                            {exercise.exerciseName}
+                          </Text>
+                          {hasData &&
+                            exercise.weightPrediction.weights.length > 0 && (
+                              <Badge color="blue" variant="light">
+                                Forecast:{' '}
+                                {exercise.weightPrediction.weights[
+                                  exercise.weightPrediction.weights.length - 1
+                                ]?.weight.toFixed(1)}
+                                kg
+                              </Badge>
+                            )}
+                        </Group>
+                        {hasData && combinedData.length > 0 ? (
+                          <div style={{ height: 200 }}>
+                            <TrainingProgressChart
+                              data={combinedData
+                                .map((item) => ({
+                                  dateISO: item.date,
+                                  totalVolumeKg: item.weight,
+                                  totalReps: 0,
+                                  sessionsCount: 0,
+                                }))
+                                .slice(-10)}
+                              variant="detailed"
+                              height={200}
+                            />
+                          </div>
+                        ) : (
+                          <Text size="sm" c="dimmed">
+                            Not enough data for prediction
+                          </Text>
+                        )}
+                        <Text size="xs" c="dimmed">
+                          Linear regression prediction on estimated 4RM (Epley
+                          formula)
+                        </Text>
+                      </Stack>
+                    </Card>
+                  );
+                })}
+              </Stack>
+            </div>
           </Stack>
         )}
 
@@ -247,5 +418,5 @@ const PureDashboard: React.FC<any> = ({ aggregates, exerciseMetrics }) => {
 
 export const Dashboard = connect({ controller }, (ctrl) => ({
   aggregates: ctrl.getAggregates(),
-  exerciseMetrics: ctrl.getExerciseMetrics(),
+  completedTrainings: ctrl.getCompletedTrainings(),
 }))(PureDashboard);

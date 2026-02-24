@@ -9,7 +9,8 @@ import {
 
 interface DashboardController {
   getAggregates: () => TrainingAggregate[];
-  getExerciseMetrics: () => ExerciseMetrics[];
+  getExerciseMetrics: (days?: number) => ExerciseMetrics[];
+  getCompletedTrainings: () => CompletedTraining[];
 }
 
 export const controller = (
@@ -25,10 +26,13 @@ export const controller = (
         getStore().completedTrainings || [];
       return aggregateByDay(completed);
     },
-    getExerciseMetrics: () => {
+    getExerciseMetrics: (days = 30) => {
       const completed: CompletedTraining[] =
         getStore().completedTrainings || [];
-      return aggregateByExercise(completed, 30);
+      return aggregateByExercise(completed, days);
+    },
+    getCompletedTrainings: () => {
+      return getStore().completedTrainings || [];
     },
   };
 };
