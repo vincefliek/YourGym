@@ -229,6 +229,7 @@ export interface NavigationApi {
   isHomeUrl: (options?: NavOptions) => boolean;
   isTrainingsUrl: () => boolean;
   isMenuUrl: () => boolean;
+  isDashboardUrl: () => boolean;
   // live as in URL, e.g. `/trainings/dac07736-f441-4ae8-96a2-ff1a0c9febf7/new`
   getCurrentPath: () => string;
   // template as in definition, e.g. `/trainings/$training/new`

@@ -1,7 +1,14 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { Button, Layout, Navbar, Paper, Collapse } from '../../components';
+import {
+  Button,
+  Layout,
+  Navbar,
+  Paper,
+  Collapse,
+  TrainingProgressCard,
+} from '../../components';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -196,6 +203,7 @@ const PureHome: React.FC<HomeProps> = (props) => {
             </Button>
           </>
         )}
+        <TrainingProgressCard />
         {renderTrainings()}
       </div>
     </Layout>

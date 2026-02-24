@@ -16,9 +16,13 @@ export const controller = (
     onBurgerClick: () => {
       navigationApi.toMenu();
     },
+    onDashboardClick: () => {
+      navigationApi.toDashboard();
+    },
     isHomeActive: () => navigationApi.isHomeUrl(),
     isTrainingsActive: () => navigationApi.isTrainingsUrl(),
     isBurgerActive: () => navigationApi.isMenuUrl(),
+    isDashboardActive: () => navigationApi.isDashboardUrl(),
     storeDataAccessors: controller.storeDataAccessors,
   };
 };

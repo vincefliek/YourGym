@@ -5,7 +5,7 @@ import { connect } from '../../utils';
 import { controller } from './controller';
 import { MenuController } from './types';
 
-import { Button, Layout, Navbar, TrainingProgressCard } from '../../components';
+import { Button, Layout, Navbar } from '../../components';
 
 import style from './style.module.scss';
 
@@ -62,9 +62,6 @@ const PureMenu: React.FC<PureMenuProps> = (props) => {
 
   return (
     <Layout bottomBar={<Navbar />} dataTestId="menu-screen">
-      <div style={{ marginBottom: 12 }}>
-        <TrainingProgressCard />
-      </div>
       <div className={style.metadataBox}>
         <h4>Auth</h4>
         <div className={style.twoColumns}>

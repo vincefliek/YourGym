@@ -158,6 +158,9 @@ export const createNavigationApi: ApiFactory<NavigationApi, {}> = () => {
     isMenuUrl: () => {
       return isRouteOpenedRightNow(routes.menu);
     },
+    isDashboardUrl: () => {
+      return isRouteOpenedRightNow(routes.dashboard);
+    },
     getPathParams,
     getCurrentPath,
     getCurrentRoutePath,

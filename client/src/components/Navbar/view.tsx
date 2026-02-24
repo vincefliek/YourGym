@@ -16,9 +16,11 @@ class PureNavbar extends React.Component<NavbarProps, NavbarState> {
       onHomeClick,
       onTrainingsClick,
       onBurgerClick,
+      onDashboardClick,
       isHomeActive,
       isTrainingsActive,
       isBurgerActive,
+      isDashboardActive,
     } = this.props;
 
     return (
@@ -48,6 +50,18 @@ class PureNavbar extends React.Component<NavbarProps, NavbarState> {
           Trainings
         </Button>
         <Button
+          skin="text"
+          font="indieFlower"
+          size="large"
+          className={classnames({
+            [style.active]: isDashboardActive,
+          })}
+          onClick={onDashboardClick}
+          data-testid="nav-progress-button"
+        >
+          Progress
+        </Button>
+        <Button
           skin="icon"
           size="large"
           className={classnames(style.burger, {
@@ -73,8 +87,10 @@ export const Navbar = connect<NavbarController, NavbarProps>(
     onHomeClick: ctrl.onHomeClick,
     onTrainingsClick: ctrl.onTrainingsClick,
     onBurgerClick: ctrl.onBurgerClick,
+    onDashboardClick: ctrl.onDashboardClick,
     isHomeActive: ctrl.isHomeActive(),
     isTrainingsActive: ctrl.isTrainingsActive(),
     isBurgerActive: ctrl.isBurgerActive(),
+    isDashboardActive: ctrl.isDashboardActive(),
   }),
 )(PureNavbar);
