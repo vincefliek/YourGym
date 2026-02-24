@@ -26,4 +26,5 @@ export {
   Text,
   Title,
   Table,
+  Tabs,
 } from '@mantine/core';
