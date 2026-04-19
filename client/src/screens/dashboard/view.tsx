@@ -2,7 +2,10 @@ import React, { useState, useMemo } from 'react';
 
 import { connect } from '../../utils';
 import { controller } from './controller';
-import { aggregateByExercise, lastNDays } from '../../model/aggregation';
+import {
+  aggregateByExercise,
+  lastNDaysWithTrainings,
+} from '../../model/aggregation';
 import type {
   ExerciseMetrics,
   TrainingAggregate,
@@ -120,7 +123,7 @@ const PureDashboard: React.FC<{
                 <Title order={3}>Volume trend (last {timeRange} days)</Title>
                 <div style={{ height: 240, marginTop: 12 }}>
                   <TrainingProgressChart
-                    data={lastNDays(aggregates, timeRange)}
+                    data={lastNDaysWithTrainings(aggregates, timeRange)}
                     variant="detailed"
                     height={240}
                   />
@@ -131,7 +134,7 @@ const PureDashboard: React.FC<{
                 <Title order={3}>Sessions (last {timeRange} days)</Title>
                 <div style={{ height: 160, marginTop: 12 }}>
                   <TrainingProgressChart
-                    data={lastNDays(aggregates, timeRange)}
+                    data={lastNDaysWithTrainings(aggregates, timeRange)}
                     variant="bar"
                     height={160}
                   />

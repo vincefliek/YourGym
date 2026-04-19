@@ -117,6 +117,14 @@ export const lastNDays = (
   return result;
 };
 
+// Returns the last N calendar days with trainings (sessionsCount > 0), using lastNDays then filtering
+export function lastNDaysWithTrainings(
+  aggregates: TrainingAggregate[],
+  n: number,
+): TrainingAggregate[] {
+  return lastNDays(aggregates, n).filter((a) => a.sessionsCount > 0);
+}
+
 function calculateStreak(
   volumeByDate: Array<{ date: string; volume: number }>,
 ): number {
