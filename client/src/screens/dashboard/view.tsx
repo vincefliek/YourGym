@@ -2,8 +2,11 @@ import React, { useState, useMemo } from 'react';
 
 import { connect } from '../../utils';
 import { controller } from './controller';
-import { aggregateByExercise } from '../../model/aggregation';
-import type { ExerciseMetrics } from '../../model/aggregation';
+import { aggregateByExercise, lastNDays } from '../../model/aggregation';
+import type {
+  ExerciseMetrics,
+  TrainingAggregate,
+} from '../../model/aggregation';
 import type { CompletedTraining } from '../../model/types';
 import {
   Layout,
@@ -48,7 +51,7 @@ const tabs = {
 };
 
 const PureDashboard: React.FC<{
-  aggregates: any[];
+  aggregates: TrainingAggregate[];
   completedTrainings: CompletedTraining[];
 }> = ({ aggregates, completedTrainings }) => {
   const [timeRange, setTimeRange] = useState<number>(30);
@@ -114,10 +117,10 @@ const PureDashboard: React.FC<{
           <Tabs.Panel value={tabs.overallVolume}>
             <Stack gap="md">
               <div>
-                <Title order={3}>Volume trend (last 30 days)</Title>
+                <Title order={3}>Volume trend (last {timeRange} days)</Title>
                 <div style={{ height: 240, marginTop: 12 }}>
                   <TrainingProgressChart
-                    data={aggregates.slice(-30)}
+                    data={lastNDays(aggregates, timeRange)}
                     variant="detailed"
                     height={240}
                   />
@@ -125,10 +128,10 @@ const PureDashboard: React.FC<{
               </div>
 
               <div>
-                <Title order={3}>Sessions (last 30 days)</Title>
+                <Title order={3}>Sessions (last {timeRange} days)</Title>
                 <div style={{ height: 160, marginTop: 12 }}>
                   <TrainingProgressChart
-                    data={aggregates.slice(-30)}
+                    data={lastNDays(aggregates, timeRange)}
                     variant="bar"
                     height={160}
                   />
