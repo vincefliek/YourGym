@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 
 import { connect } from '../../utils';
-import { BurgerIcon, DumbbellIcon } from '../icons';
+import { BurgerIcon, DumbbellIcon, MoonIcon, SunIcon } from '../icons';
 import { controller } from './controller';
 import { Button } from '../Button';
 import { NavbarContainer } from '../NavbarContainer';
@@ -17,6 +17,8 @@ class PureNavbar extends React.Component<NavbarProps, NavbarState> {
       onTrainingsClick,
       onBurgerClick,
       onDashboardClick,
+      onThemeToggle,
+      currentTheme,
       isHomeActive,
       isTrainingsActive,
       isBurgerActive,
@@ -64,6 +66,14 @@ class PureNavbar extends React.Component<NavbarProps, NavbarState> {
         <Button
           skin="icon"
           size="large"
+          onClick={onThemeToggle}
+          data-testid="nav-theme-toggle-button"
+        >
+          {currentTheme === 'light' ? <MoonIcon /> : <SunIcon />}
+        </Button>
+        <Button
+          skin="icon"
+          size="large"
           className={classnames(style.burger, {
             [style.activeBurger]: isBurgerActive,
             [style.animationBurger]: isBurgerActive,
@@ -88,6 +98,8 @@ export const Navbar = connect<NavbarController, NavbarProps>(
     onTrainingsClick: ctrl.onTrainingsClick,
     onBurgerClick: ctrl.onBurgerClick,
     onDashboardClick: ctrl.onDashboardClick,
+    onThemeToggle: ctrl.onThemeToggle,
+    currentTheme: ctrl.getCurrentTheme(),
     isHomeActive: ctrl.isHomeActive(),
     isTrainingsActive: ctrl.isTrainingsActive(),
     isBurgerActive: ctrl.isBurgerActive(),

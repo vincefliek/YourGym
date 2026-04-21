@@ -13,6 +13,8 @@ import {
   IconTrendingUp,
   IconTrendingDown,
   IconArrowRight,
+  IconMoon,
+  IconSun,
 } from '@tabler/icons-react';
 
 export { IconTrendingUp, IconTrendingDown, IconArrowRight };
@@ -38,3 +40,7 @@ export const DumbbellIcon = () => <IconBarbellFilled stroke={1.25} />;
 export const ChevronDownIcon = () => <IconChevronDown stroke={1.5} />;
 
 export const ChevronUpIcon = () => <IconChevronUp stroke={1.5} />;
+
+export const MoonIcon = () => <IconMoon stroke={1.5} />;
+
+export const SunIcon = () => <IconSun stroke={1.5} />;

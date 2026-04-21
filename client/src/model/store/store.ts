@@ -9,6 +9,7 @@ import {
   Notification,
   UiBlockingLayerState,
   ExerciseType,
+  ThemeMode,
 } from '../types';
 
 import { get as idbGet, set as idbSet } from 'idb-keyval';
@@ -24,6 +25,7 @@ interface State {
   sync: SyncWithServer;
   notifications: Notification[];
   uiBlockingLayer: UiBlockingLayerState;
+  theme: ThemeMode;
 }
 
 interface Subscribers {
@@ -37,6 +39,7 @@ interface Subscribers {
   sync: Array<() => void>;
   notifications: Array<() => void>;
   uiBlockingLayer: Array<() => void>;
+  theme: Array<() => void>;
 }
 
 export class Store implements StoreInterface {
@@ -73,6 +76,7 @@ export class Store implements StoreInterface {
         isVisible: false,
         message: undefined,
       },
+      theme: 'light',
     };
     this.subscribers = {
       trainings: [],
@@ -85,6 +89,7 @@ export class Store implements StoreInterface {
       sync: [],
       notifications: [],
       uiBlockingLayer: [],
+      theme: [],
     };
 
     const publicDataAccessors = Object.keys(this.subscribers);
@@ -165,6 +170,8 @@ export class Store implements StoreInterface {
         return this.state.notifications;
       case 'uiBlockingLayer':
         return this.state.uiBlockingLayer;
+      case 'theme':
+        return this.state.theme;
       default:
         return undefined;
     }
@@ -214,6 +221,9 @@ export class Store implements StoreInterface {
             break;
           case 'uiBlockingLayer':
             this.state.uiBlockingLayer = persisted as State['uiBlockingLayer'];
+            break;
+          case 'theme':
+            this.theme = persisted as State['theme'];
             break;
           default:
             break;
@@ -314,6 +324,7 @@ export class Store implements StoreInterface {
       sync: state.sync,
       notifications: state.notifications,
       uiBlockingLayer: state.uiBlockingLayer,
+      theme: state.theme,
     }) as const;
 
   getStoreData = (publicDataAccessors: string[]): { [key: string]: any } => {
@@ -447,6 +458,15 @@ export class Store implements StoreInterface {
     this._updateStoreData(fn, ['notifications']);
   }
 
+  get theme(): ThemeMode {
+    return this.state.theme;
+  }
+
+  set theme(data: ThemeMode) {
+    const fn = () => ({ theme: data });
+    this._updateStoreData(fn, ['theme']);
+  }
+
   set uiBlockingLayer(data: State['uiBlockingLayer']) {
     const fn = (state: State) => ({
       uiBlockingLayer: {
@@ -469,6 +489,7 @@ const allPublicDataAccessors = [
   'sync',
   'notifications',
   'uiBlockingLayer',
+  'theme',
 ];
 
 function validateDataAccessors(publicDataAccessors: string[]): void {

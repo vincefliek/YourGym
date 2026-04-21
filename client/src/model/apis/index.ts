@@ -6,6 +6,7 @@ import { createHttpClientAPI } from './httpClientApi';
 import { createTrainingsServerApi } from './trainingsServerApi';
 import { createSyncApi } from './syncApi';
 import { createNotificationsApi } from './notificationsApi';
+import { createThemeApi } from './themeApi';
 
 export const createAPIs = (tools: ApiTools) => {
   const accessTokenKey = '__yg_at_rt';
@@ -34,6 +35,7 @@ export const createAPIs = (tools: ApiTools) => {
   });
 
   const notificationsApi = createNotificationsApi(tools, {});
+  const themeApi = createThemeApi(tools, {});
 
   const trainingsServerApi = createTrainingsServerApi(tools, { httpClientAPI });
   const trainingsApi = createTrainingsApi(tools, {
@@ -63,5 +65,6 @@ export const createAPIs = (tools: ApiTools) => {
     trainingsServerApi,
     syncApi,
     notificationsApi,
+    themeApi,
   };
 };

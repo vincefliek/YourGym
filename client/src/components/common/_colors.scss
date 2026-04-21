@@ -1,2 +1,17 @@
-$primary: #12a512;
-$regular: #000;
+// CSS custom properties for all theme-aware colors
+:root {
+  --text-color: #000;
+  --bg-color: #ffffff;
+  --primary: #12a512;
+}
+
+[data-mantine-color-scheme='dark'] {
+  --text-color: #ffffff;
+  --bg-color: #1a1b1e;
+  --primary: #12a512;
+}
+
+// SCSS variables reference CSS variables (auto-invert at runtime)
+// For SCSS color functions, these need actual color values to compile
+$primary: var(--primary);
+$regular: var(--text-color);

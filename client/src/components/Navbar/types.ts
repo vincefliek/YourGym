@@ -3,6 +3,8 @@ export interface NavbarProps {
   onTrainingsClick: () => void;
   onBurgerClick: () => void;
   onDashboardClick: () => void;
+  onThemeToggle: () => void;
+  currentTheme: 'light' | 'dark';
   isHomeActive: boolean;
   isTrainingsActive: boolean;
   isBurgerActive: boolean;
@@ -16,6 +18,8 @@ export interface NavbarController {
   onTrainingsClick: () => void;
   onBurgerClick: () => void;
   onDashboardClick: () => void;
+  onThemeToggle: () => void;
+  getCurrentTheme: () => 'light' | 'dark';
   isHomeActive: () => boolean;
   isTrainingsActive: () => boolean;
   isBurgerActive: () => boolean;

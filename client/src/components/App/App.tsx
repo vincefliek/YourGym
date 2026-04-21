@@ -5,7 +5,7 @@ import { MantineProvider } from '@mantine/core';
 
 import '@mantine/core/styles.css';
 
-import { AppAPIs } from '../../model/types';
+import { AppAPIs, ThemeMode } from '../../model/types';
 import {
   Trainings,
   Home,
@@ -26,6 +26,10 @@ import { AppContext } from '../../utils';
 import { AppProps, AppState, AppContext as IAppContext } from '../../types';
 import style from './style.module.scss';
 
+interface AppComponentState extends AppState {
+  themeMode: ThemeMode;
+}
+
 const RootComp = () => <Outlet />;
 const WrappedHome = () => <Home />;
 const WrappedDashboard = () => <Dashboard />;
@@ -40,9 +44,10 @@ const WrappedEditExistingExercise = () => <EditExistingExercise />;
 const WrappedEditNewExercise = () => <EditNewExercise />;
 const WrappedCreateExercise = () => <CreateExercise />;
 
-export class App extends React.Component<AppProps, AppState> {
+export class App extends React.Component<AppProps, AppComponentState> {
   private apis: AppAPIs;
   private appContext: IAppContext;
+  private unsubscribeTheme?: () => void;
 
   constructor(props: AppProps) {
     super(props);
@@ -51,6 +56,10 @@ export class App extends React.Component<AppProps, AppState> {
 
     this.apis = apis;
     this.appContext = appContext;
+
+    this.state = {
+      themeMode: apis.themeApi.getTheme(),
+    };
   }
 
   componentDidMount() {
@@ -77,12 +86,25 @@ export class App extends React.Component<AppProps, AppState> {
     this.apis.navigationApi.setRouterConfiguration({
       routePathsToComponents,
     });
+
+    // Subscribe to theme changes from store
+    const store = this.appContext.serviceLocator.getStore();
+    const handleThemeChange = () => {
+      this.setState({ themeMode: this.apis.themeApi.getTheme() });
+    };
+    this.unsubscribeTheme = store.subscribe(handleThemeChange, ['theme']);
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscribeTheme) {
+      this.unsubscribeTheme();
+    }
   }
 
   render() {
     return (
       <AppContext.Provider value={this.appContext}>
-        <MantineProvider>
+        <MantineProvider forceColorScheme={this.state.themeMode}>
           <div className={style.releaseVersion}>v{__APP_VERSION__}</div>
           <div className={style.app}>
             <Notifications />

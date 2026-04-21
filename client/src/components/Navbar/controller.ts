@@ -4,7 +4,8 @@ import { NavbarController } from './types';
 export const controller = (
   serviceLocator: AppContext['serviceLocator'],
 ): NavbarController => {
-  const { navigationApi } = serviceLocator.getAPIs();
+  const { navigationApi, themeApi } = serviceLocator.getAPIs();
+  const store = serviceLocator.getStore();
 
   return {
     onHomeClick: () => {
@@ -19,6 +20,10 @@ export const controller = (
     onDashboardClick: () => {
       navigationApi.toDashboard();
     },
+    onThemeToggle: () => {
+      themeApi.toggleTheme();
+    },
+    getCurrentTheme: () => store.getStoreData(['theme']).theme || 'light',
     isHomeActive: () => navigationApi.isHomeUrl(),
     isTrainingsActive: () => navigationApi.isTrainingsUrl(),
     isBurgerActive: () => navigationApi.isMenuUrl(),
@@ -27,4 +32,4 @@ export const controller = (
   };
 };
 
-controller.storeDataAccessors = [] as string[];
+controller.storeDataAccessors = ['theme'] as string[];

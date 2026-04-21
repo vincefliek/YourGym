@@ -108,6 +108,8 @@ export interface Store {
   set sync(data: Partial<SyncWithServer>);
   get notifications(): Notification[];
   set notifications(value: Notification[]);
+  get theme(): ThemeMode;
+  set theme(value: ThemeMode);
   get uiBlockingLayer(): UiBlockingLayerState;
   set uiBlockingLayer(data: UiBlockingLayerState);
 }
@@ -162,12 +164,20 @@ export interface AppAPIs {
   trainingsServerApi: TrainingsServerApi;
   syncApi: SyncApi;
   notificationsApi: NotificationsApi;
+  themeApi: ThemeApi;
 }
 
 export interface NotificationsApi {
   getNotifications: () => Notification[];
   addNotification: (notification: Partial<Notification>) => string;
   removeNotification: (id: string) => void;
+}
+
+export type ThemeMode = 'light' | 'dark';
+
+export interface ThemeApi {
+  getTheme: () => ThemeMode;
+  toggleTheme: () => void;
 }
 
 export interface SyncApi {

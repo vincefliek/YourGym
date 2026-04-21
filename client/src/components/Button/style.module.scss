@@ -1,5 +1,3 @@
-@use 'sass:color';
-
 @use '../common/_colors';
 @use '../common/_fonts';
 
@@ -56,7 +54,7 @@
 }
 
 .disabled {
-  $disabledColor: color.adjust(colors.$regular, $alpha: -0.6);
+  $disabledColor: rgba(colors.$regular, 0.4);
   color: $disabledColor;
   border-color: $disabledColor;
   cursor: not-allowed;
